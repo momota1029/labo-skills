@@ -25,16 +25,19 @@ latexmk reuses a PDF but its SyncTeX is missing, the command forces at most one
 rebuild; it does not disable the cache on every run or claim success without
 the promised outputs.
 
-After a successful build, the command opens the PDF with the operating
-system's default viewer and prunes the oldest managed output groups toward a
-30-file limit. A PDF and its `.synctex.gz` or `.synctex` file are removed
-together; known standalone PDFs form one-file groups. The current
+Each successful build writes `<slug>.pdf` and same-stem SyncTeX directly under
+`output/`. Source roots under one project slug overwrite the same pair; the most
+recently built root is the one available from that project. The viewer stays
+closed by default; pass `--open` to launch the host's default PDF handler.
+After a successful build, the command prunes the oldest managed output groups
+toward a 30-file limit. A PDF and its `.synctex.gz` or `.synctex` file are
+removed together; known standalone PDFs form one-file groups. The current
 build is protected during cleanup. `.gitkeep`, symlinks, and unrecognized files
 are preserved, so the command warns when those files prevent reaching the
-limit. Use `--max-files <count>` to choose another limit, `--no-open` when a
-viewer should stay closed, or `output prune --max-files <count>` to clean
-`output/` without compiling. The internal output lock coordinates build and
-cleanup commands without adding a lock file to `output/`.
+limit. Use `--max-files <count>` to choose another limit, or
+`output prune --max-files <count>` to clean `output/` without compiling. The
+internal output lock coordinates build and cleanup commands without adding a
+lock file to `output/`.
 
 Generated PDFs, SyncTeX files, and caches in these build locations are ignored.
 Do not ignore all PDF files by extension: human originals in either inbox must
@@ -53,12 +56,12 @@ python3 <labo-script> output build --source writing/<slug>/<entry>.tex
 python3 <labo-script> output build --source reading/<slug>/<entry>.tex
 ```
 
-Named source builds run from the workspace root, retain intermediate files
-beside the source in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/`.
-An existing entry name beginning with the project slug is retained; other
-entry names are prefixed with that slug. Standard `writing/<slug>/main.tex`
-uses the standard paper-directory build and the slug as its output name.
-Do not generate a wrapper or restructure mathematics just to fit the CLI.
+Named source builds run from the workspace root, use source-specific job names
+in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/<slug>.*`.
+Existing source-derived output variants under `<slug>_` are retired when a
+slug-named build replaces them. Standard `writing/<slug>/main.tex` also uses
+the project slug as its output name. Do not generate a wrapper or restructure
+mathematics just to fit the CLI.
 
 An explicit `--engine` wins, then a `% !TeX program = ...` directive, then
 package detection (`xeCJK` before `fontspec`/`luatexja`). Otherwise a named

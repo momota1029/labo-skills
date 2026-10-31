@@ -66,6 +66,7 @@ def _output_files(output: Path) -> list[Path]:
 def prune_output(
     output: Path, max_files: int = DEFAULT_OUTPUT_MAX_FILES,
     *, protected_stems: set[str] | None = None,
+    superseded_prefixes: set[str] | None = None,
 ) -> OutputPruneResult:
     """Remove oldest known PDF/SyncTeX groups; caller must hold output_transaction."""
     if max_files < 2:
@@ -90,15 +91,28 @@ def prune_output(
         groups.setdefault(stem, []).append(path)
 
     protected = protected_stems or set()
+    superseded = superseded_prefixes or set()
+    removed: list[str] = []
+    file_count = len(files)
+    for stem, members in groups.items():
+        if stem in protected or not any(stem.startswith(prefix) for prefix in superseded):
+            continue
+        for path in members:
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            removed.append(path.name)
+            file_count -= 1
+
     candidates = sorted(
         (
             max(path.stat().st_mtime for path in members), stem, members
         )
         for stem, members in groups.items()
         if stem not in protected
+        and not any(stem.startswith(prefix) for prefix in superseded)
     )
-    removed: list[str] = []
-    file_count = len(files)
     for _, _, members in candidates:
         if file_count <= max_files:
             break
@@ -113,8 +127,18 @@ def prune_output(
     return OutputPruneResult(tuple(removed), file_count, max_files)
 
 
+def _is_wsl() -> bool:
+    if os.environ.get("WSL_INTEROP"):
+        return True
+    try:
+        release = Path("/proc/sys/kernel/osrelease").read_text(encoding="utf-8")
+    except OSError:
+        return False
+    return "microsoft" in release.casefold()
+
+
 def open_default_viewer(pdf: Path) -> str | None:
-    """Ask the operating system's default handler to open the built PDF."""
+    """Ask the host system's default handler to open the built PDF."""
     try:
         if os.name == "nt":
             os.startfile(str(pdf))  # type: ignore[attr-defined]
@@ -124,13 +148,35 @@ def open_default_viewer(pdf: Path) -> str | None:
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 start_new_session=True,
             )
+        elif _is_wsl():
+            wslview = shutil.which("wslview")
+            if wslview:
+                command = [wslview, str(pdf)]
+            else:
+                wslpath = shutil.which("wslpath")
+                cmd = shutil.which("cmd.exe")
+                if not wslpath or not cmd:
+                    return "WSL needs wslview or both wslpath and cmd.exe to open the Windows default viewer"
+                converted = subprocess.run(
+                    [wslpath, "-w", str(pdf)], check=True,
+                    capture_output=True, text=True,
+                )
+                windows_path = converted.stdout.strip()
+                if not windows_path:
+                    return "wslpath returned an empty Windows path for the PDF"
+                command = [cmd, "/c", f'start "" "{windows_path}"']
+            subprocess.Popen(
+                command, stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
         else:
             subprocess.Popen(
                 ["xdg-open", str(pdf)], stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 start_new_session=True,
             )
-    except (AttributeError, OSError) as exc:
+    except (AttributeError, OSError, subprocess.CalledProcessError) as exc:
         return f"could not open the default PDF viewer: {exc}"
     return None
 
@@ -245,7 +291,7 @@ def source_build_command(
         return command, cwd, cache, output, slug
     stem = source.stem if source.stem.startswith(slug) else f"{slug}-{source.stem}"
     cache, output = source.parent / ".temp", workspace / "output"
-    artifacts = [output / f"{stem}{suffix}" for suffix in (".pdf", ".synctex.gz", ".synctex")]
+    artifacts = [output / f"{slug}{suffix}" for suffix in (".pdf", ".synctex.gz", ".synctex")]
     if any(p.is_symlink() for p in (cache, output, *artifacts)):
         raise PaperError("build paths must not be symlinks")
     command = ["latexmk", *_engine_options(engine), "-synctex=1",
@@ -258,6 +304,10 @@ def run_source_build(
     workspace: Path, source: Path, engine: str | None, dry_run: bool,
 ) -> tuple[list[str], str]:
     command, cwd, cache, output, stem = source_build_command(workspace, source, engine)
+    workspace = workspace.resolve()
+    source_path = source if source.is_absolute() else workspace / source
+    relative = source_path.resolve().relative_to(workspace)
+    output_stem = relative.parts[1]
     if not dry_run:
         cache.mkdir(parents=True, exist_ok=True)
         output.mkdir(parents=True, exist_ok=True)
@@ -268,7 +318,7 @@ def run_source_build(
             for suffix in (".pdf", ".synctex.gz", ".synctex"):
                 artifact = generated / f"{stem}{suffix}"
                 if _nonempty_file(artifact):
-                    shutil.copy2(artifact, output / artifact.name)
-            if not _nonempty_file(output / f"{stem}.pdf") or not _has_synctex(output, stem):
+                    shutil.copy2(artifact, output / f"{output_stem}{suffix}")
+            if not _nonempty_file(output / f"{output_stem}.pdf") or not _has_synctex(output, output_stem):
                 raise PaperError("published output is missing its PDF or SyncTeX")
-    return command, stem
+    return command, output_stem

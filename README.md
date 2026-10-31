@@ -195,24 +195,27 @@ No mathematical assertion is certified by this tooling.
 
 `output build` delegates to `latexmk`, writing intermediate files to
 `writing/<paper>/.temp` and PDF/SyncTeX outputs directly to `output/`, named
-`<paper>.pdf` and `<paper>.synctex.gz` so all papers can be selected together.
-The paper slug is the TeX job name; separate `main.tex` entries do not collide.
-`--dry-run` prints the invocation. Real compilation requires a TeX distribution
-with `latexmk`. Success requires both PDF and SyncTeX; a missing SyncTeX
+`<paper>.pdf` and `<paper>.synctex.gz` so all projects can be selected together.
+The project slug names the output pair; roots in the same project overwrite
+the same pair. Named sources keep separate intermediate cache names.
+`--dry-run` prints the invocation.
+Real compilation requires a TeX distribution with `latexmk`. Success requires
+both PDF and SyncTeX; a missing SyncTeX
 after an otherwise cached build triggers at most one forced rebuild.
-Successful builds open the default PDF viewer and prune the oldest known
-PDF/SyncTeX groups toward a default limit of 30 output files. The command
-warns if protected or unrecognized files keep the count above the limit. Use
-`--max-files` to change it, `--no-open` to suppress the viewer, or
-`output prune --max-files 30` to clean without compiling. A workspace-level
-lock serializes concurrent builds and cleanup.
+Successful builds prune the oldest known PDF/SyncTeX groups toward a default
+limit of 30 output files. The viewer stays closed unless `--open` is supplied.
+The command warns if protected or unrecognized files keep the count above the
+limit. Use `--max-files` to change it or `output prune --max-files 30` to clean
+without compiling. A workspace-level lock serializes concurrent builds and
+cleanup.
 
 For existing document names, use `output build --source` with a TeX root under
-`writing/<slug>/` or `reading/<slug>/`. The source stays in place, its cache
-stays in `.temp/`, and its PDF/SyncTeX pair appears directly in `output/`.
-Engine directives and packages such as `xeCJK` are detected; `--engine` can
-override them. The [build contract](skills/labo-build/references/build-contract.md)
-describes naming and working-directory behavior.
+`writing/<slug>/` or `reading/<slug>/`. Its output pair is named by the project
+slug, so multiple roots under that slug overwrite one another. The source stays
+in place and its cache stays in `.temp/`. Engine directives and packages such
+as `xeCJK` are detected; `--engine` can override them. The
+[build contract](skills/labo-build/references/build-contract.md) describes
+working-directory behavior.
 
 ## Quality checks
 

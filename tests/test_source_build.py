@@ -64,8 +64,8 @@ class SourceBuildTests(unittest.TestCase):
     def test_build_failure_preserves_previously_published_pair(self):
         output = self.root / "output"
         output.mkdir()
-        pdf = output / "sample-paper_en.pdf"
-        sync = output / "sample-paper_en.synctex.gz"
+        pdf = output / "sample-paper.pdf"
+        sync = output / "sample-paper.synctex.gz"
         pdf.write_bytes(b"previous PDF")
         sync.write_bytes(b"previous SyncTeX")
         with patch("labo_tools.build.subprocess.run"):
@@ -84,7 +84,7 @@ class SourceBuildTests(unittest.TestCase):
             run_source_build(self.root, self.source, None, False)
         self.assertEqual(
             sorted(p.name for p in (self.root / "output").iterdir()),
-            ["sample-paper_en.pdf", "sample-paper_en.synctex.gz"],
+            ["sample-paper.pdf", "sample-paper.synctex.gz"],
         )
         self.assertTrue((self.folder / ".temp/sample-paper_en.aux").exists())
 

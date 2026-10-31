@@ -50,8 +50,12 @@ def _build_arguments(parser: argparse.ArgumentParser) -> None:
                         help="override engine; source builds detect directives/packages or use workspace config")
     parser.add_argument("--max-files", type=int, default=DEFAULT_OUTPUT_MAX_FILES,
                         help=f"maximum managed output file count after building (default: {DEFAULT_OUTPUT_MAX_FILES})")
-    parser.add_argument("--no-open", action="store_true",
-                        help="build and prune without opening the PDF viewer")
+    viewer = parser.add_mutually_exclusive_group()
+    viewer.add_argument("--open", dest="open_viewer", action="store_true",
+                        help="open the PDF with the host system's default viewer after building")
+    viewer.add_argument("--no-open", dest="open_viewer", action="store_false",
+                        help=argparse.SUPPRESS)
+    parser.set_defaults(open_viewer=False)
     parser.add_argument("--dry-run", action="store_true")
 
 
@@ -74,8 +78,11 @@ def _build(args: argparse.Namespace) -> None:
         else:
             command = run_build(args.workspace, args.paper, args.engine or "pdflatex", False)
             stem = args.paper
-        result = prune_output(output, args.max_files, protected_stems={stem})
-        if not args.no_open:
+        result = prune_output(
+            output, args.max_files, protected_stems={stem},
+            superseded_prefixes={f"{stem}_"},
+        )
+        if args.open_viewer:
             viewer_error = open_default_viewer(output / f"{stem}.pdf")
 
     print(f"Build finished: output/{stem}.pdf + SyncTeX")
@@ -84,7 +91,7 @@ def _build(args: argparse.Namespace) -> None:
     print(f"Output files: {result.file_count} (limit {result.max_files})")
     if result.over_limit:
         print("warning: protected or unrecognized files keep output above the limit", file=sys.stderr)
-    if not args.no_open:
+    if args.open_viewer:
         if viewer_error:
             print(f"warning: {viewer_error}", file=sys.stderr)
         else:
@@ -139,7 +146,9 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
 
     output = areas.add_parser("output", help="build documents and manage files under output/")
     output_actions = output.add_subparsers(dest="action", required=True)
-    output_build = output_actions.add_parser("build", help="compile a TeX document, open its PDF, and prune old output")
+    output_build = output_actions.add_parser(
+        "build", help="compile to a slug-named PDF/SyncTeX pair and prune old output",
+    )
     _build_arguments(output_build)
     output_prune = output_actions.add_parser("prune", help="remove the oldest managed PDF/SyncTeX outputs")
     _workspace(output_prune)

@@ -58,7 +58,8 @@ is required. Use `labo-layout` only when creating or locating workspace items.
 
 Produce the requested formats and language. For PDFs, build from the notes'
 own TeX root with `labo-build`'s `output build --source reading/<slug>/<root>.tex`
-workflow; it places the PDF and SyncTeX in `output/`, opens the default viewer,
-and prunes old output files. Inspect the rendering. Use `slide-authoring` for
-requested decks, retaining this skill's source checks. Preparing notes does
-not authorize publication or author contact.
+workflow; it places the PDF and SyncTeX in `output/<slug>.*`, overwrites that
+pair on later builds from the same project, and prunes old output files. The
+viewer stays closed unless `--open` is supplied. Inspect the rendering. Use
+`slide-authoring` for requested decks, retaining this skill's source checks.
+Preparing notes does not authorize publication or author contact.
