@@ -7,8 +7,12 @@ one criticism per criterion.
 - **S1 Audience** — Identify assumed knowledge and live versus independent
   reading. Inspect the listener's route from those prerequisites. An expert in
   one field does not automatically know another field's objects or methods.
-- **S2 Story** — Make each main transition advance the question and payoff.
-  Select results backward from that payoff; check the sequence forward. Use
+- **S2 Story and interest** — Make each main transition advance a question
+  toward its payoff. At the central turns, show what the audience is likely to
+  expect, what example, comparison or result changes that expectation, and
+  what follows. This makes interest recoverable from the mathematical idea
+  itself. Setup and evidence frames may serve their local role in that route.
+  Select results backward from the payoff; check the sequence forward. Use
   ordinary mathematical sentences and informative headings, not coined slogans
   that hide the relation. A paper-introduction deck needs an early overall map,
   not an imposed reproduction of the paper's section order.

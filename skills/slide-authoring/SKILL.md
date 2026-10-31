@@ -12,14 +12,23 @@ reviews. Read [slide standards](references/slide-standards.md). Infer the
 audience, prerequisites, language, purpose, source version and output format
 from context. Distinguish a live talk from a deck intended for reading alone.
 Use supplied talk/Q&A time; do not invent a duration or slide quota.
+When the target's repository supplies a more specific slide workflow, follow
+it for production and review roles, frozen artifacts, builds and records. Use
+this skill's authoring and audience criteria within that workflow instead of
+starting a parallel review loop.
 
 ## Authoring
 
 1. Identify the question and payoff, then select the claims and evidence that
-   carry them. Work backward to indispensable concepts and forward to their
-   first consequential use. Specialize faithfully when generality would bury
-   the idea. For a paper introduction, give an early map of its question,
-   contribution, mechanism and limits.
+   carry them. For the central turns, make the audience's question or likely
+   expectation visible, show what example, comparison or result changes it,
+   and state what follows. This is the deck's source of interest: a recoverable
+   intellectual turn with a payoff. Use it where the story turns; setup and
+   evidence frames can do their local job without a separate hook. Work
+   backward to indispensable concepts and forward to their first consequential
+   use. Specialize faithfully when generality would bury the idea. For a paper
+   introduction, give an early map of its question, contribution, mechanism
+   and limits.
 2. Keep the selected theorem's hypotheses, objects and status visible. Explain
    the decisive step or usable black box; ordinary proof details may go to
    speech, backup, a paper or `reading/` notes. **Paper-referee completeness
@@ -39,12 +48,22 @@ Use supplied talk/Q&A time; do not invent a duration or slide quota.
 
 Read the displayed sequence before sources or speaker notes. Record the claim
 and reasoning recoverable by the declared audience, including the first missing
-bridge; then compare with the exact source. Keep initial difficulty distinct
-from later source rescue. Review-only requests return findings without edits.
+bridge. For the central story, trace the visible question or expectation to the
+result that answers or changes it and its stated consequence; report a missing
+payoff only when the sequence gives concrete evidence for that gap. Then compare
+with the exact source. Keep initial difficulty distinct from later source
+rescue. Review-only requests return findings without edits.
 
 Use numbered `S` criteria with severity, frame/overlay, visible evidence,
 source locator when relevant, and minimum repair. Preserve correct concise
 passages; a review can be clean. Report inspected scope, rendering limits and
-whether time fit was estimated or rehearsed. If independent audience testing
-is useful, give a fresh reader only the deck and neutral audience brief; derive
-the assignment from this task, without a fixed persona, model or review roster.
+whether time fit was estimated or rehearsed. For an isolated audience test,
+give a fresh reader only the deck and neutral audience brief; derive the
+assignment from this task, without a fixed persona, model or review roster.
+For an independent slide reviewer, use an artifact-first, evidence-led
+challenge: test the strongest plausible misreading and trace the central
+question to its visible result and consequence, then check the named sources.
+Ask for exact frame evidence and the smallest repair, while preserving a
+concise correct frame as a control. Follow the project's source-access rules;
+a source-aware reviewer and an isolated cold reader have different packets.
+Do not set a criticism quota.
