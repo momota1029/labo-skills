@@ -1,0 +1,7 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "labo-skills",
+  "version": "0.1.0",
+  "description": "Public, story-centered research policies and local tools for mathematical research",
+  "repository": "https://github.com/momota1029/labo-skills"
+}
