@@ -5,6 +5,22 @@ description: Route mathematical research tasks to the appropriate labo skill and
 
 # Research routing
 
+Before the first delegation, including consultation, retrieve the models and
+reasoning settings actually callable through the host's delegation interface,
+using its discovery tools/API or runtime catalogue. A provider-wide catalogue
+alone does not establish availability. If readily exposed, obtain your own
+model and effort from matching current-session metadata; otherwise mark them
+unknown, rather than inferring them from defaults or self-description.
+
+Choose each needed role's model and effort from that set using task requirements
+and available model-selection skills or current official guidance. Do not fix
+advisor, prover, or reviewer roles to model families by convention. Honor explicit
+user model constraints; otherwise prefer current suitable models and justify older
+choices. Reuse discovery within the task and pass selections through actual tool
+arguments.
+Apply the same criteria to roles you keep; delegate content-understanding or
+research-reasoning work if your own model's suitability cannot be established.
+
 For each user request, follow the [required consultation](references/consultation.md).
 
 1. Identify the **artifact and reader**: research story, Lean, manuscript,
@@ -21,6 +37,9 @@ For each user request, follow the [required consultation](references/consultatio
 4. Beyond the required consultation, if task-specific delegation is useful,
    formulate a short task-specific assignment *from the selected skill*.
    Do not depend on a proprietary stored subagent persona or prompt template.
+   Independent result reviews start in a fresh context with the original request,
+   constraints, artifact, and necessary primary sources. Do not inherit the
+   implementation conversation or the author's or coordinator's verdict.
    Choose by the mathematical judgment needed to establish correctness:
 
    - **Routine processing** (organization, extraction, prescribed conversion):
@@ -31,7 +50,7 @@ For each user request, follow the [required consultation](references/consultatio
      review): current upper-tier model suited to mathematical reasoning, high effort.
 
    Reconstructing missing arguments counts as research reasoning, even in a
-   summary. Use the host's available skills to select concrete models and settings.
+   summary.
 5. Keep the user's `AGENTS.md` independent. Do not edit it as part of routing.
 
 The research plan supplies human context; a skill supplies the operational

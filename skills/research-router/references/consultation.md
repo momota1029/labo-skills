@@ -1,15 +1,17 @@
 # Request and next-action consultation
 
 For every user request handled by a labo skill, the coordinating agent must
-consult a separate advisor once it understands the request and has a rough
-next action, before carrying out that action or delivering the substantive answer.
-Reading sources to form that understanding can come first.
+send the request and rough next action to a separate advisor and wait for its
+reply before performing or delegating that work, or delivering the substantive
+answer. Reading sources to understand the request can come first. An unanswered
+consultation or advice about another task does not complete this step.
 
 Give the advisor the original request, relevant constraints and source evidence,
 your interpretation, and the proposed next action. Ask whether the interpretation,
-scope, and action match the request. Use **content understanding** from the
-[selection criteria](../SKILL.md); use **research reasoning** when the check
-requires mathematical judgment. Resolve concrete models through available skills.
+scope, and action match the request. Apply the [model check and selection
+criteria](../SKILL.md): request interpretation is at least **content
+understanding**, even when the ensuing work is routine; use **research
+reasoning** when the check requires mathematical judgment.
 
 The advisor checks against the request and evidence, rather than merely echoing
 your interpretation. A sound plan needs only brief agreement; otherwise return
