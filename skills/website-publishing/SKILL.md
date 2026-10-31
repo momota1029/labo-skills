@@ -5,6 +5,8 @@ description: Draft or review mathematical web expositions, paper pages and acade
 
 # Research on the web
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Use for mathematical web explanations, paper/talk pages, an academic profile
 and site maintenance. Read [website policy](references/website-policy.md).
 Infer audience, source version, destination and whether the request is for a

@@ -5,6 +5,8 @@ description: Create, revise or review mathematical talk slides and paper-reading
 
 # Make the mathematical path visible
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Use for talks, seminar slides, paper introductions, reading decks and their
 reviews. Read [slide standards](references/slide-standards.md). Infer the
 audience, prerequisites, language, purpose, source version and output format

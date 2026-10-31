@@ -5,6 +5,8 @@ description: Read and explain papers, mathematical books, proofs and research me
 
 # Read, reconstruct and explain
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Use for 「この論文を前提から解説して」「この証明を読みたい」,
 book/chapter reading, literature collection, and checking a reading note.
 Infer the source/version, audience, question and requested output from context.

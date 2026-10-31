@@ -5,6 +5,8 @@ description: Contribute selected research-skill improvements from the user's lab
 
 # Selective public pull request
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Read [publication gate](references/publication-gate.md) before drafting a
 commit or PR. Use the available Git/GitHub capability in the current host.
 

@@ -5,6 +5,8 @@ description: Improve research skills in the user's labo-skills fork through actu
 
 # Research institute self-improvement
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 The user normally runs their own fork as the `.agents` submodule. Develop
 improvements there so mathematical practice can feed back into shared skills.
 Fork-specific choices can remain in the fork; upstream acceptance is not a

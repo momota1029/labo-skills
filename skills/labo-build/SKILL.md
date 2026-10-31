@@ -5,6 +5,8 @@ description: Compile a TeX manuscript into untracked PDF and SyncTeX under outpu
 
 # TeX build
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Read [build contract](references/build-contract.md) before running compilation.
 Resolve `<labo-script>` to the absolute `../../scripts/labo.py` path relative
 to this skill's **real directory** (follow symlinks first). Use

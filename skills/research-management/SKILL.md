@@ -5,6 +5,8 @@ description: Start or resume story-centered research from inbox material, mainta
 
 # Research program maintenance
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Read [research policy](references/research-policy.md) before changing a plan.
 Start with the central question and the developing argument, not publication
 milestones. Inspect `plan.md` and only the smallest related evidence needed.

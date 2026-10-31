@@ -5,6 +5,8 @@ description: Initialize a labo research workspace, start research from inbox mat
 
 # Create and use a research workspace
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Use for requests such as 「研究室を初期化して」「inboxのこれで研究したい」
 or 「この資料・原稿はどこに置く？」. Read the [directory contract](references/layout.md).
 For creation commands and their effects, read [workspace creation](references/creation.md).

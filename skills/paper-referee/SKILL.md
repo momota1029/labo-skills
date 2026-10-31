@@ -5,6 +5,8 @@ description: Review mathematical papers, section openings, proof exposition, or 
 
 # Mathematical paper referee
 
+For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
 Read [numbered standards](references/standards.md). For English prose or
 typesetting review, also read [English conventions](references/english-style.md).
 Infer the paper, audience and requested scope from the task. Default to a
