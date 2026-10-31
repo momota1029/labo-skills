@@ -11,7 +11,6 @@ import sys
 from .build import ENGINE_FLAGS, run_build
 from .paper import PaperError, map_openings, read_section
 from .plans import PlanError, ResearchPlan, read_workspace
-from .skills import SkillLinkError, link_public_skills
 
 
 def _filtered(
@@ -63,12 +62,6 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--engine", choices=sorted(ENGINE_FLAGS), default="pdflatex")
     build.add_argument("--dry-run", action="store_true")
 
-    skills = areas.add_parser("skills", help="agent discovery bridges")
-    skills_actions = skills.add_subparsers(dest="action", required=True)
-    link = skills_actions.add_parser("link")
-    _workspace(link)
-    link.add_argument("--apply", action="store_true", help="write forwarding skills")
-
     args = parser.parse_args(argv)
     try:
         if args.area == "research":
@@ -110,10 +103,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(shlex.join(command))
             else:
                 print(f"Build finished: output/{args.paper}/")
-        elif args.area == "skills":
-            for action in link_public_skills(args.workspace, args.apply):
-                print(action)
-    except (PlanError, PaperError, SkillLinkError) as exc:
+    except (PlanError, PaperError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     return 0

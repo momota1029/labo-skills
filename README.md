@@ -16,7 +16,8 @@ readers and follow different editorial policies.
 - Private: `momota1029/labo` (created separately), with research plans, original
   inbox material, Lean files, manuscripts, references, presentations, personal
   skills, and any unpublished writing.
-- `labo` pins this repository as a Git submodule at `vendor/labo-skills`.
+- A researcher can fork this public policy repository and use their own fork
+  in a private workspace. No submodule is imposed by this repository.
 - Public pull requests must be prepared from **sanitized, independently
   reproducible commits**. Nothing automatically publishes private text.
 
@@ -28,28 +29,24 @@ organization later without changing the research model.
 This is an [Agent Plugin](https://agent-plugins.org/specification): its
 `plugin.json` and immediate `skills/<name>/SKILL.md` children are canonical.
 Install or register the plugin in clients that support Agent Plugins.
-For clients that discover `.agents/skills`, run `labo skills link --apply`
-inside the private workspace after initializing the submodule. This generates
-small forwarding skills there without overwriting personal skills; those
-forwarders can be committed in the **private** repository.
-
-Submodule nesting alone does not guarantee recursive skill discovery across
-all agents. Hosts with other discovery directories may need an explicit plugin
-registration or a compatible forwarding location. `AGENTS.md` is user-owned;
-the public repository does not impose a global `AGENTS.md` policy.
+The user chooses how their agent discovers the skills, such as registering the
+fork as an Agent Plugin. A submodule's nested `skills/` are **not** guaranteed
+to be recursively discovered by every client. This repository does not
+generate forwarding skills or modify a private workspace's skill directories.
+`AGENTS.md` remains entirely user-owned.
 
 ## CLI
 
 Python 3.11+ with PyYAML 6+:
 
 ```sh
-python3 -m pip install -e vendor/labo-skills
+# Run from the checked-out labo-skills repository (or its fork):
+python3 -m pip install -e .
 labo research check --workspace .
 labo research list --workspace . --format json
 labo paper map --workspace . --paper example-paper
 labo paper section --workspace . --paper example-paper --name 01-introduction
 labo build --workspace . --paper example-paper --dry-run
-labo skills link --workspace . --apply
 ```
 
 `research list` reads *only the YAML frontmatter* of `research/*/plan.md`.
@@ -79,8 +76,8 @@ the selected private workspace. It performs no GitHub mutations by itself.
 
 ## Scope
 
-The first version implements research inventory, scoped TeX reading, TeX
-builds, and cross-client skill forwarding. Skills also define review,
+The first version implements research inventory, scoped TeX reading, and TeX
+builds. Skills also define review,
 research lifecycle, directory layout, self-improvement, PR, slides, and web
 publishing workflows. Actual PR creation is mediated by the host's GitHub
 connector and explicit human approval.

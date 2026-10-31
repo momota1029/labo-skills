@@ -3,8 +3,8 @@
 ```text
 labo/
   AGENTS.md                 # user-owned, may be empty
-  .agents/skills/           # personal skills and tracked public forwarders
-  vendor/labo-skills/       # pinned public Git submodule
+  .agents/skills/           # optional personal skills, under user control
+  skills/labo-skills/       # optional submodule of a fork, if chosen by user
   research/<slug>/
     plan.md                 # narrative plan + YAML index
     inbox/                  # originals submitted for this research

@@ -15,8 +15,8 @@
 6. **Create** a PR only when authorized. A PR must not require a paired
    private manuscript commit, and acceptance does not imply automatic
    submodule updates in private repositories.
-7. **Adopt** the accepted public commit separately by updating the private
-   `vendor/labo-skills` gitlink, with local checks.
+7. **Adopt** accepted public changes separately in one's own fork, and then
+   update any optional private submodule reference, with local checks.
 
 The initial owner `momota1029` can use branches in `labo-skills`; a fork of
 one's own repository under the same GitHub account is not required. Later,
