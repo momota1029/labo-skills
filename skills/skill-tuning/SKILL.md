@@ -9,7 +9,7 @@ description: >-
 
 # Tune a skill through a real artifact
 
-When identity or author metadata matters, consult the Labo workspace
+When author identity, voice, or preferences matter, consult the Labo workspace
 [author profile](../../../profile/author-identity.md) when available. Keep
 personal facts there rather than in skill text; update only explicit durable
 facts or corrections from the user, or facts they ask to save, with source
