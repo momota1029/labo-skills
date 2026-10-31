@@ -9,11 +9,13 @@ description: Route a mathematical research task to the appropriate labo skill wi
    slide, reading note, reference, website, or repo policy.
 2. Consult the matching skill, read it completely, and follow **its own**
    references. Do not accumulate all skills' rules by default.
-3. Research lifecycle → `research-management`; paths → `labo-layout`;
+3. Workspace setup, paths, and inbox intake → `labo-layout`;
+   research lifecycle and story → `research-management`;
    mathematical paper review → `paper-referee`; paper compilation →
-   `labo-build`; slides → `slide-authoring`; literature →
-   `reading-reference`; website → `website-publishing`; public changes →
-   `labo-self-improve` and `labo-pr`.
+   `labo-build`; slides → `slide-authoring`; source collection, paper/book
+   explanation and reading notes → `reading-reference`; website →
+   `website-publishing`; skill improvements in the user's fork →
+   `labo-self-improve`; selected upstream contributions → `labo-pr`.
 4. If task-specific delegation is useful and the host supports subagents,
    formulate a short task-specific assignment *from the selected skill*.
    Do not depend on a proprietary stored subagent persona or prompt template.

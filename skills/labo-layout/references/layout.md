@@ -3,8 +3,10 @@
 ```text
 labo/
   AGENTS.md                 # initially empty, user-owned
-  .agents/skills/           # personal skills + chosen direct discovery links
-  skills/labo-skills/       # Git submodule: researcher's public policy fork
+  .agents/                 # Git submodule: researcher's public policy fork
+    skills/                # directly discoverable skills, rules and templates
+    scripts/labo.py         # run the tools from this checkout
+    src/                   # shared tool implementation
   research/<slug>/
     plan.md                 # narrative plan + YAML index
     inbox/                  # originals submitted for this research
@@ -17,23 +19,28 @@ labo/
     .temp/                  # ignored build cache
   reading/                  # lecture notes, literature notes, derived exposition
   reference/<key>/          # bibliographic identity and source variants
-  output/<paper>/           # ignored PDF + SyncTeX products
+  output/                  # ignored PDFs + same-stem SyncTeX, directly selectable
   website/                  # optional source pages/config
   profile/                  # optional CV/presentation/event records
 ```
 
-The fork submodule is the normal policy/runtime boundary. Its `skills/`,
-`scripts/`, and `src/` remain inside its own Git history; research data and
-private personal skills remain in the parent. The parent tracks `.gitmodules`
-and the policy commit reference, not copies of public files. Choose the fork
-URL explicitly; this contract is not permission to create a fork, install a
-submodule, or populate every directory without a setup request.
+Each user normally forks the shared `labo-skills` repository and mounts
+their fork at `.agents`. The fork submodule is the policy/runtime boundary. Its `skills/`,
+`scripts/`, and `src/` remain inside its own Git history; research data stays
+in the parent. The parent tracks the user's fork URL in `.gitmodules` and
+the selected policy commit, which may include changes not yet accepted upstream.
+Anything committed inside `.agents` belongs to the policy repository, including
+additional personal skills. Keep private-only skills outside that public Git
+history, using a host-supported location selected by the user. Do not generate
+extra links or host configuration as part of workspace initialization.
 
 Run tools from this checkout's `scripts/labo.py`, not a separately installed
 `labo` executable. Git identifies the private superproject; an explicit
 `--workspace` overrides it. An unrelated standalone checkout needs that
-explicit workspace. Host discovery may use direct links to actual skill
-folders, but is not accomplished by Git alone. Do not create `vendor/`,
+explicit workspace. The default mount places the real skills directly under
+`.agents/skills/`; no discovery links are needed. Existing mounts elsewhere
+can still run the launcher, but require their own host discovery arrangement.
+Do not create `vendor/`,
 generated forwarding skills, or private README policy copies.
 
 `research/`, `lean/`, `writing/`, `reading/`, and `reference/` may reference

@@ -40,10 +40,10 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         self.commit_all(self.workspace, "Private workspace fixture")
         self.git(
             self.workspace, "-c", "protocol.file.allow=always", "submodule", "add",
-            str(self.source), "skills/labo-skills",
+            str(self.source), ".agents",
         )
         self.commit_all(self.workspace, "Pin policy submodule")
-        self.mount = self.workspace / "skills" / "labo-skills"
+        self.mount = self.workspace / ".agents"
         self.assertTrue((self.mount / ".git").is_file())
         self.launcher = self.mount / "scripts" / "labo.py"
         self.unrelated = self.root / "unrelated-directory"
@@ -103,7 +103,7 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["research"][0]["slug"], "other-project")
 
     def test_real_skill_directory_resolves_through_user_chosen_symlink(self):
-        skill_link = self.workspace / ".agents" / "skills" / "research-management"
+        skill_link = self.workspace / "reading" / ".agents" / "skills" / "research-management"
         skill_link.parent.mkdir(parents=True)
         try:
             skill_link.symlink_to(self.mount / "skills" / "research-management", target_is_directory=True)
@@ -176,6 +176,22 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         result = subprocess.run(command, cwd=self.workspace, env=env, capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
         self.assertIn("--workspace", result.stderr)
+
+    def test_layout_creation_uses_direct_agents_mount_and_private_superproject(self):
+        self.assertTrue((self.workspace / ".agents/skills/labo-layout/SKILL.md").is_file())
+        result = self.invoke(self.unrelated, "layout", "init")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.workspace / "inbox").is_dir())
+        result = self.invoke(
+            self.unrelated, "layout", "new", "research", "new-program",
+            "--title", "Synthetic question", "--summary", "Synthetic context",
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.workspace / "research/new-program/plan.md").is_file())
+        result = self.invoke(self.unrelated, "research", "check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("2 research plan", result.stdout)
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
 
 
 if __name__ == "__main__":

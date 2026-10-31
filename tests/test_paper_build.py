@@ -110,17 +110,18 @@ class PaperBuildTests(unittest.TestCase):
         status, output, error = self.cli("build", "--paper", "story-paper", "--dry-run")
         self.assertEqual(status, 0, error)
         self.assertIn("-synctex=1", output)
+        self.assertIn("-jobname=story-paper", output)
         self.assertIn("-auxdir=" + str(self.paper / ".temp"), output)
-        self.assertIn("-outdir=" + str(self.root / "output" / "story-paper"), output)
+        self.assertIn("-outdir=" + str(self.root / "output"), output)
         self.assertFalse((self.paper / ".temp").exists())
         self.assertFalse((self.root / "output").exists())
 
     @patch("labo_tools.build.subprocess.run")
     def test_build_invokes_latexmk_without_shell(self, run):
         def create_outputs(*args, **kwargs):
-            output = self.root / "output" / "story-paper"
-            (output / "main.pdf").write_bytes(b"PDF fixture")
-            (output / "main.synctex.gz").write_bytes(b"SyncTeX fixture")
+            output = self.root / "output"
+            (output / "story-paper.pdf").write_bytes(b"PDF fixture")
+            (output / "story-paper.synctex.gz").write_bytes(b"SyncTeX fixture")
 
         run.side_effect = create_outputs
         status, output, error = self.cli("build", "--paper", "story-paper")
@@ -130,16 +131,17 @@ class PaperBuildTests(unittest.TestCase):
         self.assertEqual(kwargs["cwd"], self.paper)
         self.assertTrue(kwargs["check"])
         self.assertTrue((self.paper / ".temp").is_dir())
-        self.assertTrue((self.root / "output" / "story-paper").is_dir())
+        self.assertTrue((self.root / "output" / "story-paper.pdf").is_file())
+        self.assertFalse((self.root / "output" / "story-paper").exists())
         self.assertEqual(run.call_count, 1)
 
     @patch("labo_tools.build.subprocess.run")
     def test_build_recovers_missing_synctex_with_one_forced_rebuild(self, run):
         def create_outputs(command, **kwargs):
-            output = self.root / "output" / "story-paper"
-            (output / "main.pdf").write_bytes(b"PDF fixture")
+            output = self.root / "output"
+            (output / "story-paper.pdf").write_bytes(b"PDF fixture")
             if "-g" in command:
-                (output / "main.synctex.gz").write_bytes(b"SyncTeX fixture")
+                (output / "story-paper.synctex.gz").write_bytes(b"SyncTeX fixture")
 
         run.side_effect = create_outputs
         status, _, error = self.cli("build", "--paper", "story-paper")
@@ -159,7 +161,7 @@ class PaperBuildTests(unittest.TestCase):
     @patch("labo_tools.build.subprocess.run")
     def test_build_missing_synctex_failure_is_bounded(self, run):
         def create_pdf_only(*args, **kwargs):
-            (self.root / "output" / "story-paper" / "main.pdf").write_bytes(b"PDF fixture")
+            (self.root / "output" / "story-paper.pdf").write_bytes(b"PDF fixture")
 
         run.side_effect = create_pdf_only
         status, output, error = self.cli("build", "--paper", "story-paper")

@@ -1,30 +1,36 @@
 ---
 name: labo-self-improve
-description: Notice reusable research-workflow improvements, classify public versus private policy, and offer an explicit choice to create a sanitized labo-skills pull request.
+description: Improve research skills in the user's labo-skills fork through actual use, and prepare reusable changes for an optional upstream pull request.
 ---
 
 # Research institute self-improvement
+
+The user normally runs their own fork as the `.agents` submodule. Develop
+improvements there so mathematical practice can feed back into shared skills.
+Fork-specific choices can remain in the fork; upstream acceptance is not a
+prerequisite for using them.
 
 Treat friction in workflows as actionable research infrastructure feedback.
 When a recurring problem appears:
 
 1. Describe the failure and the smallest generalizable change.
-2. Decide whether it belongs to public `labo-skills` or a private personal
-   skill, with the human's privacy and preference in view. Public policy is
-   edited in the fork submodule at `skills/labo-skills`; private-only material
-   stays outside that public Git history.
+2. Distinguish a reusable upstream improvement, a fork-specific preference,
+   and private research material. Edit the first two in the fork checkout;
+   private-only material stays outside that public Git history.
 3. Check which skill owns the rule. Add a rule to that skill's own
    `references/`, not a global rules file or `AGENTS.md`.
-4. Prototype and test with synthetic data. Propose a public patch or a
-   private-only improvement as appropriate. Exercise the tools from the
-   checked-out submodule, so the changed policy and code are used together;
-   do not publish or update the parent's recorded commit automatically.
-5. Ask: **"Do we want to send this as a PR to labo-skills?"** Offer
-   upstream PR, fork-only improvement, private-only improvement, or deferral
-   as appropriate. A public fork is already public even without an upstream
-   PR; `keep private` must never mean pushing private content to that fork.
-6. For public publication, follow `labo-pr` and its publication gate; open
-   an upstream PR only if that is the chosen action.
+4. Implement and check the authorized change using that checkout's tools.
+   Use synthetic examples to make a reusable change reviewable independently
+   of the research that motivated it. For instruction changes, preserve the
+   useful decision criterion without accumulating incident-specific prose.
+5. When useful, present the concrete reusable change as an upstream PR
+   candidate. The user can keep it fork-only or contribute it through `labo-pr`;
+   an existing request to contribute already settles that choice. A public
+   fork is public even without a PR; private-only material stays outside it.
+6. Commit/push the fork, record the chosen parent gitlink, and publish the PR
+   only within the requested scope. These are separate actions. To adopt
+   upstream improvements, inspect and integrate them into the user's fork,
+   validate there, then advance the parent pin; preserve local customizations.
 
 An agent may propose reorganization of skills and research programs, but
 must not equate optimization with deletion of old mathematical work.

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
+import shutil
 import subprocess
 
 from .paper import PaperError, paper_folder
@@ -12,15 +14,30 @@ ENGINE_FLAGS = {
     "pdflatex": "-pdf",
     "lualatex": "-lualatex",
     "xelatex": "-xelatex",
+    "uplatex": "-pdfdvi",
 }
+
+
+def _engine_options(engine: str | None) -> list[str]:
+    if engine is None:
+        return []  # Honor the workspace's latexmk configuration.
+    if engine not in ENGINE_FLAGS:
+        raise PaperError(f"unsupported engine: {engine}")
+    options = [ENGINE_FLAGS[engine]]
+    if engine == "uplatex":
+        options += ["-e", "$latex = 'uplatex %O %S'; $bibtex = 'upbibtex %O %B'; $dvipdf = 'dvipdfmx %O -o %D %S';"]
+    return options
 
 
 def _nonempty_file(path: Path) -> bool:
     return path.is_file() and path.stat().st_size > 0
 
 
-def _has_synctex(output: Path) -> bool:
-    return any(_nonempty_file(output / name) for name in ("main.synctex.gz", "main.synctex"))
+def _has_synctex(output: Path, stem: str) -> bool:
+    return any(
+        _nonempty_file(output / f"{stem}{suffix}")
+        for suffix in (".synctex.gz", ".synctex")
+    )
 
 
 def build_command(workspace: Path, paper: str, engine: str) -> tuple[list[str], Path, Path, Path]:
@@ -32,16 +49,17 @@ def build_command(workspace: Path, paper: str, engine: str) -> tuple[list[str], 
     if main.is_symlink() or not main.is_file():
         raise PaperError(f"missing or symlinked main.tex: writing/{paper}")
     cache = folder / ".temp"
-    outroot = workspace / "output"
-    output = outroot / paper
-    if any(path.is_symlink() for path in (cache, outroot, output)):
-        raise PaperError("build directories must not be symlinks")
+    output = workspace / "output"
+    artifacts = [output / f"{paper}{suffix}" for suffix in (".pdf", ".synctex.gz", ".synctex")]
+    if any(path.is_symlink() for path in (cache, output, *artifacts)):
+        raise PaperError("build paths must not be symlinks")
     command = [
         "latexmk",
-        ENGINE_FLAGS[engine],
+        *_engine_options(engine),
         "-synctex=1",
         "-interaction=nonstopmode",
         "-halt-on-error",
+        f"-jobname={paper}",
         f"-auxdir={cache}",
         f"-outdir={output}",
         "main.tex",
@@ -49,23 +67,89 @@ def build_command(workspace: Path, paper: str, engine: str) -> tuple[list[str], 
     return command, folder, cache, output
 
 
+def _compile(command: list[str], cwd: Path, generated: Path, stem: str) -> None:
+    try:
+        subprocess.run(command, cwd=cwd, check=True)
+        if _nonempty_file(generated / f"{stem}.pdf") and not _has_synctex(generated, stem):
+            # Recover missing SyncTeX even when latexmk reuses a cached PDF.
+            subprocess.run([command[0], "-g", *command[1:]], cwd=cwd, check=True)
+    except FileNotFoundError as exc:
+        raise PaperError("latexmk executable not found") from exc
+    except subprocess.CalledProcessError as exc:
+        raise PaperError(f"latexmk failed (exit {exc.returncode})") from exc
+    if not _nonempty_file(generated / f"{stem}.pdf"):
+        raise PaperError("latexmk finished without producing a nonempty output PDF")
+    if not _has_synctex(generated, stem):
+        raise PaperError("latexmk finished without producing SyncTeX, including after one forced rebuild")
+
+
 def run_build(workspace: Path, paper: str, engine: str, dry_run: bool) -> list[str]:
     command, cwd, cache, output = build_command(workspace, paper, engine)
     if not dry_run:
         cache.mkdir(parents=True, exist_ok=True)
         output.mkdir(parents=True, exist_ok=True)
-        try:
-            subprocess.run(command, cwd=cwd, check=True)
-            if _nonempty_file(output / "main.pdf") and not _has_synctex(output):
-                # latexmk may consider the PDF up to date even when SyncTeX
-                # was removed. Rebuild once, retaining the normal cache policy.
-                subprocess.run([command[0], "-g", *command[1:]], cwd=cwd, check=True)
-        except FileNotFoundError as exc:
-            raise PaperError("latexmk executable not found") from exc
-        except subprocess.CalledProcessError as exc:
-            raise PaperError(f"latexmk failed (exit {exc.returncode})") from exc
-        if not _nonempty_file(output / "main.pdf"):
-            raise PaperError("latexmk finished without producing a nonempty output PDF")
-        if not _has_synctex(output):
-            raise PaperError("latexmk finished without producing SyncTeX, including after one forced rebuild")
+        _compile(command, cwd, output, paper)
     return command
+
+
+def source_build_command(
+    workspace: Path, source: Path, engine: str | None = None,
+) -> tuple[list[str], Path, Path, Path, str]:
+    """Build an explicit document root, including imported source layouts."""
+    workspace = workspace.resolve()
+    source = source if source.is_absolute() else workspace / source
+    if source.is_symlink() or not source.is_file() or source.suffix != ".tex":
+        raise PaperError("source must be an existing, non-symlinked .tex file")
+    try:
+        relative = source.resolve().relative_to(workspace)
+    except ValueError as exc:
+        raise PaperError("source must be inside the workspace") from exc
+    if len(relative.parts) < 3 or relative.parts[0] not in {"writing", "reading"}:
+        raise PaperError("source must be under writing/<slug>/ or reading/<slug>/")
+    if any(p.is_symlink() for p in source.parents if p != workspace and workspace in p.parents):
+        raise PaperError("source directories must not be symlinks")
+    source = source.resolve()
+    preamble = source.read_text(encoding="utf-8").split(r"\begin{document}", 1)[0]
+    if not re.search(r"\\documentclass\b", preamble):
+        raise PaperError("source must be the document root, not an included section")
+    if engine is None:
+        directive = re.search(r"(?im)^\s*%\s*!TEX\s+(?:TS-)?program\s*=\s*([\w-]+)", preamble)
+        if directive:
+            engine = directive.group(1).lower()
+        elif "xeCJK" in preamble:
+            engine = "xelatex"
+        elif any(word in preamble for word in ("luatexja", "fontspec", "{ltj")):
+            engine = "lualatex"
+        elif not (workspace / ".latexmkrc").is_file():
+            engine = "pdflatex"
+    slug = relative.parts[1]
+    if source.name == "main.tex" and len(relative.parts) == 3 and relative.parts[0] == "writing":
+        command, cwd, cache, output = build_command(workspace, slug, engine or "pdflatex")
+        return command, cwd, cache, output, slug
+    stem = source.stem if source.stem.startswith(slug) else f"{slug}-{source.stem}"
+    cache, output = source.parent / ".temp", workspace / "output"
+    artifacts = [output / f"{stem}{suffix}" for suffix in (".pdf", ".synctex.gz", ".synctex")]
+    if any(p.is_symlink() for p in (cache, output, *artifacts)):
+        raise PaperError("build paths must not be symlinks")
+    command = ["latexmk", *_engine_options(engine), "-synctex=1",
+               "-interaction=nonstopmode", "-halt-on-error", "-file-line-error",
+               f"-jobname={stem}", f"-outdir={cache}", str(source)]
+    return command, workspace, cache, output, stem
+
+
+def run_source_build(
+    workspace: Path, source: Path, engine: str | None, dry_run: bool,
+) -> tuple[list[str], str]:
+    command, cwd, cache, output, stem = source_build_command(workspace, source, engine)
+    if not dry_run:
+        cache.mkdir(parents=True, exist_ok=True)
+        output.mkdir(parents=True, exist_ok=True)
+        generated = output if any(arg == f"-outdir={output}" for arg in command) else cache
+        _compile(command, cwd, generated, stem)
+        if generated != output:
+            # Publish the pair only after compilation and both artifact checks.
+            for suffix in (".pdf", ".synctex.gz", ".synctex"):
+                artifact = generated / f"{stem}{suffix}"
+                if _nonempty_file(artifact):
+                    shutil.copy2(artifact, output / artifact.name)
+    return command, stem

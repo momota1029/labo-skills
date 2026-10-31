@@ -1,0 +1,43 @@
+# Check the explanation, not only its inventory
+
+Use these checks for substantial notes and requested reading audits. A bounded
+chat answer needs the relevant checks, not a standing review panel. Apply `R`
+IDs to located findings, with severity, source/output evidence and a minimum
+repair. Do not invent a defect quota or mark human understanding as achieved.
+
+- **R25 Coverage** — Derive expected in-scope units from the source before
+  consulting the writer's outline or coverage claims. Compare expected versus
+  acquired/inspected material, then expected versus actually explained units.
+  Missing required material stays visible. A filename, citation, figure asset
+  or source reprint is not evidence of explanatory coverage.
+- **R26 Two-way fidelity** — Compare the note's claims to exact sources and
+  trace central source claims back into the note. Check headings, formulas,
+  figures, analogies and compressed summaries as well as prose. Verify both
+  sides of consequential historical or method comparisons. A faithfully stated
+  source limitation is not automatically a defect in the explanation.
+- **R27 Reconstruction** — From the source, identify the inputs, reasoning or
+  operations, result and limits. Then locate each needed link in the explanation.
+  Record the first step a reader could not carry out using it. Knowledge recalled
+  from the source cannot fill a missing explanation; this check is source-aware.
+- **R28 Fresh reading** — When independent accessibility evidence is requested
+  or materially useful, give a fresh isolated reader only the frozen output and
+  neutral audience brief. Ask for actual understanding, first confusion and
+  recoverable concise passages before repairs. Withhold sources, author intent
+  and prior reports. A reader primed by notes cannot establish a deck's standalone
+  readability. Preserve initial difficulty separately from later source rescue.
+- **R29 Rendered output** — Check the current built version, not a stale PDF.
+  Inspect every page/slide for a complete visual review; otherwise disclose the
+  inspected subset. Test equations/glyphs, readable labels, cropping, figure
+  placement, listings and navigation at real reading scale. Extraction or build
+  success does not prove visual correctness, source fidelity or understanding.
+- **R30 Closure** — Adjudicate findings against actual passages, preserve good
+  concise controls, and batch supported repairs. Recheck changed claims and
+  dependencies; a bounded recheck does not establish full coverage. Keep source
+  identity, covered scope, unresolved gaps and next steps in the existing record.
+  A structurally valid record cannot certify scientific truth or independence.
+
+Delegate by the evidence needed, with a short task-specific packet and bounded
+paths; no named agent persona or fixed model is required. A source-aware auditor
+derives expectations before seeing the author's account. If cold isolation or
+rendering is unavailable, finish useful checks and state that limit. Never
+describe a self-check as independent or retry unchanged work for a favorable verdict.

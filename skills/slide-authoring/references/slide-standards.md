@@ -1,14 +1,65 @@
-# Slide-specific review standards
+# Slide-specific standards
 
-- **S1 Audience** — What prior mathematical knowledge can be assumed?
-- **S2 Claim** — Is there one memorable question/result per main transition?
-- **S3 Pacing** — Can the talk be delivered in the allotted time with pauses?
-- **S4 Visual economy** — Is notation introduced only as it earns its place?
-- **S5 Accuracy** — Are theorem hypotheses and conjectural status honest, even
-  when full proofs are moved to notes or the canonical manuscript?
-- **S6 Examples** — Do concrete cases and pictures help carry the story?
-- **S7 Navigation** — Is there a route to a paper, Lean proof, or `reading/`
-  note for technical material intentionally omitted?
+Apply relevant criteria to the selected audience and delivery mode. A missing
+full proof is not itself a slide defect. Findings need visible evidence, not
+one criticism per criterion.
 
-No slide is required to state the entire theorem dependency chain or to be
-read as a standalone mathematical article. Those are paper-review concerns.
+- **S1 Audience** — Identify assumed knowledge and live versus independent
+  reading. Inspect the listener's route from those prerequisites. An expert in
+  one field does not automatically know another field's objects or methods.
+- **S2 Story** — Make each main transition advance the question and payoff.
+  Select results backward from that payoff; check the sequence forward. Use
+  ordinary mathematical sentences and informative headings, not coined slogans
+  that hide the relation. A paper-introduction deck needs an early overall map,
+  not an imposed reproduction of the paper's section order.
+- **S3 Pacing** — Estimate the work of decoding definitions, reading evidence
+  and following ideas, allowing pauses and any agreed Q&A. State assumptions;
+  frame/word counts do not prove duration. Overlays are displayed states, not
+  automatically separate full-length topics. Unused backup alone does not
+  establish overrun. Without a time budget, report qualitative pacing risks
+  and leave time fit unverified; an estimate is not a measured rehearsal.
+- **S4 Notation** — At first consequential use, supply the necessary object,
+  domain, parameter range, metric/measure and convergence meaning through a
+  visible setup or declared prerequisite. Earlier setup suffices while plainly
+  in scope. Use operational definitions when enough; do not front-load unused
+  generality. A later appendix or notes-only definition cannot repair a claim
+  that is unintelligible now.
+- **S5 Accuracy** — Reconstruct the strongest reasonable claim from title,
+  formula, legend and nearby prose before opening sources. Check quantifiers,
+  hypotheses, normalization and implication direction against exact locators.
+  Separate theorem, conjecture, approximation, observation and analogy; label
+  prior input versus new contribution. A correct source or speaker note cannot
+  repair a false headline. Test a boundary case when useful, without weakening
+  a correctly stated theorem or repeating conditions whose scope is clear.
+- **S6 Examples and figures** — Use concrete cases and actual readable panels
+  near their interpretation. Preserve axes, units, scales, controls, legends,
+  uncertainty and source identity as needed for the claim. Distinguish data
+  from a schematic; never fabricate a source result. Crops/annotations must
+  retain relevant context. Use overview/detail views for dense evidence;
+  neither a tiny article screenshot nor a decorative picture replaces it.
+- **S7 Technical routes** — Give a usable route to the exact paper, Lean result
+  or note for omitted detail. Main claims must remain understandable without
+  retrieving backup. Source completeness belongs to the requested reading
+  scope; a talk can select a faithful subset without teaching the entire paper.
+- **S8 Decisive reasoning** — Show the promised idea and why it applies. An
+  invoked black box needs usable inputs, assumptions and output, not its full
+  proof; its name alone is insufficient. For a method, show inputs, essential
+  settings, operation and output. State comparisons near the relevant result
+  and verify both sides; a tool used by the method is not automatically a rival.
+- **S9 Render** — Inspect every in-scope rendered frame, including overlays
+  and backup when included in the review; disclose any subset. Start at normal
+  presentation scale, then zoom to diagnose. Check clipping, glyphs, equations,
+  contrast, figures, labels and reading order. Add redundant labels for color
+  distinctions. Build success or text extraction is not visual inspection;
+  legibility only after zooming is not evidence of projection readability.
+- **S10 Repair and closure** — State the smallest needed change: correct a
+  claim, expose a condition, reorder a bridge, add an example, split an
+  overloaded frame or move optional detail to backup. Preserve concise correct
+  algebra, sketches and figures. Batch supported repairs and recheck affected
+  dependencies; do not demand more slides or repeated reviews to raise the
+  criticism count. State source-aware versus isolated audience checks honestly.
+
+Calibration: "Averaging centered measurements gives variance 1/n" is too
+strong. "For independent real X_1,...,X_n with mean 0 and variance 1, their
+average has variance 1/n because cross-covariances vanish" supplies a usable
+claim and reason. Its routine variance expansion can stay in speech or backup.

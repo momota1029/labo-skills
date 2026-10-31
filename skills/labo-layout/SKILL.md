@@ -1,20 +1,64 @@
 ---
 name: labo-layout
-description: Select canonical directories and file relationships in a private labo research institute, without imposing manuscript or slide editorial rules.
+description: Initialize a labo research workspace, start research from inbox material, and create or locate research, manuscript, and reference files in its directory structure.
 ---
 
-# Private research layout
+# Create and use a research workspace
 
-Before creating or moving files, read [directory contract](references/layout.md).
-Preserve original source material. Propose restructuring before bulk moves.
-Use `research-management` and its checkout-local tool to validate new plans.
-Keep old `doc` papers outside
-the new layout unless an explicit **selective migration** is approved.
+Use for requests such as 「研究室を初期化して」「inboxのこれで研究したい」
+or 「この資料・原稿はどこに置く？」. Read the [directory contract](references/layout.md).
+For creation commands and their effects, read [workspace creation](references/creation.md).
 
-Do not change publication status, editorial rules, or Git privacy settings
-merely to enforce the directory layout.
-Keep the policy fork at `skills/labo-skills` as a submodule, with private data
-outside it. Do not replace that boundary with copied skills or an installed
-Python package. Do not add installation bridges, deployment directories, private policy
-READMEs, or other scaffolding that the researcher has not chosen. Keep the
-operational rules here rather than duplicating them throughout private data.
+Resolve the workspace from the loaded policy submodule's Git superproject,
+or use the user's explicit destination. Resolve `scripts/labo.py` from this
+skill's real directory (`../../scripts/labo.py`), not from the shell's cwd.
+Inspect the relevant existing paths before writing; the directory need not
+be named `labo`. A placement question alone needs an answer, not scaffolding.
+
+## Initialize
+
+When asked to set up the workspace, run `layout init`. It adds missing core
+directories, creates an empty `AGENTS.md` only if absent, and appends missing
+build-ignore patterns. Existing files and personal instructions stay intact.
+The normal setup is **fork `labo-skills`, then mount the user's fork at
+`.agents` as a submodule**. Installation steps are in the creation reference.
+If already connected, use that checkout; it is where the user develops their
+own improvements and optional upstream contributions.
+
+## Start or resume research
+
+For an inbox-based research request:
+
+1. Read the selected sources, preserving their original bytes. Inventory
+   existing programs with `research list --format json` when `research/`
+   exists, then read the relevant plans. Relate new input to the existing
+   question before deciding whether a new program is needed.
+2. Use `research-management` for the research story and evidence. A request
+   to start research authorizes creating the necessary program; do not ask
+   for a skill name or repeat permission. Ask only if an unresolved choice
+   would substantially change the research direction. Propose splits or
+   mergers of existing programs before changing their boundaries.
+3. For a new program, use `layout new research` with a meaningful title and
+   summary grounded in the material. Fill the generated `plan.md` body with
+   the question, context, current evidence, open issues, and first concrete
+   investigation. A template alone does not complete an intake request.
+4. Store assigned originals in `research/<slug>/inbox/`; check for name
+   collisions and preserve bytes when moving or copying. Record their origin
+   in the plan. If one source serves several programs, keep one original and
+   link to it. Keep imported AI proposals distinguishable from verified results.
+5. Run `research check`, then continue the requested investigation from the
+   recorded next step. For an existing program, update its current story;
+   do not create a new program merely because another file arrived.
+
+## Place other work
+
+Use `layout new paper` or `layout new reference` when a new item is needed.
+Create reading notes under `reading/`, formalizations under `lean/`, and
+optional website/profile material only when those tasks arise. The directory
+contract explains their relationships; output slugs need not match programs.
+Layout creation supplies paths and templates, not mathematical validation or
+permission to publish. Read the owning skill when doing the substantive work.
+
+Keep operational rules in the policy checkout. Leave the user's `AGENTS.md`
+content and existing research intact. Do not copy policy READMEs into private
+data, bulk-migrate old `doc` papers, or change Git privacy settings as setup.

@@ -1,17 +1,63 @@
-# Website editorial boundary
+# Website sources, explanation and release
 
-1. Preserve source-of-truth separation: research lives in `research/`,
-   mathematical verification in `lean/`, canonical English paper TeX in
-   `writing/`, source variants in `reference/`, and pages in `website/`.
-2. A website is another research **output**, not a replacement for the
-   institute or an authoritative proof source.
-3. Verify the public status of each page, CV item, talk, document link, and
-   reference before publishing it. Never treat repository visibility as
-   blanket consent to publish every tracked file.
-4. Preserve permanent URLs and publication dates where possible; updating
-   a paper's summary should not silently rewrite its historical claim.
-5. Keep site generator specifics in the site's configuration or a
-   generator-specific private reference. Generic advice must work without
-   `loam-ssg`.
-6. Prefer reviewed, human-initiated publication for profile and research
-   changes; an agent may draft pages and verify links beforehand.
+Apply relevant `W` criteria; report concrete locations, evidence and minimum
+repairs. Do not turn a small page correction into a full site audit.
+
+| Intended output | Source basis |
+| --- | --- |
+| Private explanation | The requested version, including a current draft |
+| Public exposition of an existing paper | Identified public preprint, published or archival edition |
+| Public topic article | Checked public sources, with added derivations identified |
+| Profile, CV or talk page | Verified facts and selected documents appropriate for release |
+| Newly released research | The material explicitly selected and authorized for that release |
+
+- **W1 Version fidelity** — Record which edition supports each substantive
+  paper claim, with a theorem/section/page locator where useful. Preserve
+  differences between editions. A later private proof, stronger theorem or
+  improved interpretation cannot silently enter an exposition of the public
+  version. A private reader's page does not become public-ready by changing
+  its visibility flag. Existing public repository visibility is not blanket
+  authorization to publish all files or claims through a site.
+- **W2 Source isolation** — If a fresh drafting/review context is needed for
+  public-version fidelity, supply only permitted sources, target page and a
+  neutral audience brief. Keep private material out of that packet, including
+  examples of what not to reveal. Check potential private overlap locally.
+  Do not claim source isolation for a context that has seen private drafts;
+  record that limitation and perform source-located checks instead.
+- **W3 Mathematical explanation** — Make objects, essential hypotheses and
+  the useful conclusion understandable before relying on them. Explain the
+  decisive relation through prose, equations and examples suited to the reader.
+  Separate source results from added intuition or derivation. Verify added
+  mathematics; a new lemma or stronger claim is not merely a paraphrase.
+  Label theorem, conjecture, observation and analogy accurately. Do not repair
+  a source gap by inventing a proof or importing an unpublished result.
+- **W4 Evidence and credit** — Check both sides of historical or novelty
+  comparisons. Credit the exact paper and the actual figure/code source;
+  distinguish schematic illustrations from measured or reported results.
+  Link a paper to an explanation of the matching edition, with differences
+  stated when deliberately discussing another version. Inspect rights before
+  redistributing source assets; a citation alone does not grant reuse rights.
+- **W5 Facts and continuity** — Verify names, affiliations, dates, publication
+  status and document targets. Preserve stable URLs and historical publication
+  dates; add an update date where appropriate. Redirect intentional URL moves
+  using the site's conventions. Do not publish dead placeholder links to
+  explanations or files that do not yet exist.
+- **W6 Reader and render** — Check the current built page at narrow and wide
+  layouts: math/glyphs, diagram labels, captions, overflow, navigation, anchors
+  and document links. Keep useful figures beside their interpretation, with
+  readable labels and alternative text where supported. A successful build
+  does not establish correct rendering or that a reader can follow the argument.
+  State unviewed layouts or unavailable previews instead of claiming a pass.
+- **W7 Release scope** — Inspect the selected pages, assets and linked files
+  before deployment; include generated indexes/feeds if they expose content.
+  Keep private inbox material, drafts and private policy out of the release
+  unless explicitly selected for publication. Use the user's existing authority
+  and destination; if they have not requested publication, prepare a concrete
+  candidate first. Never infer publication consent from preparation alone.
+- **W8 Operations and reporting** — Use the site's existing generator,
+  configuration and deploy mechanism; `loam-ssg` is one optional backend.
+  Preserve canonical manuscripts and verification evidence separately from
+  derivative web output. Verify deployed pages when publication occurs.
+  Report precisely what was drafted, checked, built or deployed, including
+  any tool failure or unverified live state; do not equate a local build with
+  publication. Site-specific commands do not belong in generic policy.

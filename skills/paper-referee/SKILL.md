@@ -1,13 +1,16 @@
 ---
 name: paper-referee
-description: Review an English mathematical manuscript by numbered criteria and local TeX-section reading, testing if readers can understand it or find the exact next place to read.
+description: Review mathematical papers, section openings, proof exposition, or verbosity using numbered criteria and local reading. Report supported findings without rewriting; not for slides or lecture notes.
 ---
 
 # Mathematical paper referee
 
-Read [numbered standards](references/standards.md) before judging any paper.
-This is a **referee**, not a recipe prescribing how an interesting paper must
-be written. Apply none of these standards to slides or lecture notes.
+Read [numbered standards](references/standards.md). For English prose or
+typesetting review, also read [English conventions](references/english-style.md).
+Infer the paper, audience and requested scope from the task. Default to a
+mathematician outside the immediate specialty. A section-only request stays
+local; a whole-paper request must account for the whole paper, even when read
+in parts. Reviewing does not authorize rewriting, building, or publishing.
 
 Resolve `<labo-script>` below to the absolute `../../scripts/labo.py` path
 relative to this skill's **real directory** (follow symlinks first). Do not
@@ -18,25 +21,41 @@ standalone policy checkout.
 
 ## Review protocol
 
-1. Read the research plan's abstract/story summary and paper metadata if
-   explicitly provided. Do **not** pre-load the entire manuscript.
-2. Run `python3 <labo-script> paper map --paper <slug> --format json`. It reads
-   the literal section inclusions in `main.tex` for manuscript order, then
-   only those sections' openings, stopping at `% LABO:INTRO-END`. It is not
-   a TeX macro evaluator; resolve unsupported inclusion explicitly rather
-   than silently reviewing a guessed order or unused files.
-3. Test whether those openings reveal the manuscript's argument, the expected
-   dependency order, and where to turn next. Report failures under numbered
-   rules, with the smallest useful repair.
-4. Select one section at a time using
+1. Fix the source version and scope. If the abstract is in scope, read it
+   alone first and record what question, result and significance are recoverable.
+   Keep research plans, author explanations and earlier reviews out of the
+   initial reader assessment; they can inform subsequent evidence checks.
+2. For a paper-wide or openings-only review, run
+   `python3 <labo-script> paper map --paper <slug> --format json`.
+   It follows literal `main.tex` inclusions and reads only section openings
+   up to `% LABO:INTRO-END`. Record the argument and dependency route those
+   openings actually convey, including what remains unclear. Unsupported
+   TeX inclusion needs explicit resolution, not a guessed manuscript order.
+3. Read each assigned section with
    `python3 <labo-script> paper section --paper <slug> --name <NN-slug>`.
-   Test local comprehensibility **without assuming hidden global context**.
-   Distinguish a genuinely missing fact from a clearly signposted dependency.
-5. Request a Lean theorem, source, or other relevant evidence for a concrete
-   claim only when needed. Never claim formal verification from prose alone.
-6. Return a numbered findings list with rule ID, severity, location,
-   exact comprehension failure, and a proposed local repair. Include what
-   worked. A "no issues found" result is not a correctness certificate.
+   Reconstruct its claim from the visible text before following signposted
+   dependencies. Record the first missing object, relation or inference and
+   any later recovery separately. A precise usable reference can suffice;
+   an expert's ability to invent a missing bridge cannot.
+4. Check disputed mathematics and attribution against the relevant proof,
+   Lean declaration or exact source passage. Distinguish a demonstrated
+   defect, a concern, and unavailable evidence. For verbosity, identify what
+   a deletion, replacement or relocation preserves; do not recommend cuts
+   from word count alone. Retain clear, economical passages.
+5. Return findings with **rule ID, severity, passage/line, evidence, and
+   smallest sufficient repair**. State the version, sections and dependencies
+   actually read, remaining scope, and a concise example that worked. A clean
+   local reading is not a correctness or whole-paper certificate.
 
-Never silently edit mathematical content while acting as referee. Reviewer
-and author are separate roles even if the same agent is used successively.
+## Optional independent reading
+
+If a fresh reader is requested or needed to test an accessibility concern,
+use an available isolated agent with only the frozen artifact and neutral
+reader brief. It reports understanding and first confusion before proposing
+repairs; do not supply the intended story, prior findings, or author answers.
+Compose the assignment for the task; no saved role or model is required.
+Without fresh isolation, label the result a local reading, not a blind review.
+`paper map` and `paper section` load complete openings/sections: they do not
+establish paragraph-by-paragraph prefix isolation. Check a rendered artifact
+when making visual claims. Subsequent repairs and rechecks follow the user's
+scope; a report-only review does not start an automatic revision loop.

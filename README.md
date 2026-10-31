@@ -1,9 +1,10 @@
 # labo-skills
 
-A forkable public research operating policy, not a collection of private
-mathematical results. The researcher's policy checkout lives at
-`skills/labo-skills` as a **Git submodule of a private `labo` workspace**.
-Its skills, rules, and Python tools are used directly from that checkout.
+Shared research skills developed through actual mathematical work.
+**Fork this repository, then add your fork as the `.agents` submodule in
+your own research repository.** Use and improve its skills, rules, and tools
+in that checkout, and send useful changes back here as pull requests.
+Your research repository can have any name; `labo` is the example below.
 
 Research plans describe the **story of a research program**, not a queue of
 papers. Develop and edit that story, establish its mathematical core in Lean,
@@ -16,37 +17,46 @@ material; English remains the manuscript original.
 
 - Public: this repository, its skills, numbered reviewing rules, software,
   fictional examples, and generic changes proposed by pull request.
-- Private: `momota1029/labo` (created separately), with research plans, original
+- Private: your research repository, with research plans, original
   inbox material, Lean files, manuscripts, references, presentations, personal
   skills, and any unpublished writing.
 - The distribution model is **fork, use, improve, and selectively contribute
   upstream**. The researcher's fork holds their public research policy; the
   private parent records which commit of that fork it uses. A submodule is
   the normal operating model, not an optional wrapper around an installed CLI.
-- Personal skills can remain in the private research repository. Public-policy
-  changes and private manuscript changes have independent Git histories.
+- Additional skills in `.agents/skills/` belong to the policy fork. Keep
+  private-only skills outside that public checkout in a host-supported location
+  chosen by the user. Public policy and research have independent Git histories.
 - Public pull requests must be prepared from **sanitized, independently
   reproducible commits**. Nothing automatically publishes private text.
 
-The initial upstream owner is `momota1029`. The original maintainer can work
-in this repository until upstream ownership moves to an organization and a
-separate personal fork is established. No such transfer or fork is automated.
+`momota1029/labo-skills` is the current shared upstream. Its maintainer can
+work directly in it; other researchers normally use their own forks.
+Improvements can remain useful in a fork whether or not they are proposed
+or accepted upstream. Different mathematical practices need not converge on
+one personal configuration.
 
 ## Use the fork as a submodule
 
-From the private `labo` root, after choosing the fork, replace `FORK_URL`
-with its Git URL:
+First fork `momota1029/labo-skills` into your GitHub account or chosen
+organization. From your research repository root, replace `YOUR_ACCOUNT`
+below with the owner of **your fork**:
 
 ```sh
-git submodule add FORK_URL skills/labo-skills
+git submodule add https://github.com/YOUR_ACCOUNT/labo-skills.git .agents
 ```
 
-Commit `.gitmodules` and the `skills/labo-skills` gitlink in the private
+Start with `git init` if the chosen workspace is not yet a Git repository.
+If `.agents` already contains files, preserve them before replacing that
+directory with a submodule. `.gitmodules` should point to your fork, so the
+research workspace can use your improvements before any upstream PR is merged.
+
+Commit `.gitmodules` and the `.agents` gitlink in the private
 repository. The parent stores a commit reference, not copies of the skills.
 After cloning an already-configured `labo`, initialize the recorded checkout:
 
 ```sh
-git submodule update --init --recursive -- skills/labo-skills
+git submodule update --init --recursive -- .agents
 ```
 
 An ordinary update checks out the recorded commit, often in detached-HEAD
@@ -55,15 +65,36 @@ policy, inspect the submodule's status and remotes and work on a branch in
 the researcher's fork. Preserve uncommitted changes. Do not silently run
 `update --remote`, reset a checkout, change remotes, or create a fork.
 
-There are two separate commits to consider:
+## Improve in your fork and contribute upstream
 
-1. Commit policy changes **inside `skills/labo-skills`**. Push only public-safe
-   content to the intended fork, or let the human push it. An upstream PR is
-   an independent, optional choice handled by `labo-pr`.
-2. Adopt that commit in the private parent by committing its changed gitlink.
-   Before sharing the parent commit, ensure the referenced policy commit can
-   be fetched from the configured fork. Research files need not be committed
-   or pushed with either a policy change or a public PR.
+The normal flow is:
+
+```text
+shared labo-skills → your fork → .agents in your research repository
+shared labo-skills ← selected pull requests ← improvements in your fork
+```
+
+1. Edit the actual skills or tools in `.agents` while using them for research.
+   Commit the improvement on a branch in your fork. Describe the observed
+   problem and check the change with a small reproducible example.
+2. To use that version in your research repository, record its commit in the
+   parent gitlink. Before sharing the parent commit, push the policy commit
+   to the fork named in `.gitmodules` so others can fetch it.
+3. When an improvement would help others, propose a focused PR from a branch
+   in your fork to the shared upstream. Include the reusable change and
+   synthetic examples, independently of manuscripts and fork-specific choices.
+   `labo-self-improve` develops the improvement; `labo-pr` prepares the contribution.
+
+Using an improvement does not require upstream acceptance. Sending a PR is
+optional, and its acceptance does not automatically change anyone's workspace.
+To adopt upstream changes, fetch and review them, integrate the chosen changes
+into your fork, validate that version, then update the parent's gitlink.
+Preserve your fork's own work; do not reset it to upstream as an update strategy.
+
+Conventionally `origin` points to your fork and `upstream` to the shared
+repository. Inspect actual URLs before pushing or selecting a PR destination;
+remote names alone do not establish ownership. Git actions follow the user's
+requested scope, including when they prefer to push personally.
 
 No installer copies skills into the private repository. There is no `vendor/`,
 generated forwarding `SKILL.md`, private README requirement, or automatic
@@ -77,16 +108,12 @@ The actual skills are `skills/<name>/SKILL.md` inside this checkout.
 is not a prerequisite for submodule use. Register the checked-out collection
 with the host, preserving its location rather than maintaining another copy.
 
-Skill discovery and Git placement are distinct. For example,
-[Codex documents](https://developers.openai.com/codex/skills) repository discovery
-under `.agents/skills` and support for symlinked skill folders. A direct link
-from `labo/.agents/skills/research-management` to
-`../../skills/labo-skills/skills/research-management` exposes the real skill;
-it is not a generated forwarding skill. Personal skill directories can live
-alongside such links and remain private. Select this integration explicitly;
-do not assume an arbitrary nested collection is automatically discovered,
-overwrite personal skills, or generate host configuration. `AGENTS.md`
-remains entirely user-owned.
+[Codex discovers repository skills](https://developers.openai.com/codex/skills)
+under `.agents/skills`. Mounting this repository at `.agents` places the real
+skills there directly, without copies or forwarding links. Other hosts can
+register the same checked-out collection using their discovery mechanism.
+Existing submodule placements can still execute the launcher; moving them
+is a separate migration. `AGENTS.md` remains entirely user-owned.
 
 Each skill owns its rules under its own `references/`. In particular,
 `paper-referee` standards do not govern slides. Routing and task-specific
@@ -108,11 +135,12 @@ invoke the launcher in the submodule. Replace `example-paper` with an actual
 paper directory:
 
 ```sh
-python3 skills/labo-skills/scripts/labo.py research check
-python3 skills/labo-skills/scripts/labo.py research list --format json
-python3 skills/labo-skills/scripts/labo.py paper map --paper example-paper
-python3 skills/labo-skills/scripts/labo.py paper section --paper example-paper --name 01-introduction
-python3 skills/labo-skills/scripts/labo.py build --paper example-paper --dry-run
+python3 .agents/scripts/labo.py layout init
+python3 .agents/scripts/labo.py research check
+python3 .agents/scripts/labo.py research list --format json
+python3 .agents/scripts/labo.py paper map --paper example-paper
+python3 .agents/scripts/labo.py paper section --paper example-paper --name 01-introduction
+python3 .agents/scripts/labo.py build --paper example-paper --dry-run
 ```
 
 The launcher imports the code beside it, so the policy checkout and executed
@@ -123,6 +151,35 @@ standalone checkout requires `--workspace /path/to/private/labo`. An agent
 resolves the launcher relative to the real loaded skill directory, including
 when that directory was reached through a symlink. An explicitly supplied
 relative workspace path is relative to the invocation directory.
+
+## Create and use the research workspace
+
+Once the submodule and runtime dependencies are available, ask the agent
+「研究室を初期化して」 or 「inbox のこれで研究したい」. The `labo-layout`
+skill creates the necessary structure and uses `research-management` to
+develop the actual research plan. Initialization is also directly available
+as `layout init`: it adds missing core directories, preserves existing files
+and `AGENTS.md` content, and adds build-ignore patterns without hiding source
+PDFs. It creates no research programs or policy README copies.
+
+New items can be created from templates maintained in the layout skill:
+
+```sh
+python3 .agents/scripts/labo.py layout new research finite-observations \
+  --title 'Finite observations and reconstruction' \
+  --summary 'Determine which data can be recovered from finite observations.'
+python3 .agents/scripts/labo.py layout new paper reconstruction
+python3 .agents/scripts/labo.py layout new reference example-source
+```
+
+Creation commands accept `--dry-run` and refuse to overwrite existing items.
+A research template needs its narrative filled from the actual input before
+intake is complete. The tools leave inbox originals in place; the skill
+handles their assignment and provenance. See the
+[creation workflow](skills/labo-layout/references/creation.md) and
+[directory contract](skills/labo-layout/references/layout.md) for details.
+
+## Inspect and build
 
 `research list` reads *only the YAML frontmatter* of `research/*/plan.md`.
 It never reads the body, inbox, Lean sources, or manuscripts. The only statuses
@@ -137,10 +194,19 @@ It does not expand TeX macros or support dynamic/conditional inclusion.
 No mathematical assertion is certified by this tooling.
 
 `build` delegates to `latexmk`, writing intermediate files to
-`writing/<paper>/.temp` and PDF/SyncTeX outputs to `output/<paper>/`. `--dry-run`
+`writing/<paper>/.temp` and PDF/SyncTeX outputs directly to `output/`, named
+`<paper>.pdf` and `<paper>.synctex.gz` so all papers can be selected together.
+The paper slug is the TeX job name; separate `main.tex` entries do not collide. `--dry-run`
 prints the invocation. A TeX distribution with `latexmk` is required for
 real compilation. Success requires both PDF and SyncTeX; a missing SyncTeX
 after an otherwise cached build triggers at most one forced rebuild.
+
+For existing manuscript names, use `build --source writing/<slug>/<entry>.tex`.
+The source stays in place, its cache stays in `.temp/`, and its PDF/SyncTeX
+pair appears directly in `output/`. Engine directives and packages such as
+`xeCJK` are detected; `--engine` can override them. This is also the editor
+build entry point. The [build contract](skills/labo-build/references/build-contract.md)
+describes naming and working-directory behavior.
 
 ## Quality checks
 
@@ -158,8 +224,8 @@ development or optional packaging, not as the submodule deployment mechanism.
 
 ## Scope
 
-The first version implements research inventory, scoped TeX reading, and TeX
-builds. Skills define review, research lifecycle, directory layout,
+The tools implement workspace initialization, item creation, research inventory,
+scoped TeX reading, and TeX builds. Skills define review, research lifecycle, directory layout,
 self-improvement, PR, slides, and web publishing workflows. A public PR is a
 deliberate choice, using the available Git/GitHub tools or a direct human push;
 no particular connector or branch naming scheme is required.
