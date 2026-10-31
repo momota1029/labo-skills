@@ -15,6 +15,14 @@ ENGINE_FLAGS = {
 }
 
 
+def _nonempty_file(path: Path) -> bool:
+    return path.is_file() and path.stat().st_size > 0
+
+
+def _has_synctex(output: Path) -> bool:
+    return any(_nonempty_file(output / name) for name in ("main.synctex.gz", "main.synctex"))
+
+
 def build_command(workspace: Path, paper: str, engine: str) -> tuple[list[str], Path, Path, Path]:
     if engine not in ENGINE_FLAGS:
         raise PaperError(f"unsupported engine: {engine}")
@@ -48,8 +56,16 @@ def run_build(workspace: Path, paper: str, engine: str, dry_run: bool) -> list[s
         output.mkdir(parents=True, exist_ok=True)
         try:
             subprocess.run(command, cwd=cwd, check=True)
+            if _nonempty_file(output / "main.pdf") and not _has_synctex(output):
+                # latexmk may consider the PDF up to date even when SyncTeX
+                # was removed. Rebuild once, retaining the normal cache policy.
+                subprocess.run([command[0], "-g", *command[1:]], cwd=cwd, check=True)
         except FileNotFoundError as exc:
             raise PaperError("latexmk executable not found") from exc
         except subprocess.CalledProcessError as exc:
             raise PaperError(f"latexmk failed (exit {exc.returncode})") from exc
+        if not _nonempty_file(output / "main.pdf"):
+            raise PaperError("latexmk finished without producing a nonempty output PDF")
+        if not _has_synctex(output):
+            raise PaperError("latexmk finished without producing SyncTeX, including after one forced rebuild")
     return command

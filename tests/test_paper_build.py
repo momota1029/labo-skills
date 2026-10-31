@@ -21,7 +21,9 @@ class PaperBuildTests(unittest.TestCase):
         self.paper = self.root / "writing" / "story-paper"
         self.sections = self.paper / "sections"
         self.sections.mkdir(parents=True)
-        (self.paper / "main.tex").write_text("\\input{sections/01-introduction}")
+        (self.paper / "main.tex").write_text(
+            "\\input{sections/01-introduction}\n\\input{sections/02-example}\n"
+        )
         (self.sections / "01-introduction.tex").write_text(
             "\\section{Introduction}\nOur question matters.\n"
             "% LABO:INTRO-END\n"
@@ -54,6 +56,51 @@ class PaperBuildTests(unittest.TestCase):
         self.assertEqual(status, 0, error)
         self.assertNotIn("concrete obstruction", output)
 
+    def test_map_uses_declared_order_and_excludes_unused_sections(self):
+        (self.paper / "main.tex").write_text(
+            "\\include{sections/02-example}\n\\input{sections/01-introduction.tex}\n"
+        )
+        (self.sections / "03-unused.tex").write_bytes(b"\xff")
+        self.assertEqual(
+            [item.section for item in map_openings(self.root, "story-paper")],
+            ["02-example", "01-introduction"],
+        )
+
+    def test_map_ignores_commented_input_and_handles_escaped_percent(self):
+        (self.paper / "main.tex").write_text(
+            "% \\input{sections/99-missing}\n"
+            "\\input{sections/01-introduction} % \\input{sections/98-missing}\n"
+            "\\% a literal percent; \\input{sections/02-example}\n"
+        )
+        self.assertEqual(
+            [item.section for item in map_openings(self.root, "story-paper")],
+            ["01-introduction", "02-example"],
+        )
+
+    def test_map_stops_at_end_of_document(self):
+        (self.paper / "main.tex").write_text(
+            "\\begin{document}\n\\input{sections/01-introduction}\n"
+            "\\end{document}\n\\input{sections/99-trailing-scratch}\n"
+        )
+        self.assertEqual(
+            [item.section for item in map_openings(self.root, "story-paper")],
+            ["01-introduction"],
+        )
+
+    def test_map_rejects_unresolvable_or_dynamic_inputs(self):
+        for source in (
+            "\\input{sections/99-missing}\n",
+            "\\input{\\sectionpath}\n",
+            "\\input sections/01-introduction\n",
+            "\\newcommand{\\chapterinput}{\\input{sections/01-introduction}}\n",
+            "\\iftrue\\input{sections/01-introduction}\\fi\n",
+            "\\includeonly{sections/01-introduction}\n\\include{sections/02-example}\n",
+        ):
+            with self.subTest(source=source):
+                (self.paper / "main.tex").write_text(source)
+                with self.assertRaises(PaperError):
+                    map_openings(self.root, "story-paper")
+
     def test_missing_marker_is_failure(self):
         (self.sections / "01-introduction.tex").write_text("\\section{Introduction}\nNo delimiter")
         with self.assertRaisesRegex(PaperError, "marker"):
@@ -69,7 +116,13 @@ class PaperBuildTests(unittest.TestCase):
         self.assertFalse((self.root / "output").exists())
 
     @patch("labo_tools.build.subprocess.run")
-    def test_real_build_uses_latexmk_no_shell(self, run):
+    def test_build_invokes_latexmk_without_shell(self, run):
+        def create_outputs(*args, **kwargs):
+            output = self.root / "output" / "story-paper"
+            (output / "main.pdf").write_bytes(b"PDF fixture")
+            (output / "main.synctex.gz").write_bytes(b"SyncTeX fixture")
+
+        run.side_effect = create_outputs
         status, output, error = self.cli("build", "--paper", "story-paper")
         self.assertEqual(status, 0, error)
         args, kwargs = run.call_args
@@ -78,6 +131,42 @@ class PaperBuildTests(unittest.TestCase):
         self.assertTrue(kwargs["check"])
         self.assertTrue((self.paper / ".temp").is_dir())
         self.assertTrue((self.root / "output" / "story-paper").is_dir())
+        self.assertEqual(run.call_count, 1)
+
+    @patch("labo_tools.build.subprocess.run")
+    def test_build_recovers_missing_synctex_with_one_forced_rebuild(self, run):
+        def create_outputs(command, **kwargs):
+            output = self.root / "output" / "story-paper"
+            (output / "main.pdf").write_bytes(b"PDF fixture")
+            if "-g" in command:
+                (output / "main.synctex.gz").write_bytes(b"SyncTeX fixture")
+
+        run.side_effect = create_outputs
+        status, _, error = self.cli("build", "--paper", "story-paper")
+        self.assertEqual(status, 0, error)
+        self.assertEqual(run.call_count, 2)
+        self.assertNotIn("-g", run.call_args_list[0].args[0])
+        self.assertIn("-g", run.call_args_list[1].args[0])
+
+    @patch("labo_tools.build.subprocess.run")
+    def test_build_fails_when_successful_process_produces_no_pdf(self, run):
+        status, output, error = self.cli("build", "--paper", "story-paper")
+        self.assertEqual(status, 2)
+        self.assertNotIn("Build finished", output)
+        self.assertIn("output PDF", error)
+        self.assertEqual(run.call_count, 1)
+
+    @patch("labo_tools.build.subprocess.run")
+    def test_build_missing_synctex_failure_is_bounded(self, run):
+        def create_pdf_only(*args, **kwargs):
+            (self.root / "output" / "story-paper" / "main.pdf").write_bytes(b"PDF fixture")
+
+        run.side_effect = create_pdf_only
+        status, output, error = self.cli("build", "--paper", "story-paper")
+        self.assertEqual(status, 2)
+        self.assertNotIn("Build finished", output)
+        self.assertIn("SyncTeX", error)
+        self.assertEqual(run.call_count, 2)
 
     def test_build_rejects_symlinked_cache(self):
         (self.paper / ".temp").symlink_to(self.root, target_is_directory=True)

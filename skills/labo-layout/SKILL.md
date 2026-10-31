@@ -12,3 +12,6 @@ the new layout unless an explicit **selective migration** is approved.
 
 Do not change publication status, editorial rules, or Git privacy settings
 merely to enforce the directory layout.
+Do not add installation bridges, deployment directories, private policy
+READMEs, or other scaffolding that the researcher has not chosen. Keep the
+operational rules here rather than duplicating them throughout private data.

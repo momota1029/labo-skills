@@ -12,6 +12,9 @@ from .plans import SLUG
 INTRO_END = "% LABO:INTRO-END"
 MAX_OPENING_BYTES = 65_536
 SECTION_STEM = re.compile(r"[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+CONTROL = re.compile(r"\\([A-Za-z@]+|.)", re.DOTALL)
+LITERAL_ARGUMENT = re.compile(r"\s*\{([^{}]*)\}")
+SECTION_INPUT = re.compile(r"(?:\./)?sections/([0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*)(?:\.tex)?\Z")
 
 
 class PaperError(ValueError):
@@ -45,14 +48,73 @@ def sections_folder(workspace: Path, paper: str) -> Path:
     return folder
 
 
+def _strip_comments(source: str) -> str:
+    lines = []
+    for line in source.splitlines(keepends=True):
+        backslashes = 0
+        for index, char in enumerate(line):
+            if char == "%" and backslashes % 2 == 0:
+                line = line[:index] + "\n"
+                break
+            backslashes = backslashes + 1 if char == "\\" else 0
+        lines.append(line)
+    return "".join(lines)
+
+
+def _section_inputs(source: str) -> list[str]:
+    """Read literal, top-level inclusion directives; do not evaluate TeX."""
+    source = _strip_comments(source)
+    names = []
+    depth = 0
+    offset = 0
+    while offset < len(source):
+        control = CONTROL.match(source, offset)
+        if control:
+            name = control.group(1)
+            if depth == 0 and name == "endinput":
+                break
+            if depth == 0 and name == "end":
+                argument = LITERAL_ARGUMENT.match(source, control.end())
+                if argument and argument.group(1).strip() == "document":
+                    break
+            if name.lower().startswith("if") or name in {"else", "fi", "or", "unless", "includeonly"}:
+                raise PaperError("dynamic or conditional inclusion in main.tex is not supported by paper map")
+            if name in {"input", "include"}:
+                argument = LITERAL_ARGUMENT.match(source, control.end())
+                if depth or not argument:
+                    raise PaperError("paper map requires top-level literal \\input{sections/NN-name} or \\include{sections/NN-name}")
+                target = argument.group(1).strip()
+                section = SECTION_INPUT.fullmatch(target)
+                if not section:
+                    raise PaperError(f"unsupported section inclusion in main.tex: {target}")
+                names.append(section.group(1))
+                offset = argument.end()
+                continue
+            offset = control.end()
+            continue
+        if source[offset] == "{":
+            depth += 1
+        elif source[offset] == "}":
+            depth -= 1
+        offset += 1
+    return names
+
+
 def section_paths(workspace: Path, paper: str) -> list[Path]:
     folder = sections_folder(workspace, paper)
-    files = sorted(folder.glob("*.tex"))
-    if not files:
-        raise PaperError(f"no .tex sections in writing/{paper}/sections/")
+    main = folder.parent / "main.tex"
+    if main.is_symlink() or not main.is_file():
+        raise PaperError(f"missing or symlinked main.tex: writing/{paper}")
+    try:
+        names = _section_inputs(main.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError) as exc:
+        raise PaperError(str(exc)) from exc
+    if not names:
+        raise PaperError("main.tex declares no literal section inputs")
+    files = [folder / f"{name}.tex" for name in names]
     for path in files:
-        if path.is_symlink() or not path.is_file() or not SECTION_STEM.fullmatch(path.stem):
-            raise PaperError(f"invalid section filename: {path.name}")
+        if path.is_symlink() or not path.is_file():
+            raise PaperError(f"missing or symlinked section declared in main.tex: {path.name}")
     return files
 
 

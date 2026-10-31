@@ -14,7 +14,10 @@ be written. Apply none of these standards to slides or lecture notes.
 1. Read the research plan's abstract/story summary and paper metadata if
    explicitly provided. Do **not** pre-load the entire manuscript.
 2. Run `labo paper map --workspace . --paper <slug> --format json`. It reads
-   only each section's opening, stopping at `% LABO:INTRO-END`.
+   the literal section inclusions in `main.tex` for manuscript order, then
+   only those sections' openings, stopping at `% LABO:INTRO-END`. It is not
+   a TeX macro evaluator; resolve unsupported inclusion explicitly rather
+   than silently reviewing a guessed order or unused files.
 3. Test whether those openings reveal the manuscript's argument, the expected
    dependency order, and where to turn next. Report failures under numbered
    rules, with the smallest useful repair.

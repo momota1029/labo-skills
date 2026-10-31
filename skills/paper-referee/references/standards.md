@@ -13,8 +13,8 @@ universal stylistic commandments. Test a section **locally** first.
   an obstruction, method, result, counterexample, or synthesis.
 - **P1.4 Contribution** — Original contribution is distinguishable from a
   known result, motivation, computational observation, or conjecture.
-- **P1.5 Publication ordering** — If other papers are relevant, their
-  relationship can be unfolded by publication order; non-linear references
+- **P1.5 Submission ordering** — If other papers are relevant, their
+  relationship can be unfolded by submission order; non-linear references
   must still be navigable without reading every cited work.
 
 ## P2. Section openings and global map
@@ -49,7 +49,9 @@ universal stylistic commandments. Test a section **locally** first.
 - **P4.2 Proof transitions** — Nontrivial inferences have arguments or exact
   cited lemmas; rhetoric does not substitute for a proof.
 - **P4.3 Formal mapping** — Where Lean verification is asserted, map the
-  prose claim to its declaration and dependencies; note mismatches and axioms.
+  prose claim to its declaration and dependencies; note mismatches, axioms,
+  and proof placeholders. Do not call a claim verified when its proof depends
+  on `sorry`/`admit` or `sorryAx`.
 - **P4.4 Status honesty** — Conditional results, unchecked arguments, and
   research conjectures are visibly different from established theorems.
 - **P4.5 Counterexamples** — Stress-test strong hypotheses and boundary

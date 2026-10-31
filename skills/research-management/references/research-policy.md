@@ -8,18 +8,23 @@
    statuses. Lack of attention does not imply mathematical completion.
 3. A completed program may be reopened as in progress. The plan must explain
    what was resolved and what new question reopened it.
-4. Researchers and agents may *suggest* split, integration, suspension of
-   effort, or change of approach, with a mathematical rationale and links to
-   evidence. Ask the human before changing research boundaries.
+4. Proactively *propose* splits, integration, suspension of effort, or changes
+   of approach when the research story and evidence warrant them. Give the
+   rationale and alternatives; ask the human before changing boundaries.
 5. Never erase a program because it looks uninteresting. Preserve its plan
    and source originals; document relationships in prose and Git history,
    not in a fragile, mandatory cross-program reference graph.
 6. `research/<slug>/inbox/` stores originals untouched; notes and proposed
    interpretations are separate. `inbox/` stores unassigned input.
-7. Lean results constrain mathematical claims in downstream outputs. A
-   promising story is not, by itself, a verified theorem. Keep verification
-   status in the relevant plan prose rather than inventing research statuses.
-8. Publication order helps a reader unfold the finished output narrative.
+7. First develop and sufficiently edit the research story, then establish
+   the relevant mathematical core in Lean, and only then write its paper.
+   The introduction is part of that story, not a detached summary.
+   A build containing proof placeholders does not establish the claimed core.
+   English is the original manuscript; Japanese is supplementary translation
+   checking. Record evidence and remaining gaps in prose, without inventing
+   additional research statuses or equating paper completion with research
+   completion.
+8. Submission order helps a reader unfold the output narrative.
    Papers may cite one another, but citation dependency does not dictate the
    order of mathematical exploration or force program-level references.
 9. The human chooses the significance and tone of the story. The agent should
