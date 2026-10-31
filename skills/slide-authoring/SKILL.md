@@ -41,7 +41,10 @@ starting a parallel review loop.
    backward to indispensable concepts and forward to their first consequential
    use. Specialize faithfully when generality would bury the idea. For a paper
    introduction, give an early map of its question, contribution, mechanism
-   and limits.
+   and limits. In an explanatory deck, add one concise preview line to the
+   preceding frame when it helps orient the audience to the next explanation.
+   Skip overview and summary frames, and avoid repeating a transition already
+   made explicit; keep the preview in the author's voice.
 2. Keep the selected theorem's hypotheses, objects and status visible. Explain
    the decisive step or usable black box; ordinary proof details may go to
    speech, backup, a paper or `reading/` notes. **Paper-referee completeness
