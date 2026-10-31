@@ -1,10 +1,11 @@
 # Reproducible build contract
 
-For `writing/<slug>/main.tex`:
+For `writing/<slug>/main.tex`, use the absolute checkout-local launcher
+resolved in `SKILL.md`:
 
 ```sh
-labo build --workspace . --paper <slug> --dry-run
-labo build --workspace . --paper <slug> --engine pdflatex
+python3 <labo-script> build --paper <slug> --dry-run
+python3 <labo-script> build --paper <slug> --engine pdflatex
 ```
 
 `latexmk` runs from the paper directory with:

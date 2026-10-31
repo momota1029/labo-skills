@@ -3,8 +3,8 @@
 ```text
 labo/
   AGENTS.md                 # initially empty, user-owned
-  .agents/skills/           # optional personal skills, under user control
-  skills/labo-skills/       # researcher's fork, when they configure a submodule
+  .agents/skills/           # personal skills + chosen direct discovery links
+  skills/labo-skills/       # Git submodule: researcher's public policy fork
   research/<slug>/
     plan.md                 # narrative plan + YAML index
     inbox/                  # originals submitted for this research
@@ -22,9 +22,19 @@ labo/
   profile/                  # optional CV/presentation/event records
 ```
 
-This is a location contract, not permission to populate every directory or
-install a submodule. The researcher configures the fork's integration. Do not
-create `vendor/`, generated forwarding skills, or private README policy copies.
+The fork submodule is the normal policy/runtime boundary. Its `skills/`,
+`scripts/`, and `src/` remain inside its own Git history; research data and
+private personal skills remain in the parent. The parent tracks `.gitmodules`
+and the policy commit reference, not copies of public files. Choose the fork
+URL explicitly; this contract is not permission to create a fork, install a
+submodule, or populate every directory without a setup request.
+
+Run tools from this checkout's `scripts/labo.py`, not a separately installed
+`labo` executable. Git identifies the private superproject; an explicit
+`--workspace` overrides it. An unrelated standalone checkout needs that
+explicit workspace. Host discovery may use direct links to actual skill
+folders, but is not accomplished by Git alone. Do not create `vendor/`,
+generated forwarding skills, or private README policy copies.
 
 `research/`, `lean/`, `writing/`, `reading/`, and `reference/` may reference
 one another using relative links or identifiers but do not have to share the

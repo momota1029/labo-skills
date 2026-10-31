@@ -11,6 +11,7 @@ import sys
 from .build import ENGINE_FLAGS, run_build
 from .paper import PaperError, map_openings, read_section
 from .plans import PlanError, ResearchPlan, read_workspace
+from .workspace import WorkspaceError, resolve_workspace
 
 
 def _filtered(
@@ -26,11 +27,11 @@ def _filtered(
 
 
 def _workspace(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--workspace", type=Path, default=Path.cwd(),
-                        help="private labo workspace (default: current directory)")
+    parser.add_argument("--workspace", type=Path,
+                        help="private labo workspace (repository launcher defaults to its Git superproject)")
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
     parser = argparse.ArgumentParser(prog="labo")
     areas = parser.add_subparsers(dest="area", required=True)
 
@@ -64,6 +65,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
     try:
+        args.workspace = resolve_workspace(args.workspace, checkout)
         if args.area == "research":
             plans, errors = read_workspace(args.workspace)
             if errors:
@@ -103,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(shlex.join(command))
             else:
                 print(f"Build finished: output/{args.paper}/")
-    except (PlanError, PaperError) as exc:
+    except (PlanError, PaperError, WorkspaceError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     return 0
