@@ -69,6 +69,13 @@ Read only the references needed for the task:
    it. For substantial deliverables, apply the review reference. Report actual
    checks, source versions, covered units and unresolved dependencies.
 
+Describe the deliverable by its actual contents and scope, such as a full-paper
+explanation, proof reconstruction or reading deck. Do not present notes as a
+substitute for reading the source, or imply that they certify the reader's
+comprehension or let them claim to have read it. State which sections and
+arguments the artifact covers, and name material omissions or source-level
+gaps directly.
+
 Before delivery, check the requested language across the complete reader-facing
 artifact, including headings, captions, labels and navigation as well as body
 prose. Preserve original titles and standard technical terms where they serve
