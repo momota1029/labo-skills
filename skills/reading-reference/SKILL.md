@@ -64,6 +64,10 @@ Read only the references needed for the task:
    status before treating a toy experiment as sufficient coverage; apply the
    source and methods references.
 5. Explain the question, useful result, decisive argument and its limits.
+   For central methods, explain the motivating limitation, inherited ideas and
+   new contribution with primary evidence. For requested code, make provenance
+   and the route between explanation, full implementation and sources usable
+   in the delivered artifact; apply the explanation and methods references.
    Put prerequisite bridges where needed and make each source-to-explanation
    connection findable. A summary, source dump or list of links cannot fulfill
    a request to reconstruct the reasoning or reproduce a method.

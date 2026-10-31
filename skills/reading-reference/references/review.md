@@ -18,8 +18,13 @@ repair. Do not invent a defect quota or mark human understanding as achieved.
 - **R26 Two-way fidelity** — Compare the note's claims to exact sources and
   trace central source claims back into the note. Check headings, formulas,
   figures, analogies and compressed summaries as well as prose. Verify both
-  sides of consequential historical or method comparisons. A faithfully stated
-  source limitation is not automatically a defect in the explanation.
+  sides of consequential historical or method comparisons. For central methods,
+  locate the motivating problem, inherited ideas, new ingredient and its useful
+  consequence with supporting sources; an objective or runnable code alone
+  cannot establish this account. Check code attribution against the inspected
+  source/revision and the actual author-code search status, including adaptations
+  and unresolved availability. A faithfully stated source limitation is not
+  automatically a defect in the explanation.
 - **R27 Reconstruction** — From the source, identify the inputs, reasoning or
   operations, result and limits. Then locate each needed link in the explanation.
   Record the first step a reader could not carry out using it. Knowledge recalled
@@ -33,8 +38,19 @@ repair. Do not invent a defect quota or mark human understanding as achieved.
 - **R29 Rendered output** — Check the current built version, not a stale PDF.
   Inspect every page/slide for a complete visual review; otherwise disclose the
   inspected subset. Test equations/glyphs, readable labels, cropping, figure
-  placement, listings and navigation at real reading scale. Extraction or build
-  success does not prove visual correctness, source fidelity or understanding.
+  placement, listings and navigation at real reading scale. For code-bearing
+  deliverables, test each central method's links in the built artifact: body
+  excerpt to its formal code entry/full listing where present and editable
+  source, return to the explanation, and paper/implementation source
+  destinations. Check point-of-use citations against their reference entries
+  and return links. Inspect actual PDF
+  annotations/destinations or follow the rendered links; TeX/Markdown markup
+  alone cannot establish that the generated links exist or reach the right unit.
+  Check that file links/attachments remain usable in the delivered bundle, not
+  only at the author's absolute workspace paths. Record untested destinations
+  or viewer restrictions as limits, rather than claiming the route works.
+  Extraction or build success does not prove visual correctness, source
+  fidelity or understanding.
 - **R30 Closure and saturation** — Before review, fix the scope and planned
   checks. For a substantial artifact, default to one full evidence-based review,
   one consolidated repair pass, then one targeted recheck of changed claims,
