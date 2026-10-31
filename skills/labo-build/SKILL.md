@@ -7,6 +7,12 @@ description: Compile a TeX manuscript into untracked PDF and SyncTeX under outpu
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification rules.
+
 Read [build contract](references/build-contract.md) before running compilation.
 Resolve `<labo-script>` to the absolute `../../scripts/labo.py` path relative
 to this skill's **real directory** (follow symlinks first). Use

@@ -7,6 +7,12 @@ description: Read and explain papers, mathematical books, proofs and research me
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal source-verification rules.
+
 Use for 「この論文を前提から解説して」「この証明を読みたい」,
 book/chapter reading, literature collection, and checking a reading note.
 Infer the source/version, audience, question and requested output from context.

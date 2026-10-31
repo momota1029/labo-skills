@@ -7,6 +7,12 @@ description: Start or resume story-centered research from inbox material, mainta
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification rules.
+
 Read [research policy](references/research-policy.md) before changing a plan.
 Start with the central question and the developing argument, not publication
 milestones. Inspect `plan.md` and only the smallest related evidence needed.

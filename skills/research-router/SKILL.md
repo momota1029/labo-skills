@@ -5,6 +5,12 @@ description: Route mathematical research tasks to the appropriate labo skill and
 
 # Research routing
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply the selected skill's normal verification rules.
+
 Before the first delegation, including consultation, retrieve the models and
 reasoning settings actually callable through the host's delegation interface,
 using its discovery tools/API or runtime catalogue. A provider-wide catalogue

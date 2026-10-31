@@ -7,6 +7,12 @@ description: Improve research skills in the user's labo-skills fork through actu
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification and publication rules.
+
 The user normally runs their own fork as the `.agents` submodule. Develop
 improvements there so mathematical practice can feed back into shared skills.
 Fork-specific choices can remain in the fork; upstream acceptance is not a

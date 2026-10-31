@@ -7,6 +7,13 @@ description: Review mathematical papers, section openings, proof exposition, or 
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification rules. For author-blind
+reading, defer profile access until the blind review record is complete.
+
 Read [numbered standards](references/standards.md). For English prose or
 typesetting review, also read [English conventions](references/english-style.md).
 Infer the paper, audience and requested scope from the task. Default to a

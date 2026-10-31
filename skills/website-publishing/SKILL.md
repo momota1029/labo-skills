@@ -7,6 +7,12 @@ description: Draft or review mathematical web expositions, paper pages and acade
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification and publication rules.
+
 Use for mathematical web explanations, paper/talk pages, an academic profile
 and site maintenance. Read [website policy](references/website-policy.md).
 Infer audience, source version, destination and whether the request is for a

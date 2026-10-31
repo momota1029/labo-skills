@@ -9,6 +9,12 @@ description: >-
 
 # Tune a skill through a real artifact
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply the owning skill's normal verification rules.
+
 Use when the user wants to improve a skill while editing a concrete artifact,
 inspect a preview, and steer the next pass. The user's feedback is the central
 evaluation step. Read the relevant repository instructions and the skill that

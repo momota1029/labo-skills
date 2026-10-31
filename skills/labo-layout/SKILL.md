@@ -7,6 +7,12 @@ description: Initialize a labo research workspace, start research from inbox mat
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification rules.
+
 Use for requests such as 「研究室を初期化して」「inboxのこれで研究したい」
 or 「この資料・原稿はどこに置く？」. Read the [directory contract](references/layout.md).
 For creation commands and their effects, read [workspace creation](references/creation.md).

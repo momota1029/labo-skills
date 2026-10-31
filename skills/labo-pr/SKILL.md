@@ -7,6 +7,12 @@ description: Contribute selected research-skill improvements from the user's lab
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification and publication rules.
+
 Read [publication gate](references/publication-gate.md) before drafting a
 commit or PR. Use the available Git/GitHub capability in the current host.
 

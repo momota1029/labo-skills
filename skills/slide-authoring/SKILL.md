@@ -7,6 +7,12 @@ description: Create, revise or review mathematical talk slides and paper-reading
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
+When identity or author metadata matters, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts there rather than in skill text; update only explicit durable
+facts or corrections from the user, or facts they ask to save, with source
+context. Apply this skill's normal verification and publication rules.
+
 When the user wants to edit a concrete deck, inspect a preview, and use their
 feedback to tune both the deck and its authoring skill, follow
 [`skill-tuning`](../skill-tuning/SKILL.md) for the iteration and checkpoint.

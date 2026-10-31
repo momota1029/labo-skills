@@ -21,7 +21,7 @@ labo/
   reference/<key>/          # bibliographic identity and source variants
   output/                  # ignored PDFs + same-stem SyncTeX, directly selectable
   website/                  # optional source pages/config
-  profile/                  # optional CV/presentation/event records
+  profile/                  # author identity plus optional CV/presentation/event records
 ```
 
 Each user normally forks the shared `labo-skills` repository and mounts
