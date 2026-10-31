@@ -56,11 +56,13 @@ python3 <labo-script> layout new reference example-source
 
 - `layout init` adds `inbox/`, `research/`, `lean/`, `writing/`, `reading/`,
   `reference/`, and `output/`. It creates an empty `AGENTS.md` if absent and
-  appends missing output/cache ignore patterns to `.gitignore`. It does not
-  populate programs, import source files, install dependencies, or run Git.
-  Repeating it preserves existing files; empty directories can be recreated
-  after cloning. Inspect pre-existing broad ignore rules such as `*.pdf`
-  separately so they do not hide original research sources.
+  appends missing workspace ignore patterns to `.gitignore`. Root `inbox/`
+  contents are local unassigned intake; assigned originals under
+  `research/<slug>/inbox/` and source PDFs under `reference/` remain trackable.
+  It does not populate programs, import source files, install dependencies, or
+  run Git. Repeating it preserves existing files; empty directories can be
+  recreated after cloning. Inspect pre-existing broad ignore rules such as
+  `*.pdf` so they do not hide assigned source materials.
 - `layout new research` creates `research/<slug>/plan.md` and `inbox/`.
   The YAML contains the supplied title, summary, optional next step, an empty
   tag list and `in_progress`. Complete the narrative body from actual sources.

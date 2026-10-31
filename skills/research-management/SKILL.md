@@ -17,6 +17,12 @@ Read [research policy](references/research-policy.md) before changing a plan.
 Start with the central question and the developing argument, not publication
 milestones. Inspect `plan.md` and only the smallest related evidence needed.
 
+Keep the research story, prior-literature evidence, and relevant Lean work in
+conversation. Use sources to locate the question and its relation to earlier
+results; use formalization to pressure-test definitions, assumptions, and
+candidate claims. Let either kind of evidence reshape the plan, and record
+which claims are formalized, proved by other means, or still open.
+
 Use `labo-layout` for workspace and program creation. A request to start
 research from supplied material authorizes creating the necessary plan and
 source directory; reuse a relevant existing program when appropriate.

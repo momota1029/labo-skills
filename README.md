@@ -7,9 +7,11 @@ in that checkout, and send useful changes back here as pull requests.
 Your research repository can have any name; `labo` is the example below.
 
 Research plans describe the **story of a research program**, not a queue of
-papers. Develop and edit that story, establish its mathematical core in Lean,
-and only then write the English paper, including its introduction as part of
-the story. Papers, slides, reading notes, and web pages are outputs of the
+papers. Develop and revise that story alongside prior literature and relevant
+Lean formalizations: sources can reshape the narrative, while formalization
+can clarify assumptions, definitions, and obstructions. Write the English paper
+from this evolving evidence, with its introduction as part of the story.
+Papers, slides, reading notes, and web pages are outputs of the
 research institute. Japanese translations are supplementary reading/checking
 material; English remains the manuscript original.
 
@@ -89,7 +91,9 @@ Using an improvement does not require upstream acceptance. Sending a PR is
 optional, and its acceptance does not automatically change anyone's workspace.
 To adopt upstream changes, fetch and review them, integrate the chosen changes
 into your fork, validate that version, then update the parent's gitlink.
-Preserve your fork's own work; do not reset it to upstream as an update strategy.
+`labo-sync` guides this incoming path; a routine `git pull` of the private
+research repository does not need a dedicated skill. Preserve your fork's own
+work; do not reset it to upstream as an update strategy.
 
 Conventionally `origin` points to your fork and `upstream` to the shared
 repository. Inspect actual URLs before pushing or selecting a PR destination;
@@ -159,8 +163,10 @@ Once the submodule and runtime dependencies are available, ask the agent
 skill creates the necessary structure and uses `research-management` to
 develop the actual research plan. Initialization is also directly available
 as `layout init`: it adds missing core directories, preserves existing files
-and `AGENTS.md` content, and adds build-ignore patterns without hiding source
-PDFs. It creates no research programs or policy README copies.
+and `AGENTS.md` content, and adds workspace ignore patterns. Unassigned root
+`inbox/` contents are local staging; assigned research originals and reference
+PDFs stay visible to Git. It creates no research programs or policy README
+copies.
 
 New items can be created from templates maintained in the layout skill:
 

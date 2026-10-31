@@ -125,13 +125,13 @@ class LayoutTests(unittest.TestCase):
         self.assertFalse(self.root.exists())
 
     @unittest.skipUnless(shutil.which("git"), "Git needed to verify ignore behavior")
-    def test_build_outputs_are_ignored_but_source_pdfs_are_trackable(self):
+    def test_unassigned_inbox_is_ignored_and_assigned_sources_trackable(self):
         init_layout(self.root)
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
         for name, expected in (
             ("output/example/main.pdf", 0),
             ("writing/example/.temp/main.aux", 0),
-            ("inbox/original.pdf", 1),
+            ("inbox/original.pdf", 0),
             ("research/example/inbox/original.pdf", 1),
             ("reference/source/publisher.pdf", 1),
         ):

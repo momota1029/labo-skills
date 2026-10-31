@@ -10,7 +10,7 @@ labo/
   research/<slug>/
     plan.md                 # narrative plan + YAML index
     inbox/                  # originals submitted for this research
-  inbox/                    # incoming, not yet assigned
+  inbox/                    # local staging; contents are gitignored until assigned
   lean/                     # mathematical formalizations
   writing/<paper>/
     main.tex                # canonical English TeX root
@@ -54,13 +54,13 @@ Keep the research plan's YAML frontmatter short: required `title`, `summary`,
 and open questions belong in Markdown prose. Status is only `in_progress` or
 `completed`.
 
-Put unclassified material in `inbox/`. Once assigned, preserve its original
-bytes in `research/<slug>/inbox/`, and make interpreted notes elsewhere.
-Do not replace originals with an AI-generated summary. Reference stores
-arXiv sources, publication PDFs, bibliographic metadata, and versions; a
-reference PDF is a source artifact, unlike a generated build PDF.
-Ignore generated files by their `output/` and `.temp/` locations, not by a
-blanket `*.pdf` rule that would hide human originals in the inboxes.
+Put unclassified material in the root `inbox/`, a local staging area whose
+contents are ignored by default. Once assigned, preserve its original bytes in
+`research/<slug>/inbox/` and make interpreted notes elsewhere. Do not replace
+originals with an AI-generated summary. Research-specific inboxes retain their
+source originals, as do reference stores containing arXiv sources, publication
+PDFs, bibliographic metadata, and versions. Ignore generated files by their
+`output/` and `.temp/` locations rather than by a blanket `*.pdf` rule.
 
 The `output/` directory is build output, not the canonical manuscript or an
 archive of historic papers. In the current CLI convention,

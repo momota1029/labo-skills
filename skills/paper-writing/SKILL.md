@@ -1,0 +1,49 @@
+---
+name: paper-writing
+description: Draft or revise mathematical research manuscripts from research plans, source-grounded literature, and proof evidence; not report-only review.
+---
+
+# Mathematical paper writing
+
+For each request, follow the [required consultation](../research-router/references/consultation.md).
+
+When author identity, voice, or preferences matter, consult the Labo workspace
+[author profile](../../../profile/author-identity.md) when available. Keep
+personal facts in that profile, not in this public skill.
+
+## Build from the evolving research record
+
+Read the relevant `writing/<paper>/` files and the smallest related evidence
+needed from `research/<slug>/plan.md`, `reading/`, `reference/`, and `lean/`.
+Let the paper grow from the research story and its evidence. Literature may
+change how the question is framed; formalization may clarify assumptions or
+expose gaps; a draft may reveal missing links that should return to the plan.
+Do not require these activities to happen in a fixed sequence.
+
+Use `reading-reference` to inspect or verify prior literature when needed, and
+`research-management` when the program's story or evidence record needs to
+change. Keep citations tied to the version actually read, with precise theorem,
+section, or page details where available. Never invent references or attribute
+a result from memory when the source can be checked.
+
+Treat Lean as evidence for exactly the definitions and statements it checks.
+Do not imply that an informal argument is machine-checked, that a placeholder
+proves a result, or that formalization of a nearby statement establishes the
+paper's full claim. State proof boundaries plainly and preserve open gaps for
+the author to resolve.
+
+## Preserve the author's argument and voice
+
+Keep the introduction connected to the paper's actual question, prior work,
+contribution, and proof route. Follow the mathematical dependencies of this
+argument instead of forcing a standard outline onto it. Preserve the author's
+intentional voice, examples, and humor already present when they help the
+reader; do not silently remove personal asides or distinctive phrasing merely
+to make the prose more formal. Make new stylistic additions only when the user
+asks or the draft clearly calls for them. Raise substantive changes to claims,
+emphasis, or tone for the author to decide.
+
+Write English as the manuscript original. Japanese material is supplementary
+translation checking unless the user sets a different purpose. For an
+independent report-only assessment, use `paper-referee`; compile or refresh the
+PDF and SyncTeX through `labo-build` when the user wants a rendered manuscript.

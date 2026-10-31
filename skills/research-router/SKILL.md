@@ -34,12 +34,14 @@ For each user request, follow the [required consultation](references/consultatio
 2. Consult the matching skill, read it completely, and follow **its own**
    references. Do not accumulate all skills' rules by default.
 3. Workspace setup, paths, and inbox intake → `labo-layout`;
-   research lifecycle and story → `research-management`;
-   mathematical paper review → `paper-referee`; paper compilation →
-   `labo-build`; slides → `slide-authoring`; source collection, paper/book
-   explanation and reading notes → `reading-reference`; website →
-   `website-publishing`; skill improvements in the user's fork →
-   `labo-self-improve`; selected upstream contributions → `labo-pr`.
+   research lifecycle and story → `research-management`; mathematical paper
+   drafting or revision → `paper-writing`; mathematical paper review →
+   `paper-referee`; paper compilation → `labo-build`; slides →
+   `slide-authoring`; source collection, paper/book explanation and reading
+   notes → `reading-reference`; website → `website-publishing`; skill
+   improvements in the user's fork → `labo-self-improve`; selected upstream
+   contributions → `labo-pr`; selective upstream adoption into the fork →
+   `labo-sync`.
 4. Beyond the required consultation, if task-specific delegation is useful,
    formulate a short task-specific assignment *from the selected skill*.
    Do not depend on a proprietary stored subagent persona or prompt template.

@@ -40,9 +40,11 @@ internal output lock coordinates build and cleanup commands without adding a
 lock file to `output/`.
 
 Generated PDFs, SyncTeX files, and caches in these build locations are ignored.
-Do not ignore all PDF files by extension: human originals in either inbox must
-remain trackable. Publisher PDFs and arXiv TeX *as input references* belong in
-`reference/<key>/` and may be tracked, with rights respected. Never
+The root `inbox/` is an unassigned local staging area and is ignored by default;
+preserve assigned originals in `research/<slug>/inbox/`. Do not ignore all PDF
+files by extension: research-specific inboxes and references may contain
+trackable source material. Publisher PDFs and arXiv TeX *as input references*
+belong in `reference/<key>/` and may be tracked, with rights respected. Never
 unignore `output/` merely to retain the result of a local build.
 
 ## Existing source layouts

@@ -34,21 +34,41 @@ Read only the references needed for the task:
 1. Fix the source and the useful unit: a concept, theorem, chapter or paper.
    Inspect the actual text and necessary dependencies. Preserve inaccessible
    or unread scope explicitly; a title or abstract cannot supply an unseen proof.
-2. For substantial reading, map in-scope results and prerequisites to source
+2. Set the reader outcome before drafting. For a full-paper explanation,
+   write a self-contained account detailed enough for the reader to recover
+   every main-paper result and its argument without relying on a reading route
+   or the source paper to fill gaps. State the needed definitions and
+   hypotheses where used, reconstruct decisive proofs and dependencies, and
+   explain consequences and limits. A roadmap or summary is not full-paper
+   coverage; label a deliberately bounded overview as such.
+3. Decide the reader-facing format before drafting. Follow an explicit format
+   request. A destination such as `reading/` does not imply Markdown: use a
+   PDF for sustained reading or a handout, slides for a presentation, and
+   Markdown for editable or reference notes when that fits the request. If the
+   medium materially affects usability and context does not resolve it, ask
+   one concise question instead of silently choosing. Link the finished
+   reader-facing artifact directly and retain its editable source as useful.
+4. For substantial reading, map in-scope results and prerequisites to source
    locations before drafting. For a full paper, account for its main text,
    methods, figures/tables and internal appendices; inventory supplements and
    explain those needed for the claims, controls and limitations. A whole-book
    request keeps its full scope while work proceeds through coherent units.
-3. Explain the question, useful result, decisive argument and its limits.
+5. Explain the question, useful result, decisive argument and its limits.
    Put prerequisite bridges where needed and make each source-to-explanation
    connection findable. A summary, source dump or list of links cannot fulfill
    a request to reconstruct the reasoning or reproduce a method.
-4. Deliver useful checked units as they become available, with actual content
+6. Deliver useful checked units as they become available, with actual content
    and remaining gaps. Continue the rest of the requested scope; an interim
    explanation is not completion of the whole book or paper.
-5. Check the explanation against the sources and the reader's ability to use
+7. Check the explanation against the sources and the reader's ability to use
    it. For substantial deliverables, apply the review reference. Report actual
    checks, source versions, covered units and unresolved dependencies.
+
+Before delivery, check the requested language across the complete reader-facing
+artifact, including headings, captions, labels and navigation as well as body
+prose. Preserve original titles and standard technical terms where they serve
+the reader; do not let those exceptions leave ordinary explanatory text in a
+different language.
 
 Keep source originals in `reference/<key>/` or their existing inbox; record
 identity in `reference.md`. Persist notes and derived assets in `reading/`,

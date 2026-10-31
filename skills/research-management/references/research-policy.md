@@ -15,11 +15,16 @@
    and source originals; document relationships in prose and Git history,
    not in a fragile, mandatory cross-program reference graph.
 6. `research/<slug>/inbox/` stores originals untouched; notes and proposed
-   interpretations are separate. `inbox/` stores unassigned input.
-7. First develop and sufficiently edit the research story, then establish
-   the relevant mathematical core in Lean, and only then write its paper.
-   The introduction is part of that story, not a detached summary.
-   A build containing proof placeholders does not establish the claimed core.
+   interpretations are separate. Root `/inbox/` is local staging for unassigned
+   input and its contents are ignored by default.
+7. Develop the research story, prior-literature context, and relevant Lean
+   formalization iteratively. Literature can revise the question or place a
+   result in context; Lean can expose hidden assumptions, sharpen definitions,
+   or reveal counterexamples and formalization gaps. Record what each source
+   supports and let those findings update the story. A build containing proof
+   placeholders does not establish the claimed core, and a Lean result supports
+   only the statement actually formalized. Write the paper from this evolving
+   evidence; its introduction is part of the story, not a detached summary.
    English is the original manuscript; Japanese is supplementary translation
    checking. Record evidence and remaining gaps in prose, without inventing
    additional research statuses or equating paper completion with research

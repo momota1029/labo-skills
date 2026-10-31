@@ -10,7 +10,10 @@ from .plans import MAX_FRONTMATTER_BYTES, SLUG
 CHECKOUT = Path(__file__).resolve().parents[2]
 ASSETS = CHECKOUT / "skills" / "labo-layout" / "assets"
 CORE_DIRECTORIES = ("inbox", "research", "lean", "writing", "reading", "reference", "output")
-IGNORE_PATTERNS = ("output/**", "!output/.gitkeep", "**/.temp/", "*.synctex", "*.synctex.gz")
+IGNORE_PATTERNS = (
+    "/inbox/*", "!/inbox/.gitkeep",
+    "output/**", "!output/.gitkeep", "**/.temp/", "*.synctex", "*.synctex.gz",
+)
 
 
 class LayoutError(ValueError):
@@ -41,7 +44,7 @@ def _path(workspace: Path, relative: str, *, directory: bool = False) -> Path:
 
 
 def init_layout(workspace: Path, *, dry_run: bool = False) -> list[str]:
-    """Add missing core directories, an empty AGENTS.md and build ignores."""
+    """Add missing core directories, an empty AGENTS.md and workspace ignores."""
     workspace = _workspace(workspace)
     directories = [_path(workspace, name, directory=True) for name in CORE_DIRECTORIES]
     agents = _path(workspace, "AGENTS.md")
@@ -57,7 +60,7 @@ def init_layout(workspace: Path, *, dry_run: bool = False) -> list[str]:
     if not agents.exists():
         changes.append("create AGENTS.md (empty)")
     if suffix:
-        changes.append("append build patterns to .gitignore" if ignore.exists() else "create .gitignore")
+        changes.append("append workspace patterns to .gitignore" if ignore.exists() else "create .gitignore")
     if not dry_run:
         workspace.mkdir(parents=True, exist_ok=True)
         for path in directories:
