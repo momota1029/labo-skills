@@ -17,6 +17,21 @@ When author identity, voice, or preferences matter, consult the Labo workspace
 [author profile](../../../profile/author-identity.md) when available. Keep
 personal facts in that profile, not in this public skill.
 
+For writing tasks, consult the workspace's `writing/.rules/` and
+`writing/.corpus/` when present. Load the rules scoped to the manuscript and
+venue, then use a small relevant selection from the corpus as a soft guide to
+wording, sentence rhythm, transitions, register, and rhetorical pacing. The
+corpus informs style without turning every observed feature into a requirement;
+never copy distinctive wording or claims from an example. Keep the detailed
+selection and promotion process in [the style-corpus workflow](references/style-corpus.md).
+
+Keep workspace and field-specific rules in `writing/.rules/`. If the corpus
+does not resolve a recurring preference, describe the gap and offer a concise
+candidate rule for the user to add there. Add a rule to this shared skill when
+the user or assistant identifies it as durable and useful across fields; keep
+personal, venue-specific, and field-specific preferences out of the shared
+skill.
+
 ## Build from the evolving research record
 
 Read the relevant `writing/<paper>/` files and the smallest related evidence
@@ -49,7 +64,6 @@ to make the prose more formal. Make new stylistic additions only when the user
 asks or the draft clearly calls for them. Raise substantive changes to claims,
 emphasis, or tone for the author to decide.
 
-Write English as the manuscript original. Japanese material is supplementary
-translation checking unless the user sets a different purpose. For an
-independent report-only assessment, use `paper-referee`; compile or refresh the
-PDF and SyncTeX through `labo-build` when the user wants a rendered manuscript.
+For an independent report-only assessment, use `paper-referee`; compile or
+refresh the PDF and SyncTeX through `labo-build` when the user wants a rendered
+manuscript.
