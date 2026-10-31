@@ -8,7 +8,15 @@ from pathlib import Path
 import shlex
 import sys
 
-from .build import ENGINE_FLAGS, run_build, run_source_build
+from .build import (
+    DEFAULT_OUTPUT_MAX_FILES,
+    ENGINE_FLAGS,
+    open_default_viewer,
+    output_transaction,
+    prune_output,
+    run_build,
+    run_source_build,
+)
 from .layout import LayoutError, init_layout, new_item
 from .paper import PaperError, map_openings, read_section
 from .plans import PlanError, ResearchPlan, read_workspace
@@ -30,6 +38,57 @@ def _filtered(
 def _workspace(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--workspace", type=Path,
                         help="private labo workspace (repository launcher defaults to its Git superproject)")
+
+
+def _build_arguments(parser: argparse.ArgumentParser) -> None:
+    _workspace(parser)
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--paper", help="standard writing/<slug>/main.tex")
+    target.add_argument("--source", type=Path,
+                        help="explicit TeX document root under writing/ or reading/")
+    parser.add_argument("--engine", choices=sorted(ENGINE_FLAGS),
+                        help="override engine; source builds detect directives/packages or use workspace config")
+    parser.add_argument("--max-files", type=int, default=DEFAULT_OUTPUT_MAX_FILES,
+                        help=f"maximum managed output file count after building (default: {DEFAULT_OUTPUT_MAX_FILES})")
+    parser.add_argument("--no-open", action="store_true",
+                        help="build and prune without opening the PDF viewer")
+    parser.add_argument("--dry-run", action="store_true")
+
+
+def _build(args: argparse.Namespace) -> None:
+    if args.max_files < 2:
+        raise PaperError("--max-files must be at least 2 to retain a PDF and SyncTeX")
+    if args.dry_run:
+        if args.source is not None:
+            command, stem = run_source_build(args.workspace, args.source, args.engine, True)
+        else:
+            command = run_build(args.workspace, args.paper, args.engine or "pdflatex", True)
+            stem = args.paper
+        print(shlex.join(command))
+        return
+
+    viewer_error = None
+    with output_transaction(args.workspace) as output:
+        if args.source is not None:
+            command, stem = run_source_build(args.workspace, args.source, args.engine, False)
+        else:
+            command = run_build(args.workspace, args.paper, args.engine or "pdflatex", False)
+            stem = args.paper
+        result = prune_output(output, args.max_files, protected_stems={stem})
+        if not args.no_open:
+            viewer_error = open_default_viewer(output / f"{stem}.pdf")
+
+    print(f"Build finished: output/{stem}.pdf + SyncTeX")
+    for name in result.removed:
+        print(f"Removed old output/{name}")
+    print(f"Output files: {result.file_count} (limit {result.max_files})")
+    if result.over_limit:
+        print("warning: protected or unrecognized files keep output above the limit", file=sys.stderr)
+    if not args.no_open:
+        if viewer_error:
+            print(f"warning: {viewer_error}", file=sys.stderr)
+        else:
+            print(f"Opened output/{stem}.pdf in the default viewer")
 
 
 def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
@@ -75,14 +134,17 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
         else:
             sub.add_argument("--name", required=True, help="section file stem")
 
-    build = areas.add_parser("build", help="compile paper with PDF and SyncTeX output")
-    _workspace(build)
-    target = build.add_mutually_exclusive_group(required=True)
-    target.add_argument("--paper", help="standard writing/<slug>/main.tex")
-    target.add_argument("--source", type=Path, help="explicit TeX document root, absolute or workspace-relative")
-    build.add_argument("--engine", choices=sorted(ENGINE_FLAGS),
-                       help="override engine; source builds detect directives/packages or use workspace config")
-    build.add_argument("--dry-run", action="store_true")
+    build = areas.add_parser("build", help="compile TeX and manage PDF/SyncTeX output")
+    _build_arguments(build)
+
+    output = areas.add_parser("output", help="build documents and manage files under output/")
+    output_actions = output.add_subparsers(dest="action", required=True)
+    output_build = output_actions.add_parser("build", help="compile a TeX document, open its PDF, and prune old output")
+    _build_arguments(output_build)
+    output_prune = output_actions.add_parser("prune", help="remove the oldest managed PDF/SyncTeX outputs")
+    _workspace(output_prune)
+    output_prune.add_argument("--max-files", type=int, default=DEFAULT_OUTPUT_MAX_FILES,
+                              help=f"maximum output file count (default: {DEFAULT_OUTPUT_MAX_FILES})")
 
     args = parser.parse_args(argv)
     try:
@@ -133,16 +195,18 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
                 else:
                     for opening in openings:
                         print(f"## {opening.section}\n{opening.opening}\n")
-        elif args.area == "build":
-            if args.source is not None:
-                command, stem = run_source_build(args.workspace, args.source, args.engine, args.dry_run)
-            else:
-                command = run_build(args.workspace, args.paper, args.engine or "pdflatex", args.dry_run)
-                stem = args.paper
-            if args.dry_run:
-                print(shlex.join(command))
-            else:
-                print(f"Build finished: output/{stem}.pdf + SyncTeX")
+        elif args.area == "build" or (args.area == "output" and args.action == "build"):
+            _build(args)
+        elif args.area == "output" and args.action == "prune":
+            if args.max_files < 2:
+                raise PaperError("--max-files must be at least 2 to retain a PDF and SyncTeX")
+            with output_transaction(args.workspace) as output_dir:
+                result = prune_output(output_dir, args.max_files)
+            for name in result.removed:
+                print(f"Removed output/{name}")
+            print(f"Output files: {result.file_count} (limit {result.max_files})")
+            if result.over_limit:
+                print("warning: protected or unrecognized files keep output above the limit", file=sys.stderr)
     except (PlanError, PaperError, WorkspaceError, LayoutError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

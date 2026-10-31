@@ -4,8 +4,8 @@ For `writing/<slug>/main.tex`, use the absolute checkout-local launcher
 resolved in `SKILL.md`:
 
 ```sh
-python3 <labo-script> build --paper <slug> --dry-run
-python3 <labo-script> build --paper <slug> --engine pdflatex
+python3 <labo-script> output build --paper <slug> --dry-run
+python3 <labo-script> output build --paper <slug> --engine pdflatex
 ```
 
 `latexmk` runs from the paper directory with:
@@ -25,6 +25,17 @@ latexmk reuses a PDF but its SyncTeX is missing, the command forces at most one
 rebuild; it does not disable the cache on every run or claim success without
 the promised outputs.
 
+After a successful build, the command opens the PDF with the operating
+system's default viewer and prunes the oldest managed output groups toward a
+30-file limit. A PDF and its `.synctex.gz` or `.synctex` file are removed
+together; known standalone PDFs form one-file groups. The current
+build is protected during cleanup. `.gitkeep`, symlinks, and unrecognized files
+are preserved, so the command warns when those files prevent reaching the
+limit. Use `--max-files <count>` to choose another limit, `--no-open` when a
+viewer should stay closed, or `output prune --max-files <count>` to clean
+`output/` without compiling. The internal output lock coordinates build and
+cleanup commands without adding a lock file to `output/`.
+
 Generated PDFs, SyncTeX files, and caches in these build locations are ignored.
 Do not ignore all PDF files by extension: human originals in either inbox must
 remain trackable. Publisher PDFs and arXiv TeX *as input references* belong in
@@ -38,7 +49,8 @@ paths and TeX configuration. Pass the actual document root (not an included
 section) as an absolute or workspace-relative path:
 
 ```sh
-python3 <labo-script> build --source writing/<slug>/<entry>.tex
+python3 <labo-script> output build --source writing/<slug>/<entry>.tex
+python3 <labo-script> output build --source reading/<slug>/<entry>.tex
 ```
 
 Named source builds run from the workspace root, retain intermediate files
@@ -57,11 +69,9 @@ external-document reference requires their auxiliary files. Record the working
 command and any missing inputs; preservation is not a claim that every historic
 variant was rebuilt. Section-reading tools still require their documented layout.
 
-Editors may invoke `build --source` with the document root supplied by their
-language server. Store host-specific settings in the user's workspace, not
-global configuration installed by this skill. In Texlab, `%f` is the root file
-passed to the build command; `build.onSave` enables automatic compilation.
-See the [Texlab configuration](https://github.com/latex-lsp/texlab/wiki/Configuration).
+Editor integrations may invoke `output build --source` with the document root
+supplied by their language server. Store host-specific settings in the user's
+workspace, not global configuration installed by this skill.
 
 ## SyncTeX discovery
 

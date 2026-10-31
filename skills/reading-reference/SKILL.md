@@ -57,7 +57,8 @@ Reuse existing records; no fixed manifest, helper CLI, reviewer roster or model
 is required. Use `labo-layout` only when creating or locating workspace items.
 
 Produce the requested formats and language. For PDFs, build from the notes'
-own source with the available toolchain, place generated output under `output/`,
-and inspect the rendering. Do not run a writing-only build command on a reading
-project. Use `slide-authoring` for requested decks, retaining this skill's
-source checks. Preparing notes does not authorize publication or author contact.
+own TeX root with `labo-build`'s `output build --source reading/<slug>/<root>.tex`
+workflow; it places the PDF and SyncTeX in `output/`, opens the default viewer,
+and prunes old output files. Inspect the rendering. Use `slide-authoring` for
+requested decks, retaining this skill's source checks. Preparing notes does
+not authorize publication or author contact.

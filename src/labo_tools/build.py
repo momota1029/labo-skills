@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from dataclasses import dataclass
+import fcntl
+import os
 from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
+from typing import Iterator
 
 from .paper import PaperError, paper_folder
 
@@ -16,6 +22,117 @@ ENGINE_FLAGS = {
     "xelatex": "-xelatex",
     "uplatex": "-pdfdvi",
 }
+DEFAULT_OUTPUT_MAX_FILES = 30
+_OUTPUT_LOCK_NAME = ".labo-output.lock"
+
+
+@dataclass(frozen=True)
+class OutputPruneResult:
+    removed: tuple[str, ...]
+    file_count: int
+    max_files: int
+
+    @property
+    def over_limit(self) -> bool:
+        return self.file_count > self.max_files
+
+
+@contextmanager
+def output_transaction(workspace: Path) -> Iterator[Path]:
+    """Serialize builds and cleanup that mutate the shared output directory."""
+    workspace = workspace.resolve()
+    output = workspace / "output"
+    if output.is_symlink():
+        raise PaperError("output directory must not be a symlink")
+    output.mkdir(parents=True, exist_ok=True)
+    lock_path = workspace / _OUTPUT_LOCK_NAME
+    if lock_path.is_symlink():
+        raise PaperError("output lock must not be a symlink")
+    with lock_path.open("a", encoding="utf-8") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            yield output
+        finally:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
+def _output_files(output: Path) -> list[Path]:
+    return [
+        path for path in output.iterdir()
+        if path.is_file() or path.is_symlink()
+    ]
+
+
+def prune_output(
+    output: Path, max_files: int = DEFAULT_OUTPUT_MAX_FILES,
+    *, protected_stems: set[str] | None = None,
+) -> OutputPruneResult:
+    """Remove oldest known PDF/SyncTeX groups; caller must hold output_transaction."""
+    if max_files < 2:
+        raise PaperError("--max-files must be at least 2 to retain a PDF and SyncTeX")
+    if output.is_symlink() or not output.is_dir():
+        raise PaperError("output must be a real directory")
+
+    files = _output_files(output)
+    groups: dict[str, list[Path]] = {}
+    for path in files:
+        if path.is_symlink():
+            continue
+        name = path.name
+        if name.endswith(".synctex.gz"):
+            stem = name[:-len(".synctex.gz")]
+        elif name.endswith(".synctex"):
+            stem = name[:-len(".synctex")]
+        elif name.endswith(".pdf"):
+            stem = name[:-len(".pdf")]
+        else:
+            continue
+        groups.setdefault(stem, []).append(path)
+
+    protected = protected_stems or set()
+    candidates = sorted(
+        (
+            max(path.stat().st_mtime for path in members), stem, members
+        )
+        for stem, members in groups.items()
+        if stem not in protected
+    )
+    removed: list[str] = []
+    file_count = len(files)
+    for _, _, members in candidates:
+        if file_count <= max_files:
+            break
+        for path in members:
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            removed.append(path.name)
+            file_count -= 1
+
+    return OutputPruneResult(tuple(removed), file_count, max_files)
+
+
+def open_default_viewer(pdf: Path) -> str | None:
+    """Ask the operating system's default handler to open the built PDF."""
+    try:
+        if os.name == "nt":
+            os.startfile(str(pdf))  # type: ignore[attr-defined]
+        elif sys.platform == "darwin":
+            subprocess.Popen(
+                ["open", str(pdf)], stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+        else:
+            subprocess.Popen(
+                ["xdg-open", str(pdf)], stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+    except (AttributeError, OSError) as exc:
+        return f"could not open the default PDF viewer: {exc}"
+    return None
 
 
 def _engine_options(engine: str | None) -> list[str]:
@@ -152,4 +269,6 @@ def run_source_build(
                 artifact = generated / f"{stem}{suffix}"
                 if _nonempty_file(artifact):
                     shutil.copy2(artifact, output / artifact.name)
+            if not _nonempty_file(output / f"{stem}.pdf") or not _has_synctex(output, stem):
+                raise PaperError("published output is missing its PDF or SyncTeX")
     return command, stem
