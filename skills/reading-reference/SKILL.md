@@ -20,6 +20,11 @@ Ordinary chat stays in chat; create `reading/<slug>/` for requested persistent
 work. Notes may explain the user's own research as well as external sources.
 Review-only requests produce findings, not silent edits.
 
+For a substantial explanation where mathematical clarity, emphasis or pacing
+is the main challenge, also use
+[mathematical-exposition](../mathematical-exposition/SKILL.md). This skill
+continues to own source identity, reading coverage and deliverable checks.
+
 Read only the references needed for the task:
 
 - [Sources](references/source-rules.md): acquisition, versions and coverage.

@@ -7,6 +7,12 @@ description: Draft or revise mathematical research manuscripts from research pla
 
 For each request, follow the [required consultation](../research-router/references/consultation.md).
 
+For substantive mathematical explanation or revisions to exposition, also use
+[mathematical-exposition](../mathematical-exposition/SKILL.md) as a clarity
+overlay; this skill remains responsible for manuscript scope and authorship.
+For a `*_lec.tex` target, also use
+[undergraduate-lecture](../undergraduate-lecture/SKILL.md) for its reader floor.
+
 When author identity, voice, or preferences matter, consult the Labo workspace
 [author profile](../../../profile/author-identity.md) when available. Keep
 personal facts in that profile, not in this public skill.
