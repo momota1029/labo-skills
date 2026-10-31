@@ -1,11 +1,18 @@
 ---
 name: slide-authoring
-description: Create, revise or review mathematical talk slides and paper-reading decks for accurate visible claims, audience understanding, figures and pacing. Use slide-specific standards, not paper-referee completeness rules.
+description: Create, revise or review mathematical talk slides and paper-reading decks for accurate visible claims, audience understanding, figures and pacing. Pair with skill-tuning when the user wants to shape the slide skill and a concrete deck together through a preview and feedback.
 ---
 
 # Make the mathematical path visible
 
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
+
+When the user wants to edit a concrete deck, inspect a preview, and use their
+feedback to tune both the deck and its authoring skill, follow
+[`skill-tuning`](../skill-tuning/SKILL.md) for the iteration and checkpoint.
+Use this skill for the slide-specific audience, mathematics and pacing
+decisions; do not turn one deck's preference into a general rule without
+evidence from the feedback.
 
 Use for talks, seminar slides, paper introductions, reading decks and their
 reviews. Read [slide standards](references/slide-standards.md). Infer the
