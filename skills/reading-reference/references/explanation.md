@@ -42,12 +42,28 @@
   experiment cannot stand in for this connection.
 - **R14 Usable navigation** — Keep source and local figure numbers distinct,
   use descriptive equation/code labels and working links where supported, and
-  test a route from explanation to evidence and back. Source attachments retain
-  their evidential role; reproducing a paper or listing does not itself teach it.
+  test a route from explanation to evidence and back. Link point-of-use
+  citations to their formal entries when a reference list is present, with
+  return links to the relevant method/code passages. When body excerpts and a
+  final code listing or index coexist, link each excerpt to its matching full listing or formal code entry,
+  and link back to the explanation. Give a working link to the complete editable
+  implementation as delivered, as well as to the external source where available.
+  Plain filenames, colored text, a table of contents or viewer history do not
+  supply these routes. Do not require an appendix merely to create navigation.
+  Source attachments retain their evidential role; reproducing a paper or
+  listing does not itself teach it.
   When changing teaching order, give a short correspondence to the original.
 
 For each central contribution, explain the relevant prior capability, what is
-retained or changed, what the new evidence establishes, and its limits. Reuse,
-confirmation and negative results can be substantive contributions. Verify
-comparisons on both sides; do not force a superiority claim or an exhaustive
-literature survey onto every background citation.
+retained or changed, what the new evidence establishes, and its limits. For
+central methods, explain the problem and prior limitation motivating their
+development, the cited predecessors and shared ideas, the new ingredient and
+why it is useful under stated conditions. Connect this to the decisive
+mathematical operation and corresponding code when requested. A formula,
+implementation or performance ranking alone does not explain the contribution.
+Keep the authors' stated motivation distinct from an added teaching
+interpretation, and verify consequential comparisons on both sides. Use a compact comparison
+when it clarifies shared foundations and new ingredients; no fixed template is
+required for every subsection. Reuse, confirmation and negative results can be
+substantive contributions; do not force superiority or an exhaustive history
+onto background references.
