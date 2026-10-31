@@ -21,7 +21,20 @@ observations distinct from instructions.
    weak style cues, not hard constraints. Preserve the author's intent and the
    current request. Learn the pattern rather than reusing distinctive wording,
    sentence sequences, or claims.
-5. If a task-specific choice is made from examples, record the selected source,
+5. Check whether the selected examples actually cover the requested style
+   choice. Coverage is weak when no source is close in field, language, genre,
+   or register; when source versions or locators cannot be checked; or when
+   examples materially disagree and the difference has no clear explanation.
+   A small corpus alone is not a problem if its examples are relevant and
+   trustworthy. Treat coauthored samples as field evidence when an individual's
+   voice cannot be isolated.
+6. When weak coverage limits the requested style match, warn the user with the
+   concrete gap and its effect on the current draft. Explain that a relevant
+   source can be added to `writing/.corpus/index.md`. If the user wants a
+   repeated preference to govern future drafts, explain the scoped-rule option
+   in `writing/.rules/`. Continue the requested work where possible and mark
+   style choices that remain tentative.
+7. If a task-specific choice is made from examples, record the selected source,
    locator, and resulting judgment in
    `writing/<paper>/decisions/corpus.toml` when that file is part of the
    manuscript's decision record.
@@ -29,8 +42,8 @@ observations distinct from instructions.
 ## Promoting observations
 
 The corpus remains descriptive. A single example or an uncertain tendency does
-not create a rule. When examples leave a recurring preference unresolved,
-explain the gap and offer a concise, scoped rule for the user to add to
+not create a rule. When a recurring preference remains unresolved, explain the
+gap and, when useful, offer a concise, scoped rule for the user to add to
 `writing/.rules/`. Keep its evidence and exceptions with the rule. The user may
 also add or revise workspace rules directly.
 

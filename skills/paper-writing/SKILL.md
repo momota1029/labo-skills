@@ -25,12 +25,17 @@ corpus informs style without turning every observed feature into a requirement;
 never copy distinctive wording or claims from an example. Keep the detailed
 selection and promotion process in [the style-corpus workflow](references/style-corpus.md).
 
-Keep workspace and field-specific rules in `writing/.rules/`. If the corpus
-does not resolve a recurring preference, describe the gap and offer a concise
-candidate rule for the user to add there. Add a rule to this shared skill when
-the user or assistant identifies it as durable and useful across fields; keep
-personal, venue-specific, and field-specific preferences out of the shared
-skill.
+Keep workspace and field-specific rules in `writing/.rules/`. If no close
+corpus examples match the requested field, language, genre, or register—or the
+examples materially conflict—warn the user when that gap affects the requested
+style work. Name the weakly grounded choice and explain that a relevant source
+can be added to `writing/.corpus/index.md`. If the user wants a recurring
+preference to become a requirement, explain that it can be added as a scoped
+rule in `writing/.rules/`. Continue with the best available evidence where
+possible, and do not turn sparse examples into rules automatically. Add a rule
+to this shared skill when the user or assistant identifies it as durable and
+useful across fields; keep personal, venue-specific, and field-specific
+preferences out of the shared skill.
 
 ## Build from the evolving research record
 
