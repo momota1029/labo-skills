@@ -5,6 +5,8 @@ description: Initialize a labo research workspace, start research from inbox mat
 
 # Create and use a research workspace
 
+Before substantive work, follow [eligibility and handoff](../research-router/references/editing-capability.md).
+
 For each user request, follow the [required consultation](../research-router/references/consultation.md).
 
 When author identity, voice, or preferences matter, consult the Labo workspace

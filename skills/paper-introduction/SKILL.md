@@ -5,6 +5,8 @@ description: Discover and shape the research story of a mathematical or scientif
 
 # Discover the question; earn the introduction
 
+Before substantive work, follow [eligibility and handoff](../research-router/references/editing-capability.md).
+
 Follow the [required consultation](../research-router/references/consultation.md)
 once for the request; reuse a completed consultation when passing between skills.
 

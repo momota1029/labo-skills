@@ -5,9 +5,9 @@ description: Route mathematical research tasks to the appropriate labo skill and
 
 # Research routing
 
-Before drafting or changing source artifacts, follow
-[editing capability and handoff](references/editing-capability.md). Apply this
-check to your own role as well as delegated workers.
+Before substantive work, follow
+[substantive-work eligibility and handoff](references/editing-capability.md).
+Apply this check to your own role as well as delegated workers.
 
 ## Lightweight workspace preflight
 
@@ -55,9 +55,10 @@ context. Apply the selected skill's normal verification rules.
 Before the first delegation, including consultation, retrieve the models and
 reasoning settings actually callable through the host's delegation interface,
 using its discovery tools/API or runtime catalogue. A provider-wide catalogue
-alone does not establish availability. If readily exposed, obtain your own
-model and effort from matching current-session metadata; otherwise mark them
-unknown, rather than inferring them from defaults or self-description.
+alone does not establish availability. Establish your own model and effort
+from the invocation provenance accepted by the eligibility rule; keep
+unverified values unknown rather than inferring them from defaults or
+self-description.
 
 Before making any subagent call, including the required consultation, follow
 the [subagent invocation contract](references/subagent-invocation.md) for
@@ -69,8 +70,8 @@ advisor, prover, or reviewer roles to model families by convention. Honor explic
 user model constraints; otherwise prefer current suitable models and justify older
 choices. Reuse discovery within the task and pass selections through actual tool
 arguments.
-Apply the same criteria to roles you keep; delegate content-understanding or
-research-reasoning work if your own model's suitability cannot be established.
+Apply the eligibility rule to roles you keep; delegate all substantive work
+when your own eligibility cannot be established.
 
 For each user request, follow the [required consultation](references/consultation.md).
 
@@ -94,7 +95,7 @@ For each user request, follow the [required consultation](references/consultatio
    Do not depend on a proprietary stored subagent persona or prompt template.
    Choose by the mathematical judgment needed to establish correctness:
 
-   - **Routine processing** (organization, extraction, prescribed conversion):
+   - **Literal evidence collection and coordination**:
      lightweight model, low reasoning effort.
    - **Content understanding** (literature synthesis, explaining known arguments):
      general-purpose model, standard or higher reasoning effort.

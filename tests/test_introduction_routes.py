@@ -30,6 +30,7 @@ class IntroductionRouteTests(unittest.TestCase):
     def test_owned_workflows_resolve_under_both_mounts(self):
         expected = {
             "skills/research-router/references/consultation.md",
+            "skills/research-router/references/editing-capability.md",
             "skills/paper-writing/SKILL.md",
             "skills/reading-reference/SKILL.md",
             "skills/reading-reference/references/research-positioning.md",
