@@ -6,6 +6,11 @@ paper's questions, reasoning, methods and evidence while consulting the original
 Apply to the agreed unit; do not turn a short answer or source search into a
 full-paper project. Keep original sources unchanged.
 
+Translation-only requests use
+[japanese-translation](../../japanese-translation/SKILL.md), including when the
+requested translation covers a whole paper. This expanded preparation contract
+applies when explanatory or presentation-preparation materials are requested.
+
 ## Source-aligned reading structure
 
 Retain the target paper's section and subsection numbers, titles' meaning, order

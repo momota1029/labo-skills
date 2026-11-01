@@ -23,6 +23,12 @@ Ordinary chat stays in chat; create `reading/<slug>/` for requested persistent
 work. Notes may explain the user's own research as well as external sources.
 Review-only requests produce findings, not silent edits.
 
+For a standalone Japanese translation, including a Japanese-only reading copy
+of a whole paper, use [japanese-translation](../japanese-translation/SKILL.md).
+Translation alone does not trigger the paper-preparation requirements for
+paired original text, added explanation, literature investigation, or method
+implementation. Requests for those additional materials retain their scope here.
+
 For a substantial explanation where mathematical clarity, emphasis or pacing
 is the main challenge, also use
 [mathematical-exposition](../mathematical-exposition/SKILL.md). This skill

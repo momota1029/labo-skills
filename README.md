@@ -14,6 +14,9 @@ from this evolving evidence, with its introduction as part of the story.
 Papers, slides, reading notes, and web pages are outputs of the
 research institute. Japanese translations are supplementary reading/checking
 material; English remains the manuscript original.
+Use [japanese-translation](skills/japanese-translation/SKILL.md) for a continuous
+Japanese reading copy that includes its equations and figures and preserves
+the source's argument, so wording and reasoning can be examined in Japanese.
 
 ## Separation and ownership
 

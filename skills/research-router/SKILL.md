@@ -85,7 +85,9 @@ For each user request, follow the [required consultation](references/consultatio
    `paper-referee`; paper compilation → `labo-build`; slides →
    `slide-authoring`; research positioning, source collection, paper/book
    explanation and reading notes → `reading-reference`; website →
-   `website-publishing`; skill improvements in the user's fork →
+   `website-publishing`; continuous Japanese reading translations →
+   [japanese-translation](../japanese-translation/SKILL.md);
+   skill improvements in the user's fork →
    `labo-self-improve`; selected upstream
    contributions → `labo-pr`; selective upstream adoption into the fork →
    `labo-sync`.
