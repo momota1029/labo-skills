@@ -59,6 +59,10 @@ alone does not establish availability. If readily exposed, obtain your own
 model and effort from matching current-session metadata; otherwise mark them
 unknown, rather than inferring them from defaults or self-description.
 
+Before making any subagent call, including the required consultation, follow
+the [subagent invocation contract](references/subagent-invocation.md) for
+thread isolation, assignment packets, and independent-review boundaries.
+
 Choose each needed role's model and effort from that set using task requirements
 and available model-selection skills or current official guidance. Do not fix
 advisor, prover, or reviewer roles to model families by convention. Honor explicit
@@ -85,11 +89,9 @@ For each user request, follow the [required consultation](references/consultatio
    contributions → `labo-pr`; selective upstream adoption into the fork →
    `labo-sync`.
 4. Beyond the required consultation, if task-specific delegation is useful,
-   formulate a short task-specific assignment *from the selected skill*.
+   formulate a short task-specific assignment *from the selected skill* and
+   follow the [subagent invocation contract](references/subagent-invocation.md).
    Do not depend on a proprietary stored subagent persona or prompt template.
-   Independent result reviews start in a fresh context with the original request,
-   constraints, artifact, and necessary primary sources. Do not inherit the
-   implementation conversation or the author's or coordinator's verdict.
    Choose by the mathematical judgment needed to establish correctness:
 
    - **Routine processing** (organization, extraction, prescribed conversion):
