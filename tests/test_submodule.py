@@ -271,6 +271,114 @@ class SubmoduleRuntimeTests(unittest.TestCase):
             if name != self.mount_name:
                 self.assertFalse((self.workspace / name).exists())
 
+    def test_scope_inventory_and_replay_plan_use_mount_without_host_runtime_writes(self):
+        def put(name, text):
+            path = self.workspace / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+
+        main = "writing/example/main.tex"
+        part = "writing/example/part.tex"
+        catalog = "research/private-project/claims.yaml"
+        put(main, "\\input{part}\n")
+        put(part, "Synthetic private manuscript.\n")
+        put("lean/example/Example.lean", "theorem Example.ok : True := True.intro\n")
+        put("lean/example/lean-toolchain", "leanprover/lean4:v4.19.0\n")
+        put("lean/example/lakefile.toml", 'name = "example"\n')
+        put("lean/example/lake-manifest.json", '{"packages": []}\n')
+        put(catalog, yaml.safe_dump({"schema_version": 1, "claims": {"example-claim": {
+            "statement": "Synthetic fixture, not a checked research claim.", "status": "unverified",
+            "formal": {"project": "lean/example", "source": "lean/example/Example.lean",
+                       "declaration": "Example.ok", "kernel": {"verdict": "pending", "report": None},
+                       "alignment": {"verdict": "pending", "report": None}},
+        }}}))
+        before = {
+            path.relative_to(self.workspace).as_posix(): path.read_bytes()
+            for directory in ("research", "writing", "lean")
+            for path in (self.workspace / directory).rglob("*") if path.is_file()
+        }
+        result = self.invoke(self.unrelated, "evidence", "scope", "--paper", "example", "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual({item["path"] for item in json.loads(result.stdout)["dependencies"]}, {main, part})
+        result = self.invoke(self.unrelated, "evidence", "scope", "--source", main,
+                             "--file", main, "--strict")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("not covered by selected inputs: " + part, result.stdout)
+        result = self.invoke(self.unrelated, "evidence", "status", "--research", "private-project",
+                             "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        inventory = json.loads(result.stdout)
+        self.assertEqual(inventory["adoption"], "catalog")
+        self.assertEqual(inventory["claims"][0]["id"], "example-claim")
+        self.assertFalse(inventory["claims"][0]["has_current_proof_review"])
+        result = self.invoke(self.unrelated, "evidence", "replay", "--catalog", catalog,
+                             "--claim", "example-claim", "--toolchain-dir", str(self.root / "not-installed"),
+                             "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        plan = json.loads(result.stdout)
+        self.assertEqual(plan["status"], "plan")
+        self.assertFalse(plan["executed"])
+        self.assertTrue(all(command["status"] == "not-run" for command in plan["commands"]))
+        self.assertEqual(plan["approval"], "not-granted")
+        after = {
+            path.relative_to(self.workspace).as_posix(): path.read_bytes()
+            for directory in ("research", "writing", "lean")
+            for path in (self.workspace / directory).rglob("*") if path.is_file()
+        }
+        self.assertEqual(after, before)
+        self.assertFalse((self.workspace / "research/private-project/reviews").exists())
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+        for name in ("scripts", "src", "skills", ".agents", ".claude", "policy-runtime"):
+            if name != self.mount_name:
+                self.assertFalse((self.workspace / name).exists())
+
+    def test_staged_reading_uses_private_session_under_each_mount(self):
+        source = "writing/example/reader.tex"
+        session = "research/private-project/reviews/reader.json"
+        spoiler = "MOUNTED_FUTURE_SPOILER_SENTINEL"
+        path = self.workspace / source
+        path.parent.mkdir(parents=True)
+        original = "Visible first question.\nVisible second relation.\n" + spoiler + "\n"
+        path.write_text(original, encoding="utf-8", newline="")
+        target = self.workspace / session
+        target.parent.mkdir()
+        result = self.invoke(self.unrelated, "paper", "reading", "start", "--source", source,
+                             "--session", session, "--reader", "Synthetic mount reader", "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["through_line"], 0)
+        self.assertNotIn(spoiler, result.stdout)
+        result = self.invoke(self.unrelated, "paper", "reading", "next", "--session", session,
+                             "--through-line", "1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "Visible first question.\n")
+        frozen = target.read_bytes()
+        result = self.invoke(self.unrelated, "paper", "reading", "next", "--session", session,
+                             "--through-line", "2")
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(target.read_bytes(), frozen)
+        result = self.invoke(self.unrelated, "paper", "reading", "observe", "--session", session,
+                             "--understanding", "The visible text asks a question.",
+                             "--confusion", "The object is unspecified.", "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(json.loads(result.stdout)["awaiting_observation"])
+        result = self.invoke(self.unrelated, "paper", "reading", "next", "--session", session,
+                             "--through-line", "2", "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        exposed = json.loads(result.stdout)
+        self.assertEqual(exposed["text"], "Visible first question.\nVisible second relation.\n")
+        self.assertNotIn(spoiler, result.stdout)
+        frozen = target.read_bytes()
+        result = self.invoke(self.unrelated, "paper", "reading", "status", "--session", session)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("context independence is not certified", result.stdout)
+        self.assertNotIn(spoiler, result.stdout)
+        self.assertEqual(target.read_bytes(), frozen)
+        self.assertEqual(path.read_text(encoding="utf-8"), original)
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+        for name in ("scripts", "src", "skills", ".agents", ".claude", "policy-runtime"):
+            if name != self.mount_name:
+                self.assertFalse((self.workspace / name).exists())
+
 
 class ClaudeSubmoduleRuntimeTests(SubmoduleRuntimeTests):
     mount_name = ".claude"

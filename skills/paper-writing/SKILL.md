@@ -65,6 +65,11 @@ Preserve the previous report and expose a stale review; do not silently renew
 its hash, promote its verdict, or imply that a changed claim remains reviewed.
 Recommend the smallest necessary new review. Do not create catalogs or review
 records for unrelated work, or make them a prerequisite for ordinary writing.
+For an adopted TeX writing review, use the optional
+[scope diagnostic](../research-management/references/evidence-scope.md) to compare
+literal inputs with the selected files/tree or existing record, especially after
+adding includes, figures or bibliography files. Resolve omissions explicitly;
+neither the diagnostic nor a fresh snapshot silently renews an earlier pass.
 
 ## Preserve the author's argument and voice
 

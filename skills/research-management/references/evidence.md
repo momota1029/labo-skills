@@ -5,6 +5,7 @@
 - [Lean alignment](#lean-alignment)
 - [Snapshot a review's actual inputs](#snapshot-a-reviews-actual-inputs)
 - [Check the selected records](#check-the-selected-records)
+- [Supporting opt-in workflows](#supporting-opt-in-workflows)
 - [Design provenance](#design-provenance)
 
 ## Authority and scope
@@ -125,9 +126,12 @@ abstract results still lacking their concrete application and any unformalized
 direction. Use the [alignment outline](../assets/formal-alignment.md) only when
 a new report is needed; do not duplicate an adequate existing coverage record.
 
-The checker verifies record shape, file existence, and freshness. It does not
+`evidence check` verifies record shape, file existence, and freshness. It does not
 run Lean, parse theorem semantics, validate log truthfulness, or grant formal
-verification. Never infer a completed proof from these checks.
+verification. For explicitly authorized execution, use the separately documented
+[selected-source replay](formal-replay.md); it plans by default and still does
+not establish informal alignment. Never infer a completed proof from a structural
+check or promote a claim merely because a replay completed.
 
 ## Snapshot a review's actual inputs
 
@@ -159,6 +163,9 @@ Keep review reports outside a snapshotted tree to avoid self-invalidation.
 For a local review, prefer explicit files or a smaller tree. External includes,
 figures, and sources not in the selected tree require explicit inputs. Cache
 exclusions are not a TeX/Lean dependency resolver.
+The read-only [scope diagnostic](evidence-scope.md) can suggest literal TeX
+inputs missing from this selection. It reports ambiguity and unresolved dynamic
+inputs, never promises complete TeX interpretation or widens a saved snapshot.
 
 The active evidence protocol is automatically fingerprinted as a policy input;
 proof and writing reviews also include the numbered paper-referee standards.
@@ -211,6 +218,22 @@ paper is ready. Coverage remains limited to the explicitly selected inputs.
 Run only on the chosen catalog and records. Do not create records or require
 unrelated programs to migrate merely to silence diagnostics. A report-only
 request does not authorize recording approval or editing the manuscript.
+
+## Supporting opt-in workflows
+
+These commands use the same source-local runtime and skill-owned rules. They
+create no new workspace-wide policy and do not replace substantive review:
+
+| Need | Entry point | Interpretation |
+| --- | --- | --- |
+| Detect omitted manuscript inputs | [`evidence scope`](evidence-scope.md) | Conservative dependency diagnostics; no automatic scope expansion |
+| Inspect one program's coverage | [`evidence status`](evidence-status.md) | Recorded claim status and direct review freshness, separately |
+| Re-execute one mapped Lean source | [`evidence replay`](formal-replay.md) | Plan by default; explicit trusted execution, declaration and axiom observations |
+| Preserve an actual first-reader sequence | [`paper reading`](../../paper-referee/references/staged-reading.md) | Cumulative prefixes and append-only observations; no independence certificate |
+
+Changing this protocol's bytes makes existing snapshots stale by design. A
+policy update is not a reason to rehash an old passing verdict automatically;
+determine and perform the smallest relevant recheck.
 
 ## Design provenance
 

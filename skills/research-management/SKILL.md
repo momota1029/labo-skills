@@ -66,3 +66,12 @@ standalone policy checkout. For a frontmatter-only inventory, run
 `python3 <labo-script> research list --format json`.
 For an adopted evidence catalog or review, run `evidence check` on those
 explicit paths; do not make unrelated research pass a new mandatory gate.
+
+For a program-level account of recorded claims and review coverage, read
+[evidence status](references/evidence-status.md) and use `evidence status
+--research <slug>`. It reads only the selected program or explicit records;
+absence of a catalog does not trigger migration. For manuscript input omissions,
+read [scope diagnostics](references/evidence-scope.md). For authorized actual
+Lean execution, read [selected-source replay](references/formal-replay.md):
+`evidence replay` plans only unless `--execute` is explicit, uses prepared trusted
+code, and never equates a completed replay with informal alignment or approval.

@@ -147,6 +147,12 @@ chosen Python environment if it is missing:
 python3 -m pip install 'PyYAML>=6,<7'
 ```
 
+On native Windows, use the selected `python` executable in place of `python3`.
+The runtime does not require WSL; host-relative input names in evidence and
+reader records still use normalized forward-slash paths. CLI text/JSON output is
+UTF-8, including when piped on Windows; staged prefix text preserves original
+line-ending bytes.
+
 Do **not** install this project to use it. From the private `labo` root,
 invoke the launcher in the submodule. Replace `example-paper` with an actual
 paper directory:
@@ -168,6 +174,9 @@ standalone checkout requires `--workspace /path/to/private/labo`. An agent
 resolves the launcher relative to the real loaded skill directory, including
 when that directory was reached through a symlink. An explicitly supplied
 relative workspace path is relative to the invocation directory.
+Place `--workspace` after the selected leaf command, for example
+`python3 /path/to/labo-skills/scripts/labo.py evidence status --research example
+--workspace /path/to/private/labo`; it is not a top-level option before `evidence`.
 
 ## Create and use the research workspace
 
@@ -233,6 +242,87 @@ structural and freshness checks, not mathematical certification, automatic
 Lean execution, or permission to renew a passing review. Ordinary research,
 writing, and `research check` do not require these files.
 
+### Scope diagnostics and program inventory
+
+Before deciding that a writing review covers a manuscript, inspect literal TeX
+dependencies and compare them with the intended selection:
+
+```sh
+python3 .agents/scripts/labo.py evidence scope --paper reconstruction \
+  --record research/finite-observations/reviews/writing.yaml --format json
+python3 .agents/scripts/labo.py evidence status --research finite-observations
+```
+
+[`evidence scope`](skills/research-management/references/evidence-scope.md) follows
+supported literal includes, graphics, bibliography files, and local classes or
+packages. It reports missing, omitted, ambiguous, and unresolved inputs instead
+of silently adding them to a review. Dynamic TeX and external package resolution
+remain explicit limitations. Without `--record`, `--file`, or `--tree`, it only
+discovers dependencies and makes no coverage claim.
+The default diagnostic compilation-root candidate is the source's parent. Use
+`--compile-root .` for workspace-root builds such as `output build --source`,
+or name another actual workspace-relative working directory explicitly.
+
+[`evidence status`](skills/research-management/references/evidence-status.md)
+reads one selected program's optional catalog and reviews, showing recorded
+claim statuses separately from current/stale/pending/failed review coverage.
+Writing reviews do not grant proof coverage; dependencies do not inherit a
+review merely because their fingerprints were included. Historical/conflicting
+records remain visible. Use repeatable `--record` instead of default discovery
+for a narrow active-record check. Both commands are read-only, support JSON and
+`--strict`, and never migrate a program without an adopted catalog.
+
+### Explicit Lean replay
+
+Inspect a read-only execution plan for one exact formal mapping:
+
+```sh
+python3 .agents/scripts/labo.py evidence replay \
+  --catalog research/finite-observations/claims.yaml --claim finite-cover
+```
+
+Only an explicit `--execute` invokes a prepared, pinned native Lean toolchain.
+[`evidence replay`](skills/research-management/references/formal-replay.md)
+builds the selected source into a fresh temporary artifact, then observes the
+mapped declaration's type, printed definition, and transitive axioms. It records
+actual commands, output and before/after input hashes, and fails on `sorryAx`.
+Other axioms remain visible for trust review. Use `--format json` for the full
+auditable report; text output omits the potentially large file-hash maps.
+
+This is not a full Lake rebuild or independent proof checker. Prepared imports
+are fingerprinted, not rebuilt; the supported conventional layout and exact
+version requirements are deliberately narrow. Missing prerequisites remain
+unavailable: no Lake, elan, installer, cache download or dependency fetch is
+launched. **Lean code can execute arbitrary code during compilation**, so execute
+only trusted projects/dependencies or use an external sandbox. The runner itself
+is not network/filesystem isolation. A completed replay never updates a claim,
+approves a review, or establishes informal-to-formal alignment.
+
+### Staged first-reader records
+
+When staged reading is explicitly requested, the coordinator can use
+[`paper reading`](skills/paper-referee/references/staged-reading.md):
+
+```sh
+python3 .agents/scripts/labo.py paper reading start \
+  --source writing/reconstruction/sections/01-introduction.tex \
+  --session research/finite-observations/reviews/reader-one.json --reader reader-one
+python3 .agents/scripts/labo.py paper reading next \
+  --session research/finite-observations/reviews/reader-one.json --through-line 8
+python3 .agents/scripts/labo.py paper reading observe \
+  --session research/finite-observations/reviews/reader-one.json \
+  --understanding 'The visible text asks ...' --confusion 'The first missing relation is ...'
+```
+
+The private session's parent must already exist. Each exposure returns only the
+cumulative prefix; initial understanding and first confusion must be recorded
+before another exposure. `observe --rescue` appends later recovery without
+rewriting that initial record. Changed source bytes/identity invalidate the
+session. `status` shows progress without future text or the observation prose.
+For independent reading, a coordinator must actually supply a fresh reader only
+the neutral brief and exposed prefix; `--mode independent` alone proves nothing.
+This is staged output, not a filesystem sandbox, signed log, or review approval.
+
 ## Inspect and build
 
 `research list` reads *only the YAML frontmatter* of `research/*/plan.md`.
@@ -260,8 +350,8 @@ Successful builds prune the oldest known PDF/SyncTeX groups toward a default
 limit of 30 output files. The viewer stays closed unless `--open` is supplied.
 The command warns if protected or unrecognized files keep the count above the
 limit. Use `--max-files` to change it or `output prune --max-files 30` to clean
-without compiling. A workspace-level lock serializes concurrent builds and
-cleanup.
+without compiling. A retained workspace-level lock serializes concurrent builds
+and cleanup through native POSIX or Windows locking.
 
 For existing document names, use `output build --source` with a TeX root under
 `writing/<slug>/` or `reading/<slug>/`. Its output pair is named by the project
@@ -283,15 +373,31 @@ Tests include actual temporary Git submodules mounted at `.agents`, `.claude`,
 and a neutral path, with source-local execution from unrelated working
 directories and without installing this project. Evidence tests also check
 that changed policy bytes invalidate a review without host-side policy copies.
-Tests and fixtures contain no private
-research. The CLI never writes outside the selected private workspace. It
+The [CI workflow](.github/workflows/ci.yml) runs the full suite natively on Linux
+and Windows with Python 3.11 and 3.13, including cross-process output locking and
+all three submodule mounts. A separate Linux job explicitly prepares official
+Lean 4.19.0 from a fixed URL with a pinned SHA-256, then requires the real smoke
+test: ordinary theorem, transitive `sorryAx`, and custom axiom. This dependency
+preparation is a CI step, not an implicit feature of the replay runner.
+
+To require the same real smoke with an already prepared local toolchain, set
+`LABO_REPLAY_TOOLCHAIN_DIR` to its directory and `LABO_REQUIRE_REAL_LEAN=1` when
+running `test_formal_replay.py`. Without a selected toolchain that test truthfully
+skips; requiring it turns missing preparation into failure. Mocked tests and the
+Linux real-Lean job do not establish real Windows Lean execution or TeX visual
+correctness.
+
+Tests and fixtures contain no private research. Workspace mutations are scoped
+to the selected private workspace; explicit Lean execution also uses a temporary
+build directory and can have the trusted code's own side effects. The CLI
 performs no GitHub mutations by itself. `pyproject.toml` remains available for
 development or optional packaging, not as the submodule deployment mechanism.
 
 ## Scope
 
 The tools implement workspace initialization, item creation, research inventory,
-scoped TeX reading, TeX builds, and output cleanup. Skills define review,
+optional evidence snapshots/scope/status/replay, scoped and staged TeX reading,
+TeX builds, and output cleanup. Skills define review,
 research lifecycle, directory layout, self-improvement, PR, slides, and web
 publishing workflows. A public PR is a
 deliberate choice, using the available Git/GitHub tools or a direct human push;
