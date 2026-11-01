@@ -332,6 +332,47 @@ class SubmoduleRuntimeTests(unittest.TestCase):
             if name != self.mount_name:
                 self.assertFalse((self.workspace / name).exists())
 
+    def test_dependency_graph_uses_actual_mount_from_unrelated_cwd_read_only(self):
+        folder = self.workspace / "research/private-project"
+        source = folder / "source.md"
+        source.write_text("Synthetic dependency inputs.\n", encoding="utf-8")
+        graph = folder / "dependencies.yaml"
+        graph.write_text(yaml.safe_dump({
+            "schema_version": 1,
+            "scope": "Synthetic selected proof.",
+            "coverage": {"status": "partial", "note": "Synthetic declared edges only."},
+            "nodes": [
+                {"id": key, "kind": "lemma", "statement": f"Synthetic {key}.",
+                 "source": {"path": "research/private-project/source.md", "locator": key},
+                 "requires": requires}
+                for key, requires in (("conclusion", ["bound"]), ("bound", ["ambient"]), ("ambient", []))
+            ],
+        }), encoding="utf-8")
+        before = {path: path.read_bytes() for path in folder.rglob("*") if path.is_file()}
+        for action, extra, expected in (
+            ("sort", [], ["ambient", "bound", "conclusion"]),
+            ("closure", ["--node", "bound"], ["ambient", "bound"]),
+            ("impact", ["--node", "bound"], ["bound", "conclusion"]),
+        ):
+            with self.subTest(action=action):
+                result = self.invoke(
+                    self.unrelated, "dependencies", action,
+                    "--graph", "research/private-project/dependencies.yaml", "--format", "json", *extra,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                analysis = json.loads(result.stdout)
+                self.assertEqual(analysis["status"], "ok")
+                field = "topological_order" if action == "sort" else "included"
+                self.assertEqual(analysis[field], expected)
+                self.assertEqual(analysis["source_inputs"], {
+                    "research/private-project/source.md": hashlib.sha256(source.read_bytes()).hexdigest(),
+                })
+        self.assertEqual(before, {path: path.read_bytes() for path in folder.rglob("*") if path.is_file()})
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+        for name in ("scripts", "src", "skills", ".agents", ".claude", "policy-runtime"):
+            if name != self.mount_name:
+                self.assertFalse((self.workspace / name).exists())
+
     def test_staged_reading_uses_private_session_under_each_mount(self):
         source = "writing/example/reader.tex"
         session = "research/private-project/reviews/reader.json"

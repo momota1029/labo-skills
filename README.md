@@ -229,10 +229,38 @@ No search certifies all prior work or proves novelty from an absence of hits.
 This is a skill workflow, not a new CLI gate, mandatory claim catalog or copied
 host policy.
 
+Writing and in-scope reviews also use a
+[corpus-backed terminology audit](skills/reading-reference/references/terminology-audit.md):
+compare actual object types, roles and conventions with inspected definitions
+and formulas, preserving legitimate alternatives and recording source gaps.
+Corpus style cues remain soft; semantic verification checks the mathematics.
+
 For an introduction's central question, concrete significance and narrative
 order, use [paper-introduction](skills/paper-introduction/SKILL.md) alongside
 `paper-writing`. It shapes the story from the actual results and positioning
 evidence, without forcing a novelty claim or fixed paragraph formula.
+
+For whole-paper design or structural reassessment, use
+[paper-structure](skills/paper-structure/SKILL.md). It maps current material to
+proposed sections with purpose, inputs, outputs and proof/reader routes.
+[knowledge-dependencies](skills/knowledge-dependencies/SKILL.md) manages an
+optional sourced graph of definitions, assumptions and results, distinguishing
+hard prerequisites from narrative references. Its checked-out Python harness
+sorts declared dependencies, diagnoses actual cycles separately from downstream
+blocked nodes, checks full proposed orders, and computes prerequisite closure
+or change impact:
+
+```sh
+python3 .agents/scripts/labo.py dependencies sort --graph research/example/dependencies.yaml
+python3 .agents/scripts/labo.py dependencies closure --graph research/example/dependencies.yaml --node conclusion
+python3 .agents/scripts/labo.py dependencies impact --graph research/example/dependencies.yaml --node uniform
+```
+
+The [graph contract](skills/knowledge-dependencies/references/graph.md) defines
+the schema and all five commands. Checks cover every **declared** hard edge;
+complete extraction and mathematical validity require source review. A proof
+schedule and a paper's reader order can differ through clear early statements
+and later proofs. Ordinary manuscripts need no dependency-graph migration.
 
 ## Optional evidence and review records
 
@@ -430,6 +458,7 @@ development or optional packaging, not as the submodule deployment mechanism.
 ## Scope
 
 The tools implement workspace initialization, item creation, research inventory,
+optional sourced mathematical dependency checks/order/closure/impact,
 optional evidence snapshots/scope/status/replay, scoped and staged TeX reading,
 TeX builds, and output cleanup. Skills define review,
 research lifecycle, directory layout, self-improvement, PR, slides, and web

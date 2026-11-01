@@ -31,6 +31,10 @@ continues to own source identity, reading coverage and deliverable checks.
 Read only the references needed for the task:
 
 - [Sources](references/source-rules.md): acquisition, versions and coverage.
+- [Terminology and notation audit](references/terminology-audit.md): compare
+  manuscript object types, names and conventions against actual same-role
+  corpus definitions and primary-source pages; distinguish semantic defects,
+  undefined labels, legitimate alternatives and stylistic preference.
 - [Research positioning](references/research-positioning.md): mandatory
   literature investigation at research/writing checkpoints, precise contribution
   comparisons, a reusable memo, and notation/convention lineage.

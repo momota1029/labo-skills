@@ -111,6 +111,14 @@ use [paper-introduction](../paper-introduction/SKILL.md). It owns discovery and
 telling order, while `paper-writing` owns manuscript edits and `reading-reference`
 owns the positioning investigation. A report-only request remains report-only.
 
+For whole-paper architecture or structural reassessment, use
+[paper-structure](../paper-structure/SKILL.md). It maps section roles and
+proposed moves from the actual question and proof route. For explicit
+definition/assumption/result dependencies, topological order, cycle diagnosis,
+prerequisite closure or change impact, use
+[knowledge-dependencies](../knowledge-dependencies/SKILL.md). Its declared hard
+dependencies constrain logical order; reader order can include clear previews.
+
 Research planning, substantive manuscript writing, changed contribution claims,
 submission preparation, and own-research talks with novelty/comparative claims
 must pass the [research-positioning checkpoints](../reading-reference/references/research-positioning.md).

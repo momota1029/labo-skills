@@ -268,6 +268,20 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
     evidence_replay.add_argument("--toolchain-dir", type=Path, help="already installed pinned Lean toolchain directory")
     evidence_replay.add_argument("--format", choices=("text", "json"), default="text")
 
+    dependencies = areas.add_parser("dependencies", help="check an adopted mathematical dependency graph")
+    dependency_actions = dependencies.add_subparsers(dest="action", required=True)
+    for action in ("check", "sort", "order", "closure", "impact"):
+        sub = dependency_actions.add_parser(action)
+        _workspace(sub)
+        sub.add_argument("--graph", required=True, help="workspace-relative sourced graph YAML")
+        sub.add_argument("--format", choices=("text", "json"), default="text")
+        if action == "order":
+            sub.add_argument("--node", action="append", default=[],
+                             help="repeat in the proposed full dependency order")
+        elif action in {"closure", "impact"}:
+            sub.add_argument("--node", action="append", required=True,
+                             help="repeat for selected targets or changed nodes")
+
     paper = areas.add_parser("paper", help="local section-by-section TeX reading")
     paper_actions = paper.add_subparsers(dest="action", required=True)
     for name in ("map", "section"):
@@ -371,6 +385,35 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
                     print("Checks cover recorded structure and input identity, not mathematical correctness.")
                 return int(result["status"] == "error" or
                            (args.strict and result["status"] == "warning"))
+        elif args.area == "dependencies":
+            from .dependencies import inspect_dependencies
+            result = inspect_dependencies(args.workspace, graph=args.graph, action=args.action,
+                                          nodes=getattr(args, "node", None))
+            if args.format == "json":
+                print(json.dumps(result, ensure_ascii=False, indent=2))
+            else:
+                print(f"{result['status'].upper()}: {result['node_count']} nodes, "
+                      f"{result['requires_count']} hard dependencies; "
+                      f"recorded coverage={result['recorded_coverage']['status']}")
+                label = "Topological order" if result["order_complete"] else "Partial topological order"
+                print(label + ": " + ", ".join(result["topological_order"]))
+                for component, witness in zip(result["cyclic_components"], result["cycle_witnesses"]):
+                    print("Cyclic component: " + ", ".join(component))
+                    print("Cycle (each node requires the next): " + " -> ".join(witness))
+                if result["blocked_nodes"]:
+                    print("Blocked downstream: " + ", ".join(result["blocked_nodes"]))
+                if "order_check" in result:
+                    print("Proposed full order: " + ("valid" if result["order_check"]["valid"] else "invalid"))
+                    for field in ("missing", "unknown", "duplicates", "violations"):
+                        if result["order_check"][field]:
+                            print(field + ": " + json.dumps(result["order_check"][field], ensure_ascii=False))
+                if "included" in result:
+                    print("Included (selected nodes included): " + ", ".join(result["included"]))
+                    print("Selection order complete: " + str(result["selection_order_complete"]))
+                    print("Selection order: " + ", ".join(result["selection_order"]))
+                for limit in result["limits"]:
+                    print("limit: " + limit)
+            return int(result["status"] == "error")
         elif args.area == "research":
             plans, errors = read_workspace(args.workspace)
             if errors:
