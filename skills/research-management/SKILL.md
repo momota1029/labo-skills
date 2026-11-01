@@ -35,6 +35,15 @@ derivation in the linked record. Open claims need a concrete proof route,
 missing lemmas, and known obstacles. Never infer novelty from an absent
 citation or an unsuccessful search.
 
+For load-bearing results or reviews that need durable reuse, read the optional
+[evidence protocol](references/evidence.md). It defines stable claim IDs,
+scoped proof/formal evidence, and review-input snapshots, with templates and
+checks owned by this checkout. Reuse an adopted catalog when relevant; create
+one only within the requested work. Keep exploration in prose when a catalog
+would add no value. Its claim statuses do not change the plan's two statuses.
+Never treat a structural check or an unchanged snapshot as proof certification,
+and never promote a claim from the owner's praise or permission to edit.
+
 Use `labo-layout` for workspace and program creation. A request to start
 research from supplied material authorizes creating the necessary plan and
 source directory; reuse a relevant existing program when appropriate.
@@ -55,3 +64,5 @@ installing the project. The launcher detects the private Git superproject;
 use `--workspace /absolute/path/to/labo` to override it or when using a
 standalone policy checkout. For a frontmatter-only inventory, run
 `python3 <labo-script> research list --format json`.
+For an adopted evidence catalog or review, run `evidence check` on those
+explicit paths; do not make unrelated research pass a new mandatory gate.

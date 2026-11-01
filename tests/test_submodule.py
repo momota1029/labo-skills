@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -7,12 +8,16 @@ import sys
 import tempfile
 import unittest
 
+import yaml
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 @unittest.skipUnless(shutil.which("git"), "Git is required for actual submodule tests")
 class SubmoduleRuntimeTests(unittest.TestCase):
+    mount_name = ".agents"
+
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
@@ -40,10 +45,10 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         self.commit_all(self.workspace, "Private workspace fixture")
         self.git(
             self.workspace, "-c", "protocol.file.allow=always", "submodule", "add",
-            str(self.source), ".agents",
+            str(self.source), self.mount_name,
         )
         self.commit_all(self.workspace, "Pin policy submodule")
-        self.mount = self.workspace / ".agents"
+        self.mount = self.workspace / self.mount_name
         self.assertTrue((self.mount / ".git").is_file())
         self.launcher = self.mount / "scripts" / "labo.py"
         self.unrelated = self.root / "unrelated-directory"
@@ -103,7 +108,7 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["research"][0]["slug"], "other-project")
 
     def test_real_skill_directory_resolves_through_user_chosen_symlink(self):
-        skill_link = self.workspace / "reading" / ".agents" / "skills" / "research-management"
+        skill_link = self.workspace / "reading" / self.mount_name / "skills" / "research-management"
         skill_link.parent.mkdir(parents=True)
         try:
             skill_link.symlink_to(self.mount / "skills" / "research-management", target_is_directory=True)
@@ -177,8 +182,8 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("--workspace", result.stderr)
 
-    def test_layout_creation_uses_direct_agents_mount_and_private_superproject(self):
-        self.assertTrue((self.workspace / ".agents/skills/labo-layout/SKILL.md").is_file())
+    def test_layout_creation_uses_dependency_mount_without_host_runtime_copies(self):
+        self.assertTrue((self.mount / "skills/labo-layout/SKILL.md").is_file())
         result = self.invoke(self.unrelated, "layout", "init")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue((self.workspace / "inbox").is_dir())
@@ -191,7 +196,89 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         result = self.invoke(self.unrelated, "research", "check")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("2 research plan", result.stdout)
+        self.assertEqual((self.workspace / "AGENTS.md").read_bytes(), b"")
+        for name in ("scripts", "src", "skills", ".agents", ".claude"):
+            if name != self.mount_name:
+                with self.subTest(absent_host_copy=name):
+                    self.assertFalse((self.workspace / name).exists())
         self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+
+    def test_evidence_workflow_uses_mounted_policy_and_private_workspace(self):
+        catalog = "research/private-project/claims.yaml"
+        evidence = "research/private-project/evidence.md"
+        record = "research/private-project/review.yaml"
+        result = self.invoke(self.unrelated, "evidence", "init", "--catalog", catalog)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            (self.workspace / catalog).read_bytes(),
+            (self.mount / "skills/research-management/assets/claims.yaml").read_bytes(),
+        )
+        (self.workspace / evidence).write_text("Synthetic evidence, not a checked proof.\n", encoding="utf-8")
+        (self.workspace / catalog).write_text(yaml.safe_dump({
+            "schema_version": 1,
+            "claims": {"scoped-example": {
+                "statement": "Synthetic scoped claim.", "status": "unverified",
+                "evidence": [evidence], "dependencies": [],
+            }},
+        }), encoding="utf-8")
+        result = self.invoke(
+            self.unrelated, "evidence", "snapshot", "--kind", "proof",
+            "--catalog", catalog, "--claim", "scoped-example", "--file", evidence,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn(str(self.workspace), result.stdout)
+        snapshot = yaml.safe_load(result.stdout)
+        self.assertEqual(snapshot["verdict"], "pending")
+        self.assertEqual(snapshot["catalog"], catalog)
+        self.assertEqual(set(snapshot["claims"]), {"scoped-example"})
+        self.assertEqual(snapshot["files"], {
+            evidence: hashlib.sha256((self.workspace / evidence).read_bytes()).hexdigest(),
+        })
+        policy = "skills/research-management/references/evidence.md"
+        standards = "skills/paper-referee/references/standards.md"
+        self.assertEqual(snapshot["policy_inputs"], {
+            path: hashlib.sha256((self.mount / path).read_bytes()).hexdigest()
+            for path in (policy, standards)
+        })
+        for path in (snapshot["catalog"], *snapshot["files"], *snapshot["policy_inputs"]):
+            self.assertFalse(Path(path).is_absolute())
+            self.assertNotIn(self.mount_name, Path(path).parts)
+        self.assertFalse((self.workspace / record).exists())
+        (self.workspace / record).write_text(result.stdout, encoding="utf-8")
+
+        def check_record(state, strict=False):
+            result = self.invoke(
+                self.unrelated, "evidence", "check", "--record", record, "--format", "json",
+                *(("--strict",) if strict else ()),
+            )
+            self.assertEqual(result.returncode, 1 if strict else 0, result.stderr)
+            checked = json.loads(result.stdout)
+            self.assertEqual(checked["status"], "warning")
+            self.assertEqual(checked["records"], [{"path": record, "state": state}])
+
+        check_record("pending")
+        policy_file = self.mount / policy
+        original = policy_file.read_bytes()
+        try:
+            policy_file.write_bytes(original + b"\nSynthetic temporary policy change.\n")
+            check_record("stale")
+            check_record("stale", strict=True)
+        finally:
+            policy_file.write_bytes(original)
+        check_record("pending")
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+        for name in ("scripts", "src", "skills", ".agents", ".claude"):
+            if name != self.mount_name:
+                self.assertFalse((self.workspace / name).exists())
+
+
+class ClaudeSubmoduleRuntimeTests(SubmoduleRuntimeTests):
+    mount_name = ".claude"
+
+
+class NamedSubmoduleRuntimeTests(SubmoduleRuntimeTests):
+    # Git metadata, not a recognized agent-host directory name, identifies the workspace.
+    mount_name = "policy-runtime"
 
 
 if __name__ == "__main__":

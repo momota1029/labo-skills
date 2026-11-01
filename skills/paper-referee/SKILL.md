@@ -56,6 +56,23 @@ standalone policy checkout.
    actually read, remaining scope, and a concise example that worked. A clean
    local reading is not a correctness or whole-paper certificate.
 
+## Optional durable review record
+
+When the user asks to save a review or the workspace already uses scoped
+records for this task, follow the owning
+[evidence protocol](../research-management/references/evidence.md). Capture
+the actual inputs with `evidence snapshot` before reviewing; proof and writing
+records have different scopes. The command emits only a pending record. Keep
+catalog verdicts and earlier records out of an independent reader's initial
+brief; a coordinator can capture their hashes without supplying their contents.
+
+After the real review, record the actual verdict, reviewer, date, and report
+hash without changing the captured inputs. If the inputs changed during the
+review, recheck the affected scope instead of refreshing an old pass. State
+single-context versus genuinely independent reading accurately. Never invent
+owner confirmation. A report-only task does not authorize manuscript edits,
+approval promotion, or new persistent files merely to satisfy this protocol.
+
 ## Optional independent reading
 
 If a fresh reader is requested or needed to test an accessibility concern,

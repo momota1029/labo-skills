@@ -104,6 +104,13 @@ No installer copies skills into the private repository. There is no `vendor/`,
 generated forwarding `SKILL.md`, private README requirement, or automatic
 update of another repository.
 
+The checked-out harness is the authority: reusable instructions, formats,
+templates, implementation, and synthetic tests all live here. Consuming
+workspaces conform to that checkout, not the reverse. Improve the actual
+checkout while using it; do not first build a private `labo` implementation
+and leave the shared skills describing a different system. Private research
+and user-specific records remain in the parent workspace.
+
 ## Agent integration
 
 The actual skills are `skills/<name>/SKILL.md` inside this checkout.
@@ -118,6 +125,12 @@ skills there directly, without copies or forwarding links. Other hosts can
 register the same checked-out collection using their discovery mechanism.
 Existing submodule placements can still execute the launcher; moving them
 is a separate migration. `AGENTS.md` remains entirely user-owned.
+
+The source-local runtime also works when this checkout is mounted at `.claude`
+or another user-selected path. Substitute that path in shell examples, or
+resolve the launcher from the real loaded skill directory. Host discovery is
+separate: a working launcher does not imply that every host automatically
+discovers every placement. Do not maintain parallel copies of the harness.
 
 Each skill owns its rules under its own `references/`. In particular,
 `paper-referee` standards do not govern slides. Routing and task-specific
@@ -185,6 +198,41 @@ handles their assignment and provenance. See the
 [creation workflow](skills/labo-layout/references/creation.md) and
 [directory contract](skills/labo-layout/references/layout.md) for details.
 
+## Optional evidence and review records
+
+For results that need durable handoff or reuse, `research-management` owns an
+optional [evidence protocol](skills/research-management/references/evidence.md).
+Stable claim IDs connect exact statements to proof notes, inspected literature,
+claim dependencies, and optional Lean scope mappings. This supplements the
+research story; it does not add program statuses or require a workspace migration.
+
+```sh
+python3 .agents/scripts/labo.py evidence init \
+  --catalog research/finite-observations/claims.yaml
+python3 .agents/scripts/labo.py evidence check \
+  --catalog research/finite-observations/claims.yaml
+python3 .agents/scripts/labo.py evidence snapshot --kind writing \
+  --tree writing/reconstruction
+```
+
+Initialization requires an existing parent directory and refuses replacement.
+`snapshot` prints a pending YAML record without writing files or approving a
+claim. A saved review binds the actual input bytes (including uncommitted
+changes), selected dependencies, and the relevant policy files in this checkout.
+After a real review, record its author, date, verdict, and hashed report as
+described in the protocol. Keep that record outside any tree it snapshots.
+
+```sh
+python3 .agents/scripts/labo.py evidence check \
+  --record research/finite-observations/reviews/writing.yaml --strict
+```
+
+Checks distinguish current, pending, stale, failed, and malformed records.
+Pending or stale records are warnings unless `--strict` is used. These are
+structural and freshness checks, not mathematical certification, automatic
+Lean execution, or permission to renew a passing review. Ordinary research,
+writing, and `research check` do not require these files.
+
 ## Inspect and build
 
 `research list` reads *only the YAML frontmatter* of `research/*/plan.md`.
@@ -231,8 +279,11 @@ From this policy checkout, with the runtime dependency available:
 python3 -m unittest discover -s tests -v
 ```
 
-Tests include an actual temporary Git submodule and source-local execution
-without installing this project. Tests and fixtures contain no private
+Tests include actual temporary Git submodules mounted at `.agents`, `.claude`,
+and a neutral path, with source-local execution from unrelated working
+directories and without installing this project. Evidence tests also check
+that changed policy bytes invalidate a review without host-side policy copies.
+Tests and fixtures contain no private
 research. The CLI never writes outside the selected private workspace. It
 performs no GitHub mutations by itself. `pyproject.toml` remains available for
 development or optional packaging, not as the submodule deployment mechanism.

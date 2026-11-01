@@ -64,3 +64,9 @@
     full comparison is for substantive plans and program-level accounts, not
     every small edit. Use prose or a table as useful; no fixed claim ledger or
     file schema is required.
+
+11. Use the optional [evidence protocol](evidence.md) for load-bearing claims
+    or durable review handoffs when useful. Claim-level evidence statuses and
+    dependencies supplement the narrative; they do not add program statuses,
+    require a global dependency graph, or automatically certify mathematics.
+    The policy checkout owns their format and checker; private records follow it.

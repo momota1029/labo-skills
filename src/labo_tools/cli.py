@@ -8,6 +8,8 @@ from pathlib import Path
 import shlex
 import sys
 
+import yaml
+
 from .build import (
     DEFAULT_OUTPUT_MAX_FILES,
     ENGINE_FLAGS,
@@ -17,6 +19,7 @@ from .build import (
     run_build,
     run_source_build,
 )
+from .evidence import EvidenceError, KINDS, check_evidence, init_catalog, snapshot
 from .layout import LayoutError, init_layout, new_item
 from .paper import PaperError, map_openings, read_section
 from .plans import PlanError, ResearchPlan, read_workspace
@@ -132,6 +135,29 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
             sub.add_argument("--search")
             sub.add_argument("--format", choices=("text", "json"), default="text")
 
+    evidence = areas.add_parser("evidence", help="optional evidence structure and review freshness")
+    evidence_actions = evidence.add_subparsers(dest="action", required=True)
+    evidence_init = evidence_actions.add_parser("init", help="create an empty opt-in claim catalog")
+    _workspace(evidence_init)
+    evidence_init.add_argument("--catalog", required=True)
+    evidence_init.add_argument("--dry-run", action="store_true")
+    evidence_snapshot = evidence_actions.add_parser(
+        "snapshot", help="print pending review inputs as YAML without writing or approving",
+    )
+    _workspace(evidence_snapshot)
+    evidence_snapshot.add_argument("--kind", choices=KINDS, required=True)
+    evidence_snapshot.add_argument("--catalog")
+    evidence_snapshot.add_argument("--claim", action="append", default=[])
+    evidence_snapshot.add_argument("--file", action="append", default=[])
+    evidence_snapshot.add_argument("--tree", action="append", default=[])
+    evidence_snapshot.add_argument("--policy-file", action="append", default=[])
+    evidence_check = evidence_actions.add_parser("check", help="check selected record structure and freshness")
+    _workspace(evidence_check)
+    evidence_check.add_argument("--catalog")
+    evidence_check.add_argument("--record", action="append", default=[])
+    evidence_check.add_argument("--strict", action="store_true")
+    evidence_check.add_argument("--format", choices=("text", "json"), default="text")
+
     paper = areas.add_parser("paper", help="local section-by-section TeX reading")
     paper_actions = paper.add_subparsers(dest="action", required=True)
     for name in ("map", "section"):
@@ -173,6 +199,31 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
                 print(f"{'would ' if args.dry_run else ''}{change}")
             if not changes:
                 print("No layout changes needed")
+        elif args.area == "evidence":
+            if args.action == "init":
+                for change in init_catalog(args.workspace, args.catalog, dry_run=args.dry_run):
+                    print(f"{'would ' if args.dry_run else ''}{change}")
+            elif args.action == "snapshot":
+                record = snapshot(
+                    args.workspace, kind=args.kind, catalog=args.catalog,
+                    claim_ids=args.claim, files=args.file, trees=args.tree,
+                    policy_files=args.policy_file,
+                )
+                print(yaml.safe_dump(record, allow_unicode=True, sort_keys=False), end="")
+            else:
+                result = check_evidence(args.workspace, catalog=args.catalog, records=args.record)
+                if args.format == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                else:
+                    print(f"{result['status'].upper()}: {result['claim_count']} catalog claim(s), "
+                          f"{len(result['records'])} selected review record(s)")
+                    for record in result["records"]:
+                        print(f"[{record['state']}] {record['path']}")
+                    for issue in result["issues"]:
+                        print(f"{issue['severity']}: {issue['path']}: {issue['message']}")
+                    print("Checks cover recorded structure and input identity, not mathematical correctness.")
+                return int(result["status"] == "error" or
+                           (args.strict and result["status"] == "warning"))
         elif args.area == "research":
             plans, errors = read_workspace(args.workspace)
             if errors:
@@ -218,7 +269,7 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
             print(f"Output files: {result.file_count} (limit {result.max_files})")
             if result.over_limit:
                 print("warning: protected or unrecognized files keep output above the limit", file=sys.stderr)
-    except (PlanError, PaperError, WorkspaceError, LayoutError, OSError, UnicodeError) as exc:
+    except (PlanError, PaperError, WorkspaceError, LayoutError, EvidenceError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     return 0

@@ -58,6 +58,14 @@ proves a result, or that formalization of a nearby statement establishes the
 paper's full claim. State proof boundaries plainly and preserve open gaps for
 the author to resolve.
 
+If this work already has a claim catalog or scoped review records, use the
+[evidence protocol](../research-management/references/evidence.md) to inspect
+the affected claims and check their recorded inputs after substantive changes.
+Preserve the previous report and expose a stale review; do not silently renew
+its hash, promote its verdict, or imply that a changed claim remains reviewed.
+Recommend the smallest necessary new review. Do not create catalogs or review
+records for unrelated work, or make them a prerequisite for ordinary writing.
+
 ## Preserve the author's argument and voice
 
 Keep the introduction connected to the paper's actual question, prior work,
