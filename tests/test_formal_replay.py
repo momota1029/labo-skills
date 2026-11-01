@@ -23,7 +23,7 @@ class FormalReplayTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
-        self.root = Path(temp.name)
+        self.root = Path(temp.name).resolve()
         self.workspace = self.root / "private workspace"
         self.project = self.workspace / "lean/example"
         self.project.mkdir(parents=True)

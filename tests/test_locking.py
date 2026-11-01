@@ -41,7 +41,7 @@ class OutputLockTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve()
 
     def child(self, marker, mode="once"):
         process = subprocess.Popen(

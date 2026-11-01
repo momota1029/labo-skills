@@ -21,7 +21,7 @@ class EvidenceScopeTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
-        self.root = Path(temp.name)
+        self.root = Path(temp.name).resolve()
         self.put(MAIN, "A synthetic manuscript.\n")
 
     def put(self, name, text):
