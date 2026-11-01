@@ -23,6 +23,18 @@ results; use formalization to pressure-test definitions, assumptions, and
 candidate claims. Let either kind of evidence reshape the plan, and record
 which claims are formalized, proved by other means, or still open.
 
+For substantive plan drafts, full plan revisions, or requests to explain a
+whole research program, apply the claim-level evidence and prior-work standard
+in [research policy](references/research-policy.md).
+Distinguish what prior sources establish, what this program adds, and what
+remains conjectural or open. Compare the relevant hypotheses, objects,
+conclusions, and proof methods; link each central claim to its exact source and
+proof record. The plan should explain the decisive proof mechanism and its
+dependencies, while each established central result has a complete, inspected
+derivation in the linked record. Open claims need a concrete proof route,
+missing lemmas, and known obstacles. Never infer novelty from an absent
+citation or an unsuccessful search.
+
 Use `labo-layout` for workspace and program creation. A request to start
 research from supplied material authorizes creating the necessary plan and
 source directory; reuse a relevant existing program when appropriate.

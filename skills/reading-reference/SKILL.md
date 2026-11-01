@@ -33,6 +33,9 @@ Read only the references needed for the task:
   or empirical reasoning; use only the applicable branches.
 - [Review](references/review.md): checking coverage, fidelity, understanding
   and rendered deliverables.
+- [Research-program synthesis](references/research-program-synthesis.md):
+  explaining a local research program across plans, proof records, literature
+  and Lean evidence.
 
 ## Workflow
 
@@ -45,7 +48,13 @@ Read only the references needed for the task:
    or the source paper to fill gaps. State the needed definitions and
    hypotheses where used, reconstruct decisive proofs and dependencies, and
    explain consequences and limits. A roadmap or summary is not full-paper
-   coverage; label a deliberately bounded overview as such.
+   coverage; label a deliberately bounded overview as such. When the request
+   spans a local research program or several connected research records, also
+   use [research-program synthesis](references/research-program-synthesis.md):
+   map the central claims and proofs, compare them with the relevant primary
+   literature, and make the boundary between inherited results, this work's
+   contribution, and open questions explicit. A program-level reading guide
+   is not complete when it gives only a roadmap to the proof records.
 3. Decide the reader-facing format before drafting. Follow an explicit format
    request. A destination such as `reading/` does not imply Markdown: use a
    PDF for sustained reading or a handout, slides for a presentation, and
