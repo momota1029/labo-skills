@@ -10,6 +10,10 @@ For each request, follow the [required consultation](../research-router/referenc
 For substantive mathematical explanation or revisions to exposition, also use
 [mathematical-exposition](../mathematical-exposition/SKILL.md) as a clarity
 overlay; this skill remains responsible for manuscript scope and authorship.
+For introduction drafting, restructuring or substantive narrative assessment,
+also use [paper-introduction](../paper-introduction/SKILL.md) to discover the
+central question, position the supported contribution and choose its telling
+order; this skill retains manuscript editing and production ownership.
 For a `*_lec.tex` target, also use
 [undergraduate-lecture](../undergraduate-lecture/SKILL.md) for its reader floor.
 

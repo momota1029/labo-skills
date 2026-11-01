@@ -229,6 +229,11 @@ No search certifies all prior work or proves novelty from an absence of hits.
 This is a skill workflow, not a new CLI gate, mandatory claim catalog or copied
 host policy.
 
+For an introduction's central question, concrete significance and narrative
+order, use [paper-introduction](skills/paper-introduction/SKILL.md) alongside
+`paper-writing`. It shapes the story from the actual results and positioning
+evidence, without forcing a novelty claim or fixed paragraph formula.
+
 ## Optional evidence and review records
 
 For results that need durable handoff or reuse, `research-management` owns an

@@ -105,6 +105,11 @@ For each user request, follow the [required consultation](references/consultatio
    summary.
 5. Keep the user's `AGENTS.md` independent. Do not edit it as part of routing.
 
+For paper-introduction drafting, restructuring or narrative assessment, also
+use [paper-introduction](../paper-introduction/SKILL.md). It owns discovery and
+telling order, while `paper-writing` owns manuscript edits and `reading-reference`
+owns the positioning investigation. A report-only request remains report-only.
+
 Research planning, substantive manuscript writing, changed contribution claims,
 submission preparation, and own-research talks with novelty/comparative claims
 must pass the [research-positioning checkpoints](../reading-reference/references/research-positioning.md).
