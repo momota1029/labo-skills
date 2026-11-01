@@ -35,6 +35,10 @@ Read only the references needed for the task:
   literature investigation at research/writing checkpoints, precise contribution
   comparisons, a reusable memo, and notation/convention lineage.
 - [Explanation](references/explanation.md): teaching a concept, proof or paper.
+- [Applications to code](references/application-to-code.md): section-local reading,
+  adjacent explanation/code, actual-use evidence, reasons for choosing the example
+  and per-code method relationships; read for
+  substantive computational-method explanations or method-bearing code.
 - [Methods](references/methods.md): reconstructing mathematical, computational
   or empirical reasoning; use only the applicable branches.
 - [Review](references/review.md): checking coverage, fidelity, understanding
@@ -64,7 +68,15 @@ Prepare the reader to reconstruct the paper's reasoning and explain it in a
 presentation, especially why its methods answer its questions. Method
 understanding connects the analysis target and question, required properties,
 theoretical design, suitability and limits, relationships to other methods,
-and mathematical operations to implementation and interpreted outputs.
+and mathematical operations to implementation and interpreted outputs. For
+computational methods, follow the section-local reading contract and per-code
+relationships in [Applications to code](references/application-to-code.md), including
+background and educational methods. Explain both why the application needs the
+method and why that example belongs in this section. Place corresponding code
+immediately after the translation and necessary explanation of its operation.
+Use identifiable subordinate headings for local application requirements and
+code correspondence; in PDFs expose the source hierarchy and useful added units
+as nested bookmarks, checking the built outline under [R14](references/explanation.md).
 
 For substantial close-reading or presentation-preparation materials about a
 paper or specified part, read
@@ -114,12 +126,20 @@ reviews retain their requested scope rather than triggering a full translation.
    implementations, to its exact method source and an actual search for matching
    author/supplement/official code under [R18](references/methods.md). Report
    the search, implementation choice and execution status at that code unit;
-   a toy experiment does not establish source coverage.
+   a toy experiment does not establish source coverage. Also map each method-code
+   unit to inspected application evidence for the problem, requirements, pipeline
+   role and obtained result under [Applications to code](references/application-to-code.md).
+   Map source sections/subsections and local passages to that evidence, the
+   reader's learning purpose and adjacent code before drafting.
 5. Explain the question, useful result, decisive argument and its limits.
    For central methods, explain the motivating limitation, inherited ideas and
    new contribution with primary evidence. For required code, make provenance
    and the route between explanation, full implementation and sources usable
    in the delivered artifact; apply the explanation and methods references.
+   Preserve source section/subsection hierarchy and complete each local unit
+   with translation, necessary explanation, immediately corresponding code and
+   operation/output interpretation. Use short explanation/code cycles for
+   multi-step methods, with application and relationship context in that unit.
    Put prerequisite bridges where needed and make each source-to-explanation
    connection findable. A summary, source dump or list of links cannot fulfill
    a request to reconstruct the reasoning or reproduce a method.
