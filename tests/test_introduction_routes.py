@@ -39,7 +39,7 @@ class IntroductionRouteTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             for mount in (".agents", ".claude"):
                 with self.subTest(mount=mount):
-                    checkout = Path(folder) / mount
+                    checkout = (Path(folder) / mount).resolve()
                     shutil.copytree(ROOT / "skills", checkout / "skills")
                     source = checkout / "skills/paper-introduction/SKILL.md"
                     resolved = set()
