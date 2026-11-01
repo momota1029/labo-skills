@@ -34,6 +34,24 @@ Read only the references needed for the task:
 - [Review](references/review.md): checking coverage, fidelity, understanding
   and rendered deliverables.
 
+## Purpose and completion contract
+
+Prepare the reader to reconstruct the paper's reasoning and explain it in a
+presentation, especially why its methods answer its questions. Method
+understanding connects the analysis target and question, required properties,
+theoretical design, suitability and limits, relationships to other methods,
+and mathematical operations to implementation and interpreted outputs.
+
+For substantial close-reading or presentation-preparation materials about a
+paper or specified part, read
+[Paper preparation](references/paper-preparation.md) before drafting. It owns
+the source-aligned structure, original text and faithful translation, and the
+purpose-to-evidence-to-code completion contract. Apply its code requirement to
+each explained computational method even without a separate request for code.
+A proof-only paper does not require fabricated software; explain its proof
+methods through the mathematical branch. Bounded questions, source lookup and
+reviews retain their requested scope rather than triggering a full translation.
+
 ## Workflow
 
 1. Fix the source and the useful unit: a concept, theorem, chapter or paper.
@@ -58,14 +76,16 @@ Read only the references needed for the task:
    methods, figures/tables and internal appendices; inventory supplements and
    explain those needed for the claims, controls and limitations. A whole-book
    request keeps its full scope while work proceeds through coherent units.
-   For a survey, trace central claims and methods to inspected primary sources
-   and exact locations, not just back to the survey. When code is requested,
+   For any paper, trace method motivations, lineage and comparisons to inspected
+   primary sources and exact locations, including predecessors beyond its
+   bibliography when needed. For a survey, do not stop at the survey citation.
+   When code is requested or required by the paper-preparation contract,
    map each central algorithm to its corresponding implementation and execution
    status before treating a toy experiment as sufficient coverage; apply the
    source and methods references.
 5. Explain the question, useful result, decisive argument and its limits.
    For central methods, explain the motivating limitation, inherited ideas and
-   new contribution with primary evidence. For requested code, make provenance
+   new contribution with primary evidence. For required code, make provenance
    and the route between explanation, full implementation and sources usable
    in the delivered artifact; apply the explanation and methods references.
    Put prerequisite bridges where needed and make each source-to-explanation
@@ -80,6 +100,8 @@ Read only the references needed for the task:
    Separate primary-source checks, implementation inspection/execution and
    rendering checks in the handoff; none certifies the others. Required missing
    sources or implementations remain incomplete work, even when disclosed.
+   For paper preparation, explicitly check every completion condition in the
+   paper-preparation reference before calling the requested material complete.
 
 Describe the deliverable by its actual contents and scope, such as a full-paper
 explanation, proof reconstruction or reading deck. Do not present notes as a
