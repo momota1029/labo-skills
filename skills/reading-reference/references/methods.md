@@ -26,7 +26,8 @@ in a purely theoretical source do not create empirical tasks.
   revision, or both with a declared main route. Preserve discrepancies in
   defaults, inequalities, ties and library behavior. Keep source-reported,
   statically inspected, pedagogical and actually rerun results distinct.
-  For a survey with requested code, identify the central algorithms and their
+  For paper preparation or requested code, identify all in-scope computational
+  methods and their
   primary papers before selecting implementations. For each, identify the
   corresponding author implementation, inspected library version or explicitly
   independent implementation, and map its operations to the source procedure.
@@ -46,7 +47,8 @@ in a purely theoretical source do not create empirical tasks.
   cases, loops, stopping and saved outputs. Explain consequential constants
   and their rationale when known; do not invent historical settings. A small
   hand-worked trace should actually follow the selected method.
-- **R20 Reuse** — For requested code understanding/reuse, include complete
+- **R20 Reuse** — For code understanding/reuse, including the paper-preparation requirement,
+  include complete
   selected implementation units, necessary helpers/configuration, environment,
   entry commands and matching editable files, with provenance and reuse terms.
   Pseudocode or a repository link cannot replace this. Inspect before any
@@ -64,8 +66,15 @@ in a purely theoretical source do not create empirical tasks.
   changes. Do not fabricate missing revision or license information: state the
   uncertainty and any resulting reuse barrier. A general disclaimer or separate
   provenance log cannot replace attribution beside the code. Independently
-  written teaching code must be named as such, with its relation and differences
-  to the paper's procedure explicit. These requirements concern paper-method
+  written teaching code requires more than an origin label: explain its analysis
+  question, why this example reveals the method's properties, input/output
+  meaning, the source definition/equation/step behind each substantive operation,
+  independent design choices, simplifications and departures from the source,
+  and the basis and scope of validation. Link the supporting passages next to
+  those explanations. Explain what its observed results do and do not establish;
+  separate a checked static correspondence from actual execution. Do not call a
+  teaching example a reproduction of the paper's experiment without the matching
+  procedure, data, settings and run evidence. These requirements concern paper-method
   code, not unrelated syntax illustrations. An unrelated toy or known-answer check
   does not supply a missing algorithm or reproduce a paper's experiment.
   Restrictions on code reuse may require a transparent independent implementation;

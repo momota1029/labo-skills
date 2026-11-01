@@ -23,7 +23,9 @@
 - **R11 Fidelity** — Preserve the source's hypotheses, generality, quantifiers,
   normalizations, uncertainty and exceptions through prose, formulas and figures.
   Label source statements, checked derivations, analogies, pedagogical examples
-  and open gaps. Reordering is welcome with a route back to source locations;
+  and open gaps. For source-aligned paper preparation, retain the source section order and
+  numbering under [Paper preparation](paper-preparation.md). In other formats,
+  reorder when useful with a route back to source locations;
   an easier special case cannot replace an in-scope general result.
 - **R12 Evidence in view** — Put the actual relevant figure/panel beside its
   substantive explanation at a readable scale. Identify what to compare, the
@@ -36,7 +38,8 @@
   formulas, code behavior and interpreted results locally connected. Long
   listings can live in an explained appendix with editable sources; essential
   settings and operations must remain understandable where they are used.
-  When code is requested, let the reader follow a central algorithm from its
+  When code is requested or required for paper preparation, let the reader
+  follow each in-scope computational method from its
   cited primary-source steps to the essential executable unit and the result
   interpreted at that point. A distant listing of plotting utilities or a toy
   experiment cannot stand in for this connection.
@@ -52,18 +55,14 @@
   supply these routes. Do not require an appendix merely to create navigation.
   Source attachments retain their evidential role; reproducing a paper or
   listing does not itself teach it.
-  When changing teaching order, give a short correspondence to the original.
+  For other formats that change teaching order, give a short correspondence
+  to the original.
 
-For each central contribution, explain the relevant prior capability, what is
-retained or changed, what the new evidence establishes, and its limits. For
-central methods, explain the problem and prior limitation motivating their
-development, the cited predecessors and shared ideas, the new ingredient and
-why it is useful under stated conditions. Connect this to the decisive
-mathematical operation and corresponding code when requested. A formula,
-implementation or performance ranking alone does not explain the contribution.
-Keep the authors' stated motivation distinct from an added teaching
-interpretation, and verify consequential comparisons on both sides. Use a compact comparison
-when it clarifies shared foundations and new ingredients; no fixed template is
-required for every subsection. Reuse, confirmation and negative results can be
-substantive contributions; do not force superiority or an exhaustive history
-onto background references.
+For each central contribution, connect the question and prior capability to
+what is retained or changed, the new evidence and its limits. Use the method
+understanding contract in [Paper preparation](paper-preparation.md) for detailed
+method explanations. Ground motivation, inherited structure, novelty and
+comparisons in inspected literature; distinguish authors' statements from an
+added synthesis. Reuse, confirmation and negative results can be substantive
+contributions; do not force superiority or an exhaustive history onto background
+references.
