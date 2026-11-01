@@ -108,9 +108,11 @@ reviews retain their requested scope rather than triggering a full translation.
    primary sources and exact locations, including predecessors beyond its
    bibliography when needed. For a survey, do not stop at the survey citation.
    When code is requested or required by the paper-preparation contract,
-   map each central algorithm to its corresponding implementation and execution
-   status before treating a toy experiment as sufficient coverage; apply the
-   source and methods references.
+   map each literature-based code unit, including educational and auxiliary
+   implementations, to its exact method source and an actual search for matching
+   author/supplement/official code under [R18](references/methods.md). Report
+   the search, implementation choice and execution status at that code unit;
+   a toy experiment does not establish source coverage.
 5. Explain the question, useful result, decisive argument and its limits.
    For central methods, explain the motivating limitation, inherited ideas and
    new contribution with primary evidence. For required code, make provenance
