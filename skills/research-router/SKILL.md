@@ -78,9 +78,10 @@ For each user request, follow the [required consultation](references/consultatio
    research lifecycle and story → `research-management`; mathematical paper
    drafting or revision → `paper-writing`; mathematical paper review →
    `paper-referee`; paper compilation → `labo-build`; slides →
-   `slide-authoring`; source collection, paper/book explanation and reading
-   notes → `reading-reference`; website → `website-publishing`; skill
-   improvements in the user's fork → `labo-self-improve`; selected upstream
+   `slide-authoring`; research positioning, source collection, paper/book
+   explanation and reading notes → `reading-reference`; website →
+   `website-publishing`; skill improvements in the user's fork →
+   `labo-self-improve`; selected upstream
    contributions → `labo-pr`; selective upstream adoption into the fork →
    `labo-sync`.
 4. Beyond the required consultation, if task-specific delegation is useful,
@@ -101,6 +102,13 @@ For each user request, follow the [required consultation](references/consultatio
    Reconstructing missing arguments counts as research reasoning, even in a
    summary.
 5. Keep the user's `AGENTS.md` independent. Do not edit it as part of routing.
+
+Research planning, substantive manuscript writing, changed contribution claims,
+submission preparation, and own-research talks with novelty/comparative claims
+must pass the [research-positioning checkpoints](../reading-reference/references/research-positioning.md).
+The artifact's skill still owns writing or review; `reading-reference` owns the
+investigation and reusable memo. Initial blind readings precede memo access;
+routine edits and report-only tasks keep the protocol's scope boundaries.
 
 The research plan supplies human context; a skill supplies the operational
 rules. Neither is an excuse to expose private material in public changes.
