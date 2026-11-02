@@ -12,10 +12,12 @@ Reuse the check already completed for the same assignment.
 Use this skill for actual host configuration. For an ordinary research task,
 use the selected research skill and [invocation contract](../research-router/references/subagent-invocation.md).
 
-The directory containing `skills/` is the complete distributable source.
-Follow [deployment](references/deployment.md) to expand native settings, roles
-and skill registration into a fresh or existing workspace. External generated
-files and private validation records are optional deployment results.
+The whole directory containing `skills/`, Claude-native `agents/` and root
+`settings.json` is the distributable source. Follow
+[deployment](references/deployment.md): `.agents` for Codex/general harnesses,
+`.claude` for Claude Code, or `.agents` plus the whole-directory alias
+`.claude -> .agents` for both. External Codex files and private validation
+records are optional deployment results.
 
 1. Inspect the installed CLI version/help, project and relevant user settings,
    existing role definitions and available native delegation fields. Read only
@@ -39,12 +41,11 @@ files and private validation records are optional deployment results.
    referencing this checked-out contract. Supply model/effort explicitly. It
    refuses differing existing files and leaves host settings untouched; merge
    existing host settings carefully for the supported keys needed by the task.
-   Shared-skill registration uses `--register-skills` for the selected host:
-   Codex entries go under `.agents/skills`, Claude entries under `.claude/skills`.
-   It previews/creates per-skill relative directory symlinks back to the real
-   checkout and preserves conflicting entries. The host already matching the
-   actual mount needs no self-links. Check discovery separately from role
-   prompt references; either submodule mount retains a single source checkout.
+   Claude's native roles/settings already ship at the policy root. Read them
+   through `.claude`, either the real submodule or its whole-directory alias.
+   Preserve a pre-existing unrelated `.claude` tree; migrate it deliberately
+   rather than creating another registration mechanism. Single-host setup
+   leaves the other host's entry absent.
 5. Validate syntax and host loading, then use a tiny native delegation probe
    when authorized. Bound its depth, concurrency, tools, time and cost. Test
    actual parent→child→grandchild when claiming nesting. Check effective model
@@ -62,5 +63,5 @@ Examples (preview first; replace model with a currently callable suitable one):
 
 ```sh
 python3 .agents/skills/agent-host-setup/scripts/install_roles.py --workspace . --host codex --model gpt-6.1-sol --effort high
-python3 .agents/skills/agent-host-setup/scripts/install_roles.py --workspace . --host claude --model opus --effort high --apply
+python3 .claude/skills/agent-host-setup/scripts/install_roles.py --workspace . --host claude --model claude-opus-5-5 --effort high
 ```

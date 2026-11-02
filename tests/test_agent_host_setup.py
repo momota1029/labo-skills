@@ -8,8 +8,7 @@ import yaml
 
 
 CHECKOUT = Path(__file__).resolve().parents[1]
-SCRIPT = CHECKOUT / "skills/agent-host-setup/scripts/install_roles.py"
-SPEC = importlib.util.spec_from_file_location("install_roles", SCRIPT)
+SPEC = importlib.util.spec_from_file_location("install_roles", CHECKOUT / "skills/agent-host-setup/scripts/install_roles.py")
 roles = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(roles)
 
@@ -20,18 +19,22 @@ class HostRoleTests(unittest.TestCase):
         contract = policy / "skills/research-router/references/mathematical-roles.md"
         contract.parent.mkdir(parents=True)
         contract.write_text("synthetic contract")
-        (policy / "skills/research-router/SKILL.md").write_text("synthetic skill")
         return policy
 
-    def test_native_fields_and_relocated_contract_without_settings_mutation(self):
-        for mount in (".agents", ".claude", "policy"):
-            with self.subTest(mount=mount), tempfile.TemporaryDirectory() as directory:
+    def test_native_fields_and_contract_without_settings_mutation(self):
+        for mode in ("codex", "claude", "both"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
+                mount = ".claude" if mode == "claude" else ".agents"
                 policy = self.mounted(root, mount)
-                config = root / ".codex/config.toml"
-                config.parent.mkdir()
-                config.write_text('model = "primary-choice"\n')
-                for host, model in (("codex", "gpt-6.1-sol"), ("claude", "opus")):
+                if mode == "both":
+                    (root / ".claude").symlink_to(".agents", target_is_directory=True)
+                hosts = ("codex", "claude") if mode == "both" else (mode,)
+                for host in hosts:
+                    model = "claude-opus-5-5" if host == "claude" else "gpt-6-astra"
+                    settings = root / (".claude/settings.json" if host == "claude" else ".codex/config.toml")
+                    settings.parent.mkdir(exist_ok=True)
+                    settings.write_text("synthetic existing primary and permissions")
                     files = roles.render_roles(root, host, model, "high", policy)
                     for content in files.values():
                         if host == "codex":
@@ -46,19 +49,24 @@ class HostRoleTests(unittest.TestCase):
                                 self.assertNotIn("Agent", data["tools"])
                                 self.assertNotIn("Write", data["tools"])
                         self.assertEqual(data["model"], model)
-                        self.assertIn(f"{mount}/skills/research-router", prompt)
+                        reference = ".claude" if host == "claude" else mount
+                        self.assertIn(f"{reference}/skills/research-router", prompt)
                     self.assertEqual(len(roles.install(files)), 3)
                     self.assertTrue(all(not path.exists() for path in files))
                     self.assertEqual(len(roles.install(files, apply=True)), 3)
                     self.assertEqual(roles.install(files, apply=True), [])
-                self.assertEqual(config.read_text(), 'model = "primary-choice"\n')
-                self.assertFalse((root / ".claude/settings.json").exists())
+                    self.assertEqual(settings.read_text(), "synthetic existing primary and permissions")
+                if mode == "codex":
+                    self.assertFalse((root / ".claude").exists())
+                if mode == "claude":
+                    self.assertFalse((root / ".agents").exists())
+                    self.assertFalse((root / ".codex").exists())
 
     def test_collision_is_checked_before_any_role_is_written(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             policy = self.mounted(root, ".agents")
-            files = roles.render_roles(root, "codex", "gpt-6.1-sol", "high", policy)
+            files = roles.render_roles(root, "codex", "gpt-6-astra", "high", policy)
             last = list(files)[-1]
             last.parent.mkdir(parents=True)
             last.write_text("user customized role")
@@ -67,53 +75,18 @@ class HostRoleTests(unittest.TestCase):
             self.assertEqual(last.read_text(), "user customized role")
             self.assertFalse(list(files)[0].exists())
 
-    def test_claude_registration_uses_real_sources_and_preserves_existing_entries(self):
+    def test_claude_generation_preserves_absent_or_unrelated_directory(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             policy = self.mounted(root, ".agents")
-            destination = root / ".claude/skills/research-router"
-            destination.mkdir(parents=True)
-            (destination / "SKILL.md").write_text("user-owned skill")
-            with self.assertRaisesRegex(ValueError, "preserve existing skill"):
-                roles.register_skills(root, policy, "claude", apply=True)
-            self.assertEqual((destination / "SKILL.md").read_text(), "user-owned skill")
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            policy = self.mounted(root, ".agents")
-            self.assertEqual(len(roles.register_skills(root, policy, "claude")), 1)
+            with self.assertRaisesRegex(ValueError, "whole-directory"):
+                roles.render_roles(root, "claude", "claude-opus-5-5", "high", policy)
             self.assertFalse((root / ".claude").exists())
-            roles.register_skills(root, policy, "claude", apply=True)
-            path = root / ".claude/skills/research-router"
-            self.assertTrue(path.is_symlink())
-            self.assertFalse(path.readlink().is_absolute())
-            self.assertEqual(path.resolve(), (policy / "skills/research-router").resolve())
-            self.assertEqual(roles.register_skills(root, policy, "claude", apply=True), [])
-
-    def test_claude_policy_mount_needs_no_forwarding_links(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            policy = self.mounted(root, ".claude")
-            self.assertEqual(roles.register_skills(root, policy, "claude", apply=True), [])
-            self.assertFalse((policy / "skills/research-router").is_symlink())
-
-    def test_codex_registration_from_claude_mount_and_conflict(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            policy = self.mounted(root, ".claude")
-            path = root / ".agents/skills/research-router"
-            path.mkdir(parents=True)
-            (path / "SKILL.md").write_text("user-owned Codex skill")
-            with self.assertRaisesRegex(ValueError, "preserve existing skill"):
-                roles.register_skills(root, policy, "codex", apply=True)
-            self.assertEqual((path / "SKILL.md").read_text(), "user-owned Codex skill")
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            policy = self.mounted(root, ".claude")
-            roles.register_skills(root, policy, "codex", apply=True)
-            path = root / ".agents/skills/research-router"
-            self.assertTrue(path.is_symlink())
-            self.assertEqual(path.resolve(), (policy / "skills/research-router").resolve())
-            self.assertEqual(roles.register_skills(root, policy, "codex", apply=True), [])
+            (root / ".claude").mkdir()
+            (root / ".claude/user.txt").write_text("preserve me")
+            with self.assertRaisesRegex(ValueError, "whole-directory"):
+                roles.render_roles(root, "claude", "claude-opus-5-5", "high", policy)
+            self.assertEqual((root / ".claude/user.txt").read_text(), "preserve me")
 
     def test_symlink_escape_and_restricted_model_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:
@@ -122,7 +95,7 @@ class HostRoleTests(unittest.TestCase):
             for model in ("", "gpt-6-luna"):
                 with self.assertRaises(ValueError):
                     roles.render_roles(root, "codex", model, "high", policy)
-            files = roles.render_roles(root, "codex", "gpt-6.1-sol", "high", policy)
+            files = roles.render_roles(root, "codex", "gpt-6-astra", "high", policy)
             (root / ".codex").mkdir()
             (root / ".codex/agents").symlink_to(outside)
             with self.assertRaisesRegex(ValueError, "escapes"):

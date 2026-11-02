@@ -127,12 +127,15 @@ allocates a shared finite descendant budget; the
 specify exact lemma interfaces, hypothesis discharge, integration and independent
 verification. Native caps and behavioral allocation are reported separately.
 
-Distribute only this policy directory, as a submodule at either `.agents` or
-`.claude`. The [deployment procedure](skills/agent-host-setup/references/deployment.md)
-includes native settings examples and reconstructs both hosts' roles and skill
-entry points. Reciprocal discovery uses relative links to the one real
-checkout; the matching host needs no self-links. Fresh deployments, relocation
-and actual submodules at both mounts are covered by the host/submodule tests.
+Distribute this policy directory as `.agents` for Codex/general harnesses, or
+as `.claude` for Claude Code. For both, use an `.agents` submodule and the
+whole-directory relative alias `.claude -> .agents`. Native Claude `agents/`
+and minimal `settings.json` ship at the policy root; external Codex configuration
+is expanded from the included installer/example. The
+[deployment procedure](skills/agent-host-setup/references/deployment.md) covers
+these three forms without individual skill links or a second policy copy.
+Actual submodule tests cover fresh deployment, external working directories,
+relocation, repeat runs and conflict preservation.
 
 The actual skills are `skills/<name>/SKILL.md` inside this checkout.
 `plugin.json` also describes the collection for

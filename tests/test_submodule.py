@@ -98,44 +98,6 @@ class SubmoduleRuntimeTests(unittest.TestCase):
                     ["private-project"],
                 )
 
-    def test_native_host_deployment_from_actual_submodule_and_external_cwd(self):
-        workspace = self.root / "host workspace with spaces"
-        shutil.move(self.workspace, workspace)
-        mount = workspace / self.mount_name
-        self.assertEqual(self.git(mount, "rev-parse", "--show-superproject-working-tree"), str(workspace))
-        setup = mount / "skills/agent-host-setup"
-        contract = mount / "skills/research-router/references/mathematical-roles.md"
-        before = contract.read_bytes()
-        (workspace / ".codex").mkdir()
-        (workspace / ".claude").mkdir(exist_ok=True)
-        shutil.copyfile(setup / "assets/codex-agents.toml", workspace / ".codex/config.toml")
-        shutil.copyfile(setup / "assets/claude-settings.json", workspace / ".claude/settings.json")
-        launcher = setup / "scripts/install_roles.py"
-        for host, model in (("codex", "gpt-6-astra"), ("claude", "claude-opus-5-5")):
-            args = ["--workspace", str(workspace), "--host", host, "--model", model,
-                    "--effort", "high", "--register-skills", "--apply"]
-            result = self.invoke(self.unrelated, *args, launcher=launcher)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(len(json.loads(result.stdout)["create"]), 3)
-            again = self.invoke(self.unrelated, *args, launcher=launcher)
-            self.assertEqual(again.returncode, 0, again.stderr)
-            self.assertEqual(json.loads(again.stdout)["create"], [])
-            self.assertEqual(json.loads(again.stdout)["register_skills"], [])
-        for directory in (".agents", ".claude"):
-            entry = workspace / directory / "skills/agent-host-setup"
-            self.assertTrue((entry / "SKILL.md").is_file())
-            self.assertEqual(entry.resolve(), setup.resolve())
-            self.assertEqual(entry.is_symlink(), directory != self.mount_name)
-        role = workspace / ".codex/agents/math-decomposer.toml"
-        self.assertIn(f"{self.mount_name}/skills/research-router", role.read_text())
-        self.assertEqual(contract.read_bytes(), before)
-        # A changed user role remains untouched and produces a bounded conflict.
-        role.write_text("user-customized native role\n")
-        result = self.invoke(self.unrelated, "--workspace", str(workspace), "--host", "codex",
-                             "--model", "gpt-6-astra", "--effort", "high", "--apply", launcher=launcher)
-        self.assertEqual(result.returncode, 2)
-        self.assertEqual(role.read_text(), "user-customized native role\n")
-
     def test_explicit_workspace_overrides_superproject(self):
         alternate = self.root / "alternate workspace"
         self.put_plan(alternate, "other-project")

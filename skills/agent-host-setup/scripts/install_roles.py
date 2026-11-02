@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 import tomllib
 
@@ -47,6 +46,10 @@ def render_roles(workspace: Path, host: str, model: str, effort: str,
         relative = policy_root.relative_to(workspace).as_posix()
     except ValueError as exc:
         raise ValueError("policy checkout must be mounted within the target workspace") from exc
+    if host == "claude":
+        if (workspace / ".claude").resolve() != policy_root:
+            raise ValueError("Claude needs the policy at .claude or a whole-directory .claude alias to it")
+        relative = ".claude"
     if not model.strip() or "\n" in model:
         raise ValueError("supply one explicitly selected callable model")
     if "luna" in model.lower():
@@ -101,35 +104,6 @@ def install(files: dict[Path, str], *, apply: bool = False) -> list[str]:
     return changes
 
 
-def register_skills(workspace: Path, policy_root: Path, host: str,
-                    *, apply: bool = False) -> list[str]:
-    """Register the real checkout with per-skill links, never forwarding copies."""
-    workspace, policy_root = workspace.resolve(), policy_root.resolve()
-    if not policy_root.is_relative_to(workspace):
-        raise ValueError("policy checkout must be mounted within the target workspace")
-    source = policy_root / "skills"
-    if host not in {"codex", "claude"}:
-        raise ValueError(f"unknown host: {host}")
-    destination = workspace / (".agents" if host == "codex" else ".claude") / "skills"
-    if not destination.resolve().is_relative_to(workspace):
-        raise ValueError(f"{host} skill directory escapes the workspace")
-    links = {}
-    for folder in sorted(source.iterdir()):
-        if not folder.is_dir() or not (folder / "SKILL.md").is_file():
-            continue
-        path = destination / folder.name
-        if path.exists() or path.is_symlink():
-            if path.resolve() == folder.resolve():
-                continue
-            raise ValueError(f"preserve existing skill registration: {path}")
-        links[path] = os.path.relpath(folder, destination)
-    if apply and links:
-        destination.mkdir(parents=True, exist_ok=True)
-        for path, target in links.items():
-            path.symlink_to(target, target_is_directory=True)
-    return [str(path) for path in links]
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", type=Path, required=True)
@@ -137,21 +111,14 @@ def main() -> int:
     parser.add_argument("--model", required=True)
     parser.add_argument("--effort", required=True)
     parser.add_argument("--apply", action="store_true")
-    parser.add_argument("--register-skills", action="store_true",
-                        help="also register current shared skills for the selected host using relative symlinks")
     args = parser.parse_args()
     try:
         files = render_roles(args.workspace, args.host, args.model, args.effort)
-        policy_root = Path(__file__).resolve().parents[3]
-        if args.register_skills:
-            register_skills(args.workspace, policy_root, args.host)
         changes = install(files, apply=args.apply)
-        registrations = register_skills(args.workspace, policy_root, args.host, apply=args.apply) if args.register_skills else []
     except (ValueError, OSError) as exc:
         parser.exit(2, f"error: {exc}\n")
     print(json.dumps({"applied": args.apply, "create": changes,
-                      "unchanged": len(files) - len(changes),
-                      "register_skills": registrations}, indent=2))
+                      "unchanged": len(files) - len(changes)}, indent=2))
     return 0
 
 

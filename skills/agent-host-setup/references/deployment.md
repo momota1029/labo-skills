@@ -1,69 +1,59 @@
-# Deploy from the distributed policy directory
+# Three deployments from one policy checkout
 
-Only the directory containing `skills/` is required for distribution, commonly
-mounted at `.agents` or `.claude`. No generated `.codex/`, other host directory,
-private profile, validation record or original workspace is an input. This
-skill contains the role generator, settings examples and discovery procedure.
-Generated host files are an application of that checkout, not another source
-of reusable knowledge.
+Distribute this whole policy directory: `skills/`, the reusable launcher/code,
+Claude-native `agents/` and the minimal root `settings.json`. No private parent
+workspace, external generated `.codex/` files or validation record is required.
 
-1. Locate the real loaded `agent-host-setup/SKILL.md`, resolve its containing
-   policy checkout, and locate the consuming workspace. Inspect installed host
-   help/version and relevant existing settings before choosing the host
-   reference. Read an available official `openai-docs` skill for Codex guidance,
-   or installed Claude setup/agent-development skills for Claude guidance.
-   Reuse already verified sources within the task. Check supported native keys
-   and model/effort fields; do not infer support from a template alone.
-2. Choose model/effort from currently callable suitable models using the exact
-   task and current official sources. Model IDs in a previous validation record
-   are historical choices. Provider latest, a local alias's resolved ID and
-   account access are separate facts. When auth blocks execution, report
-   selection/loading evidence and leave callability unverified.
-3. Run `scripts/install_roles.py` from this checkout with absolute paths if the
-   working directory is elsewhere. Supply `--workspace`, `--host`, `--model`
-   and `--effort`; preview, inspect its target paths, then add `--apply`. Add
-   `--register-skills` for either host to register current shared skills using
-   per-skill relative links. Codex discovers `.agents/skills`, Claude discovers
-   `.claude/skills`. The host whose location matches the real policy mount
-   needs no self-links. Existing differing role
-   files or skill registrations are preserved; merge the intended differences
-   explicitly. The installer never changes main host settings.
-4. Use the adjacent settings assets as supported-key examples, adjusting depth
-   and concurrency to the task's budget. For a fresh absent target, create
-   `.codex/config.toml` from `assets/codex-agents.toml`, or
-   `.claude/settings.json` from `assets/claude-settings.json`. For an existing
-   target, merge only the needed `[agents]` keys or `env` entries. Keep primary
-   model/effort, provider, permissions, hooks, MCP and all unrelated settings.
-   Avoid duplicate TOML tables, overwriting JSON objects or copying an example
-   over an existing file. Codex's depth bound is in the invocation packet;
-   Claude's example additionally configures two native subagent layers. Six is
-   an example shared cap, never a fresh allowance for every branch.
-5. Validate parse and native host loading in a fresh session, then exercise a
-   bounded native nested probe if authorized. Use the host reference for
-   limitations. Keep the source checkout intact and report settings, discovery,
-   real calls, effective model evidence and missing checks separately.
+| Use | Real submodule | Additional entry |
+| --- | --- | --- |
+| Codex or a harness using `.agents` | `.agents` | none |
+| Claude Code | `.claude` | none |
+| Codex and Claude Code together | `.agents` | whole-directory relative symlink `.claude -> .agents` |
 
-For example, if the real checkout is `.claude`, the generator is
-`.claude/skills/agent-host-setup/scripts/install_roles.py`; it still generates
-Codex roles in `.codex/agents` when `--host codex` is selected. Its role prompts
-reference `.claude/skills/research-router/...`, so distributing and relocating
-the checkout keeps the references valid. If the checkout is `.agents`, Claude
-role files go to `.claude/agents` and skill links point back to `.agents/skills`.
-If the checkout is `.claude`, Codex registration creates `.agents/skills/<name>`
-links pointing back to `.claude/skills/<name>`. Both host entry directories can
-coexist; only one contains the actual submodule and shared implementation.
-Resolve the real loaded script/skill directory (or verify Git submodule metadata),
-not whichever host directory happens to exist first. Tests exercise actual Git
-submodules at both mounts, external working directories, workspace names with
-spaces, and fresh deployments relocated after generation.
-Re-run registration to add newly introduced skills; do not remove user entries
-as a synchronization shortcut.
+A single-host deployment uses its own native location. Do not create the other
+host's directory as a routine setup step. In combined use, both names reach one
+checkout, including the same `skills/`, `agents/` and `settings.json`; individual
+skill links and a second policy copy are unnecessary.
 
-The assets deliberately omit a universal model default. A dated observation on
-2026-11-02 found current official Claude
-[Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview), ID
-`claude-opus-5-5`, while installed Claude Code 2.1.222 resolved its `opus` alias
-to `claude-opus-5`. Recheck both facts at deployment; an explicit current ID can
-avoid a stale alias, but syntax/loading still does not establish account access
-or API compatibility. Host upgrades and authentication changes require their
-own scope; do not perform them as an implicit deployment fallback.
+1. Resolve the real loaded skill/script directory and consuming workspace.
+   Inspect installed host help/version and relevant existing settings. Consult
+   available official setup/documentation skills, reusing completed checks.
+   Confirm local support before applying native fields or settings.
+2. Choose the deployment above. For combined use, create the relative
+   `.claude -> .agents` link only after checking `.claude` is absent. Preserve
+   an existing directory or link, inspect its contents, and merge any wanted
+   native configuration into the real checkout before a deliberate migration.
+   Do not overwrite user files or build per-skill forwarding trees.
+3. Claude Code reads bundled `agents/*.md` and root `settings.json` directly
+   through its `.claude` entry. The roles reference `.claude/skills/...`, which
+   works both natively and through the whole-directory alias. Reconsider their
+   model/effort for the actual task and account. The optional role installer
+   with `--host claude` checks/generates that same native location, refuses a
+   different `.claude` tree, and preserves differing existing files.
+4. For Codex, run `scripts/install_roles.py` from the real policy checkout with
+   `--workspace`, `--host codex`, and explicit `--model`/`--effort`. Preview, then
+   add `--apply` to create `.codex/agents` role files. Use
+   `assets/codex-agents.toml` as a supported-key example for `.codex/config.toml`.
+   Create a new absent config from it or merge only needed `[agents]` keys into
+   an existing file. Preserve primary model/effort, provider, permissions,
+   hooks, MCP and unrelated settings. The installer leaves main settings alone.
+5. Validate parse and fresh native discovery separately from live execution.
+   Use bounded native nesting probes when authorized; keep unavailable model
+   access or authentication explicit. Codex depth is a decreasing invocation
+   packet budget; Claude's bundled settings additionally select two native
+   subagent layers and six concurrent subagents. All branches share the root's
+   allocation. Host upgrades and authentication changes keep their own scope.
+
+The launcher and installer resolve their real source path, so invoking them
+through `.claude -> .agents`, from an unrelated working directory or after
+relocation keeps the same implementation. Tests exercise all three deployments
+as actual Git submodules, including a workspace name with spaces, repeated
+invocation, relocation, native role/settings reads and conflict preservation.
+Single-host fixtures assert that the other host's directories remain absent.
+
+Model presets are revisable deployment choices, not a fixed capability ranking.
+On 2026-11-02, official [Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview)
+used ID `claude-opus-5-5`, while local Claude Code 2.1.222's `opus` alias resolved
+to `claude-opus-5`. The bundled Claude roles select the explicit 5.5 ID at high
+effort. Recheck current official guidance, local selection and account access;
+syntax/loading evidence alone does not prove live API compatibility.

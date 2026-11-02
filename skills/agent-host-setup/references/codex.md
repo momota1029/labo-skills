@@ -11,11 +11,10 @@ session's local-inspection-first source order and reusing completed source
 checks. The [project example](../assets/codex-agents.toml) and
 [deployment procedure](deployment.md) are included in this distributable
 checkout; external generated config is not needed to reconstruct the setup.
-When the real policy submodule is `.claude`, use the installer's
-`--host codex --register-skills` to expose per-skill directory links in
-`.agents/skills`. When the submodule is already `.agents`, registration is a
-no-op for those source entries. Never make a second policy checkout as a host
-discovery shortcut.
+Codex/general use mounts the policy at `.agents`; Claude-only use mounts it at
+`.claude` and does not create a Codex entry. For combined use, keep `.agents`
+as the real submodule and add a whole-directory `.claude -> .agents` alias.
+Do not create per-skill registration trees or another policy checkout.
 
 Inspect `codex --version`, `codex --help`, and `codex debug models` when those
 commands exist. Filter the model catalogue to IDs and supported effort;

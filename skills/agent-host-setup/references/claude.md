@@ -8,10 +8,11 @@ Official sources (recheck for the installed release):
 - [Settings](https://code.claude.com/docs/en/settings)
 - [Skill locations and directory symlinks](https://code.claude.com/docs/en/skills#choose-where-skills-load)
 
-The [settings example](../assets/claude-settings.json) and
-[deployment procedure](deployment.md) are included in this distributable
-checkout. Reconstruct native files from them and local capability evidence;
-an earlier workspace's external settings are not required.
+The native [settings](../../../settings.json), [role files](../../../agents/)
+and [deployment procedure](deployment.md) are included in this distributable
+checkout. Mount the checkout at `.claude`, or use the whole-directory relative
+alias `.claude -> .agents` for combined use. An earlier workspace's external
+settings are not required.
 
 Inspect `claude --version`, `claude --help`, existing project roles/settings and
 only relevant user setting keys. Installed official `claude-code-setup` and
@@ -25,14 +26,11 @@ resolve dynamically: check real host events or API model usage rather than
 claiming an exact resolved ID from the alias. A supported option or model alias
 does not by itself prove account access. Preserve primary `model`/`effortLevel`.
 
-Role discovery and skill discovery are separate. A checkout at `.agents/skills`
-is not a Claude project skill location. Register its individual skill directories
-with relative symlinks under `.claude/skills/<name>` when supported, or use a
-supported host registration method. The installer offers `--register-skills`
-for those links and preserves conflicts; a checkout already mounted at `.claude`
-needs no links. Do not copy `SKILL.md` or maintain forwarding policy text. Check
-the fresh host skill roster before claiming automatic discovery. Role prompt
-links alone allow explicit reading of the contracts but do not register skills.
+Role discovery and skill discovery are separate. Claude reads both native
+locations from its `.claude` entry. A whole-directory alias exposes the real
+policy's skills, roles and settings together; no individual skill links are
+needed. Check a fresh host roster before claiming successful discovery.
+Codex-only use at `.agents` leaves `.claude` absent.
 
 Claude Code 2.1.222 locally exposes native nesting and recognizes these
 environment controls, which may be scoped to project `.claude/settings.json`:
