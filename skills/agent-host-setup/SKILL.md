@@ -35,7 +35,9 @@ records are optional deployment results.
    a project request normally belongs in project files. Keep reusable behavior
    in this policy checkout and private host choices in the consuming workspace.
 4. Select callable suitable models and explicit supported effort for mathematical
-   roles using [the role contract](../research-router/references/mathematical-roles.md).
+   roles using [the role contract](../research-router/references/mathematical-roles.md)
+   and the corresponding `math-decomposer`, `math-proof-worker` or
+   `math-verifier` skill, which owns the role body and description.
    Use native model fields; a persona title is not model selection. The
    [role installer](scripts/install_roles.py) previews or creates project roles
    referencing this checked-out contract. Supply model/effort explicitly. It
@@ -43,6 +45,8 @@ records are optional deployment results.
    existing host settings carefully for the supported keys needed by the task.
    Claude's native roles/settings already ship at the policy root. Read them
    through `.claude`, either the real submodule or its whole-directory alias.
+   Their `skills: [role]` field preloads that same body; their short native
+   instruction executes it in the current child without reinvoking the skill.
    Preserve a pre-existing unrelated `.claude` tree; migrate it deliberately
    rather than creating another registration mechanism. Single-host setup
    leaves the other host's entry absent.

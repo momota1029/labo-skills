@@ -127,6 +127,14 @@ allocates a shared finite descendant budget; the
 specify exact lemma interfaces, hypothesis discharge, integration and independent
 verification. Native caps and behavioral allocation are reported separately.
 
+The mathematical role bodies and descriptions live in
+[math-decomposer](skills/math-decomposer/SKILL.md),
+[math-proof-worker](skills/math-proof-worker/SKILL.md), and
+[math-verifier](skills/math-verifier/SKILL.md). Project Codex adapters read these
+skills in their existing child. Claude supports both direct forked-skill
+execution and native adapters that preload the same skill; the adapter does
+not reinvoke it. Claude-specific frontmatter does not configure other harnesses.
+
 Distribute this policy directory as `.agents` for Codex/general harnesses, or
 as `.claude` for Claude Code. For both, use an `.agents` submodule and the
 whole-directory relative alias `.claude -> .agents`. Native Claude `agents/`

@@ -15,6 +15,13 @@ host's directory as a routine setup step. In combined use, both names reach one
 checkout, including the same `skills/`, `agents/` and `settings.json`; individual
 skill links and a second policy copy are unnecessary.
 
+Register only real submodule mounts in `.gitmodules`: `.agents` for Codex or
+combined use, `.claude` for Claude-only use. In combined use, track the relative
+`.claude -> .agents` symlink as an ordinary Git entry; it is not another
+submodule. A recursive clone initializes the `.agents` submodule, and the
+tracked alias exposes that same checkout to Claude. Adding a second submodule
+entry for the symlink does not create a second initialized checkout.
+
 1. Resolve the real loaded skill/script directory and consuming workspace.
    Inspect installed host help/version and relevant existing settings. Consult
    available official setup/documentation skills, reusing completed checks.
@@ -25,8 +32,11 @@ skill links and a second policy copy are unnecessary.
    native configuration into the real checkout before a deliberate migration.
    Do not overwrite user files or build per-skill forwarding trees.
 3. Claude Code reads bundled `agents/*.md` and root `settings.json` directly
-   through its `.claude` entry. The roles reference `.claude/skills/...`, which
-   works both natively and through the whole-directory alias. Reconsider their
+   through its `.claude` entry. Each native adapter preloads its matching
+   `math-…` skill with `skills: [role]`; the body and description live in that
+   skill. It executes the current task without invoking the skill again.
+   Alternatively `/math-… <bounded packet>` runs that same body in one fresh
+   built-in general-purpose child via Claude's `context: fork`. Reconsider their
    model/effort for the actual task and account. The optional role installer
    with `--host claude` checks/generates that same native location, refuses a
    different `.claude` tree, and preserves differing existing files.
@@ -37,6 +47,10 @@ skill links and a second policy copy are unnecessary.
    Create a new absent config from it or merge only needed `[agents]` keys into
    an existing file. Preserve primary model/effort, provider, permissions,
    hooks, MCP and unrelated settings. The installer leaves main settings alone.
+   Codex adapters select model/effort and read the corresponding role SKILL.md
+   in the existing delegated thread. Personal `~/.codex/agents` registration is
+   unnecessary for this project. Claude skill frontmatter has no equivalent
+   spawning/model meaning in Codex; other harnesses need their own native setup.
 5. Validate parse and fresh native discovery separately from live execution.
    Use bounded native nesting probes when authorized; keep unavailable model
    access or authentication explicit. Codex depth is a decreasing invocation
@@ -50,6 +64,14 @@ relocation keeps the same implementation. Tests exercise all three deployments
 as actual Git submodules, including a workspace name with spaces, repeated
 invocation, relocation, native role/settings reads and conflict preservation.
 Single-host fixtures assert that the other host's directories remain absent.
+
+Keep the role skills available to automatic invocation: Claude skips missing or
+disabled preloads with a warning, so a native adapter without its loaded skill
+does not supply the full role. The native verifier's `Read, Glob, Grep` list
+restricts its tools. Direct general-purpose skill execution retains a behavioral
+read-only requirement; do not assert that it has the same technical restriction.
+Check each entrypoint separately when claiming execution. Validation/loading
+alone establishes neither child creation nor effective account access.
 
 Model presets are revisable deployment choices, not a fixed capability ranking.
 On 2026-11-02, official [Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview)

@@ -19,6 +19,10 @@ class HostRoleTests(unittest.TestCase):
         contract = policy / "skills/research-router/references/mathematical-roles.md"
         contract.parent.mkdir(parents=True)
         contract.write_text("synthetic contract")
+        for name in roles.ROLES:
+            target = policy / "skills" / name / "SKILL.md"
+            target.parent.mkdir(parents=True)
+            target.write_text((CHECKOUT / "skills" / name / "SKILL.md").read_text())
         return policy
 
     def test_native_fields_and_contract_without_settings_mutation(self):
@@ -49,8 +53,10 @@ class HostRoleTests(unittest.TestCase):
                                 self.assertNotIn("Agent", data["tools"])
                                 self.assertNotIn("Write", data["tools"])
                         self.assertEqual(data["model"], model)
-                        reference = ".claude" if host == "claude" else mount
-                        self.assertIn(f"{reference}/skills/research-router", prompt)
+                        if host == "claude":
+                            self.assertEqual(data["skills"], [data["name"]])
+                        else:
+                            self.assertIn(f"{mount}/skills/{data['name']}/SKILL.md", prompt)
                     self.assertEqual(len(roles.install(files)), 3)
                     self.assertTrue(all(not path.exists() for path in files))
                     self.assertEqual(len(roles.install(files, apply=True)), 3)
@@ -74,6 +80,40 @@ class HostRoleTests(unittest.TestCase):
                 roles.install(files, apply=True)
             self.assertEqual(last.read_text(), "user customized role")
             self.assertFalse(list(files)[0].exists())
+
+    def test_adapters_take_description_from_enabled_role_skill(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".claude")
+            path = policy / "skills/math-proof-worker/SKILL.md"
+            text = path.read_text()
+            front, body = text.split("---", 2)[1:]
+            data = yaml.safe_load(front)
+            data["description"] = "Synthetic revised task interface"
+            path.write_text("---\n" + yaml.safe_dump(data) + "---\n" + body)
+            for host, model in (("codex", "gpt-6-astra"), ("claude", "claude-opus-5-5")):
+                files = roles.render_roles(root, host, model, "high", policy)
+                output = next(value for path, value in files.items() if path.stem == "math-proof-worker")
+                adapter = tomllib.loads(output) if host == "codex" else yaml.safe_load(output.split("---", 2)[1])
+                self.assertEqual(adapter["description"], data["description"])
+            data["disable-model-invocation"] = True
+            path.write_text("---\n" + yaml.safe_dump(data) + "---\n" + body)
+            with self.assertRaisesRegex(ValueError, "enabled preload"):
+                roles.render_roles(root, "claude", "claude-opus-5-5", "high", policy)
+
+    def test_claude_skill_and_native_entry_do_not_select_each_other(self):
+        for name in roles.ROLES:
+            metadata = yaml.safe_load((CHECKOUT / "skills" / name / "SKILL.md").read_text().split("---", 2)[1])
+            self.assertEqual(metadata["context"], "fork")
+            self.assertEqual(metadata["agent"], "general-purpose")
+            self.assertEqual(metadata["model"], "claude-opus-5-5")
+            self.assertEqual(metadata["effort"], "high")
+            self.assertNotIn(metadata["agent"], roles.ROLES)
+            self.assertIsNot(metadata.get("disable-model-invocation"), True)
+            native = yaml.safe_load((CHECKOUT / "agents" / f"{name}.md").read_text().split("---", 2)[1])
+            self.assertEqual(native["skills"], [name])
+            self.assertNotIn("context", native)
+            self.assertEqual(native["description"], metadata["description"])
 
     def test_claude_generation_preserves_absent_or_unrelated_directory(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -11,27 +11,9 @@ import yaml
 
 
 ROLES = {
-    "math-decomposer": (
-        "Decompose mathematical proof tasks into precise lemmas and integrate their returned proofs.",
-        "Own decomposition and integration. Check lemma interfaces, dependencies and discharged hypotheses. "
-        "Delegate proper subproblems only within the root's remaining depth and reserved subtree slots. "
-        "Request a separate fresh verifier for decisive results.",
-        ["Read", "Glob", "Grep", "Agent"],
-    ),
-    "math-proof-worker": (
-        "Prove one bounded mathematical statement or return a counterexample and exact remaining obligations.",
-        "Own the assigned proof. Return explicit constructions, hypothesis use, permitted dependencies, "
-        "proven scope and gaps. Return a redispatch packet when further decomposition is needed. "
-        "Do not silently strengthen hypotheses or claim independent review of your own proof.",
-        ["Read", "Glob", "Grep", "Edit", "Write", "Bash"],
-    ),
-    "math-verifier": (
-        "Independently check a frozen mathematical proof against its exact statement and permitted sources.",
-        "Review only the frozen artifact and permitted primary sources in the packet. "
-        "Check quantifiers, hypotheses, dependency applicability and edge cases. "
-        "Return located findings or checked scope and no finding. Do not edit, repair or spawn.",
-        ["Read", "Glob", "Grep"],
-    ),
+    "math-decomposer": ["Read", "Glob", "Grep", "Agent"],
+    "math-proof-worker": ["Read", "Glob", "Grep", "Edit", "Write", "Bash"],
+    "math-verifier": ["Read", "Glob", "Grep"],
 }
 
 
@@ -57,18 +39,23 @@ def render_roles(workspace: Path, host: str, model: str, effort: str,
     allowed = {"low", "medium", "high", "xhigh", "max", "ultra"}
     if effort not in allowed or (host == "claude" and effort == "ultra"):
         raise ValueError("unsupported effort spelling; verify support for the selected model")
-    common = (
-        f"Read {relative}/skills/research-router/references/subagent-invocation.md and "
-        f"{relative}/skills/research-router/references/mathematical-roles.md before substantive work. "
-        "Follow the currently selected skill and bounded assignment packet; a preset is not an assignment. "
-        "Use the packet's actual invocation provenance and reuse its completed consultation. "
-        "If consultation/provenance is missing, return to the parent for that check. "
-        "Keep private research within the authorized read/write set. "
-    )
     files = {}
-    for name, (description, duties, tools) in ROLES.items():
-        prompt = common + duties
+    for name, tools in ROLES.items():
+        skill = policy_root / "skills" / name / "SKILL.md"
+        text = skill.read_text(encoding="utf-8")
+        if not text.startswith("---\n") or len(text.split("---", 2)) != 3:
+            raise ValueError(f"invalid role skill frontmatter: {skill}")
+        metadata = yaml.safe_load(text.split("---", 2)[1])
+        if (not isinstance(metadata, dict) or metadata.get("name") != name
+                or not isinstance(metadata.get("description"), str)
+                or not metadata["description"].strip()
+                or metadata.get("disable-model-invocation") is True):
+            raise ValueError(f"role skill must have matching name, description and enabled preload: {skill}")
+        description = metadata["description"]
         if host == "codex":
+            prompt = (f"Read {relative}/skills/{name}/SKILL.md and execute the current bounded assignment "
+                      "using that skill. You are already the delegated agent; load it as instructions "
+                      "instead of invoking a fork or spawning a replacement merely to activate it.")
             values = {"name": name, "description": description, "model": model,
                       "model_reasoning_effort": effort, "developer_instructions": prompt}
             content = "".join(f"{key} = {json.dumps(value, ensure_ascii=False)}\n"
@@ -77,7 +64,9 @@ def render_roles(workspace: Path, host: str, model: str, effort: str,
             files[workspace / ".codex/agents" / f"{name}.toml"] = content
         elif host == "claude":
             front = {"name": name, "description": description, "model": model,
-                     "effort": effort, "tools": tools}
+                     "effort": effort, "tools": tools, "skills": [name]}
+            prompt = (f"Execute the current bounded assignment using the already-preloaded {name} "
+                      "instructions. You are already the delegated agent; do not invoke the skill again.")
             content = "---\n" + yaml.safe_dump(front, sort_keys=False) + "---\n\n" + prompt + "\n"
             files[workspace / ".claude/agents" / f"{name}.md"] = content
         else:

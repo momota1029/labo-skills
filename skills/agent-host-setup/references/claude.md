@@ -7,6 +7,9 @@ Official sources (recheck for the installed release):
 - [Concurrency](https://code.claude.com/docs/en/sub-agents#concurrent-subagent-limit)
 - [Settings](https://code.claude.com/docs/en/settings)
 - [Skill locations and directory symlinks](https://code.claude.com/docs/en/skills#choose-where-skills-load)
+- [Preloading skills](https://code.claude.com/docs/en/sub-agents#preload-skills-into-subagents)
+- [Direct skill subagents](https://code.claude.com/docs/en/skills#run-skills-in-a-subagent)
+- [Invocation arguments](https://code.claude.com/docs/en/skills#pass-arguments-to-skills)
 
 The native [settings](../../../settings.json), [role files](../../../agents/)
 and [deployment procedure](deployment.md) are included in this distributable
@@ -31,6 +34,26 @@ locations from its `.claude` entry. A whole-directory alias exposes the real
 policy's skills, roles and settings together; no individual skill links are
 needed. Check a fresh host roster before claiming successful discovery.
 Codex-only use at `.agents` leaves `.claude` absent.
+
+The mathematical role bodies/descriptions live once in `skills/math-…/SKILL.md`.
+Direct `/math-… <packet>` execution uses Claude's `context: fork`, built-in
+`general-purpose`, and native skill model/effort fields. Claude appends arguments
+when the body has no argument placeholder. Native adapters instead set
+`skills: [math-…]` to inject the body at startup; they supply model/effort/tools
+and a short instruction to execute the current task, without invoking the skill
+again. `disable-model-invocation: true` prevents preload and is not suitable
+for these shared role skills. Missing or disabled preloads produce a warning
+and are skipped, so check the role body actually loaded.
+
+If using `claude plugin validate`, check that its report actually covers the
+components. The tested CLI rejected an enclosing symlink, and returned success
+with an empty component report for real directories even with malformed control
+files; those runs did not establish component validation. Use explicit YAML/
+frontmatter tests and native entry checks for the role files. The standard
+skill-creator validator does not accept Claude extension keys; validation of a
+standard-frontmatter projection is supplemental, not proof that those extension
+fields work. Do not change the global validator to hide this distinction.
+Native host loading and live entrypoint checks remain separate.
 
 Claude Code 2.1.222 locally exposes native nesting and recognizes these
 environment controls, which may be scoped to project `.claude/settings.json`:

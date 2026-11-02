@@ -25,34 +25,44 @@ a stronger hypothesis changes the proposition and needs integrator acceptance.
 An unchecked Lean fragment is not a compiled declaration. Follow the owning
 skill's formal-evidence checks before recording completion.
 
-## Decomposer and integrator (`math-decomposer`)
+## Single-source role instructions
 
-Find a useful logical decomposition, not merely equal-sized prose sections.
-Specify each lemma's interface and why the proposed conclusion follows from
-them. Check dependency direction and cycles, choose suitable workers for the
-hardest obligations, and keep definitions and hypotheses consistent across
-branches. Delegate bounded subproblems using the shared budget. Read the proofs
-on return and check that each lemma can be applied to the actual objects with
-all hypotheses discharged. Integrate only established scope; report gaps and
-proposed statement changes explicitly. Request a separate verifier for decisive
-claims. Integration by the proof producer is not independent verification.
+The role bodies and descriptions live in these skills:
 
-## Proof worker (`math-proof-worker`)
+- [math-decomposer](../../math-decomposer/SKILL.md)
+- [math-proof-worker](../../math-proof-worker/SKILL.md)
+- [math-verifier](../../math-verifier/SKILL.md)
 
-Prove the assigned statement, test problematic boundary cases, or produce a
-counterexample. Use only established permitted dependencies; identify a missing
-lemma as a new obligation. Keep the assignment small enough that its interface
-can be checked. Return a proof detailed enough for the integrator to apply,
-including constructions/witnesses and hypothesis use. Return a redispatch packet
-for further decomposition when native tools or the budget do not permit it.
+The owning artifact skill still controls sources, write scope, formal evidence
+and review requirements. Reuse the completed consultation for this assignment;
+missing provenance, consultation or critical packet fields return to the parent
+for resolution rather than triggering recursive advisors or a replacement role.
 
-## Independent verifier (`math-verifier`)
+## Host entry boundaries
 
-Start a fresh thread with the frozen statement, proof and permitted primary
-sources. Keep producer discussion and other review reports out of the packet.
-Check quantifiers, hidden hypotheses, lemma applicability, edge cases and the
-passage from local conclusions to the final result. Report located findings
-with reasoning, or the scope checked and no finding. Do not repair the artifact
-or become its producer; use a new thread for a fresh review after repairs.
-Read-only tools can strengthen the edit boundary but do not isolate filesystem
-context or certify a mathematical proof.
+Codex setup registers project `.codex/agents` adapters with explicit native
+model/effort and a short instruction to read the matching role skill. Read that
+skill as instructions in the existing delegated thread. Claude-specific skill
+frontmatter does not select a Codex model or create a Codex child.
+
+In Claude Code, direct `/math-… <packet>` skill execution uses `context: fork`
+and the built-in `general-purpose` agent to start one fresh child with the
+skill body as its task. The skill's native `model`/`effort` fields apply there.
+Supply the bounded packet after the slash name. These bodies use no argument
+placeholder; Claude appends the invocation arguments to the skill prompt as
+documented in [argument passing](https://code.claude.com/docs/en/skills#pass-arguments-to-skills).
+Native `agents/math-….md` adapters instead preload the same body through
+`skills: [math-…]`, with their own explicit model/effort/tools. A preloaded
+skill's fork configuration does not request another invocation: execute the
+current assignment in the existing child. Do not reinvoke the same skill or
+spawn a replacement merely to activate its instructions. Include direct skill
+children in the parent's remaining depth and shared slot accounting as well.
+
+Keep automatic skill invocation enabled so native preload can load the role.
+If host policy disables or hides it, report the missing preload; an empty
+adapter is not the full role. The native verifier has a read-only tool list;
+the direct general-purpose skill path has a behavioral read-only requirement
+and must not be described as having the same technical restriction.
+
+Other harnesses use their own actual delegation and model controls. Detect
+host capabilities rather than treating every non-Codex harness as Claude Code.

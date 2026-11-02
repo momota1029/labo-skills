@@ -72,8 +72,10 @@ class DistributedHostTests(unittest.TestCase):
                     self.assertEqual(settings["env"]["CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH"], "2")
                     for path in (native / "agents").glob("math-*.md"):
                         front, prompt = path.read_text().split("---", 2)[1:]
-                        self.assertEqual(yaml.safe_load(front)["model"], "claude-opus-5-5")
-                        self.assertIn(".claude/skills/research-router", prompt)
+                        metadata = yaml.safe_load(front)
+                        self.assertEqual(metadata["model"], "claude-opus-5-5")
+                        self.assertEqual(metadata["skills"], [path.stem])
+                        self.assertTrue((native / "skills" / path.stem / "SKILL.md").is_file())
                 launcher = policy / "scripts/labo.py"
                 run = subprocess.run([sys.executable, "-B", "-I", str(launcher), "--help"],
                                      cwd=container, capture_output=True, text=True)
@@ -92,7 +94,7 @@ class DistributedHostTests(unittest.TestCase):
                                     else ".codex/agents/math-decomposer.toml")
                 if mode != "claude":
                     prompt = tomllib.loads(role.read_text())["developer_instructions"]
-                    self.assertIn(".agents/skills/research-router", prompt)
+                    self.assertIn(".agents/skills/math-decomposer/SKILL.md", prompt)
                     self.assertNotIn(str(workspace), prompt)
                 role.write_text("user customized role\n")
                 result = self.invoke(relocated, script, container, "claude" if mode == "claude" else "codex")
