@@ -6,6 +6,7 @@ Official sources (recheck for the installed release):
 - [Native nesting](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents)
 - [Concurrency](https://code.claude.com/docs/en/sub-agents#concurrent-subagent-limit)
 - [Settings](https://code.claude.com/docs/en/settings)
+- [Skill locations and directory symlinks](https://code.claude.com/docs/en/skills#choose-where-skills-load)
 
 Inspect `claude --version`, `claude --help`, existing project roles/settings and
 only relevant user setting keys. Installed official `claude-code-setup` and
@@ -18,6 +19,15 @@ Project roles live in `.claude/agents/*.md` with YAML frontmatter. `model` and
 resolve dynamically: check real host events or API model usage rather than
 claiming an exact resolved ID from the alias. A supported option or model alias
 does not by itself prove account access. Preserve primary `model`/`effortLevel`.
+
+Role discovery and skill discovery are separate. A checkout at `.agents/skills`
+is not a Claude project skill location. Register its individual skill directories
+with relative symlinks under `.claude/skills/<name>` when supported, or use a
+supported host registration method. The installer offers `--register-skills`
+for those links and preserves conflicts; a checkout already mounted at `.claude`
+needs no links. Do not copy `SKILL.md` or maintain forwarding policy text. Check
+the fresh host skill roster before claiming automatic discovery. Role prompt
+links alone allow explicit reading of the contracts but do not register skills.
 
 Claude Code 2.1.222 locally exposes native nesting and recognizes these
 environment controls, which may be scoped to project `.claude/settings.json`:

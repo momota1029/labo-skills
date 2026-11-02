@@ -20,6 +20,7 @@ class HostRoleTests(unittest.TestCase):
         contract = policy / "skills/research-router/references/mathematical-roles.md"
         contract.parent.mkdir(parents=True)
         contract.write_text("synthetic contract")
+        (policy / "skills/research-router/SKILL.md").write_text("synthetic skill")
         return policy
 
     def test_native_fields_and_relocated_contract_without_settings_mutation(self):
@@ -65,6 +66,35 @@ class HostRoleTests(unittest.TestCase):
                 roles.install(files, apply=True)
             self.assertEqual(last.read_text(), "user customized role")
             self.assertFalse(list(files)[0].exists())
+
+    def test_claude_registration_uses_real_sources_and_preserves_existing_entries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".agents")
+            destination = root / ".claude/skills/research-router"
+            destination.mkdir(parents=True)
+            (destination / "SKILL.md").write_text("user-owned skill")
+            with self.assertRaisesRegex(ValueError, "preserve existing skill"):
+                roles.register_claude_skills(root, policy, apply=True)
+            self.assertEqual((destination / "SKILL.md").read_text(), "user-owned skill")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".agents")
+            self.assertEqual(len(roles.register_claude_skills(root, policy)), 1)
+            self.assertFalse((root / ".claude").exists())
+            roles.register_claude_skills(root, policy, apply=True)
+            path = root / ".claude/skills/research-router"
+            self.assertTrue(path.is_symlink())
+            self.assertFalse(path.readlink().is_absolute())
+            self.assertEqual(path.resolve(), (policy / "skills/research-router").resolve())
+            self.assertEqual(roles.register_claude_skills(root, policy, apply=True), [])
+
+    def test_claude_policy_mount_needs_no_forwarding_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".claude")
+            self.assertEqual(roles.register_claude_skills(root, policy, apply=True), [])
+            self.assertFalse((policy / "skills/research-router").is_symlink())
 
     def test_symlink_escape_and_restricted_model_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:

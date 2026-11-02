@@ -34,6 +34,11 @@ use the selected research skill and [invocation contract](../research-router/ref
    referencing this checked-out contract. Supply model/effort explicitly. It
    refuses differing existing files and leaves host settings untouched; merge
    existing host settings carefully for the supported keys needed by the task.
+   Claude does not automatically discover a policy checkout at `.agents/skills`.
+   When shared-skill registration is needed, `--register-skills` for Claude
+   previews/creates per-skill relative directory symlinks in `.claude/skills`,
+   preserving conflicting entries. Check host discovery separately from role
+   prompt references; retain a single source checkout.
 5. Validate syntax and host loading, then use a tiny native delegation probe
    when authorized. Bound its depth, concurrency, tools, time and cost. Test
    actual parent→child→grandchild when claiming nesting. Check effective model
