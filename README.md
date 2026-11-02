@@ -116,6 +116,17 @@ and user-specific records remain in the parent workspace.
 
 ## Agent integration
 
+Use [agent-host-setup](skills/agent-host-setup/SKILL.md) for actual Codex or
+Claude Code settings and native mathematical roles. Its create-only installer
+requires an explicit model and effort, preserves existing differing roles, and
+references this checkout's current contracts. Host discovery, role loading,
+actual model execution and parent→child→grandchild execution are separate
+validation steps. The [invocation contract](skills/research-router/references/subagent-invocation.md)
+allocates a shared finite descendant budget; the
+[mathematical roles](skills/research-router/references/mathematical-roles.md)
+specify exact lemma interfaces, hypothesis discharge, integration and independent
+verification. Native caps and behavioral allocation are reported separately.
+
 The actual skills are `skills/<name>/SKILL.md` inside this checkout.
 `plugin.json` also describes the collection for
 [Agent Plugin](https://agent-plugins.org/specification) hosts; plugin installation

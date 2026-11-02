@@ -41,6 +41,42 @@ thread and its assignment context. Use it to continue that agent's work.
 Start a fresh thread when a new role or independent review needs fresh context;
 do not reuse a producer's thread as an independent reviewer.
 
+## Nested delegation and one shared budget
+
+A qualified worker may delegate a proper subproblem when the user or selected
+skill authorizes delegation and the host exposes native child spawning. Nesting
+preserves this contract, including actual model selection and fresh context.
+Reuse the completed consultation for the same assignment; a child does not
+commission another advisor merely because it received delegated work.
+
+The root allocates a finite remaining depth and one session-wide concurrency
+budget. Each packet states its remaining depth, the number of descendant slots
+reserved to its subtree, and who integrates its result. A child consumes one
+slot while active; its descendants share the subtree's remaining allocation.
+Sibling allocations must fit the root's remaining slots. Decrement depth at
+every edge, and stop spawning at zero. A per-branch cap copied independently to
+every child is not a global budget. Keep reservations with the root/integrator;
+release them after results are collected and the host releases the thread.
+Completed but still open threads can continue to occupy host slots.
+
+For example, with six available spawned-thread slots, an integrator taking one
+may reserve two slots to each of two branches (one worker and one descendant),
+leaving one spare. The branches cannot each spawn six agents. Use sequential
+work or return a bounded redispatch packet when slots or depth run out; do not
+retry a native limit error in a loop.
+
+Prefer the host's native nesting. Check the installed host rather than assuming
+all versions share a depth control. When native nesting is absent, return the
+subproblem to the nearest capable parent for dispatch; identify that as
+parent-mediated delegation. Starting subprocess CLIs to evade a native limit
+does not preserve its session budget or permission boundary.
+
+For mathematical decomposition, proving and independent verification, use the
+[mathematical role contract](mathematical-roles.md). Host role presets supply a
+model and a narrow job; the selected skill and current packet remain the task
+authority. Configure actual host support through
+[agent-host-setup](../../agent-host-setup/SKILL.md).
+
 ## Preserve independent reviews
 
 For a cold or blind review, send the frozen artifact and only the primary

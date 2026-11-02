@@ -87,14 +87,19 @@ For each user request, follow the [required consultation](references/consultatio
    explanation and reading notes → `reading-reference`; website →
    `website-publishing`; continuous Japanese reading translations →
    [japanese-translation](../japanese-translation/SKILL.md);
-   skill improvements in the user's fork →
+   actual Codex/Claude host settings and subagent roles →
+   [agent-host-setup](../agent-host-setup/SKILL.md); skill improvements in the user's fork →
    `labo-self-improve`; selected upstream
    contributions → `labo-pr`; selective upstream adoption into the fork →
    `labo-sync`.
 4. Beyond the required consultation, if task-specific delegation is useful,
    formulate a short task-specific assignment *from the selected skill* and
    follow the [subagent invocation contract](references/subagent-invocation.md).
-   Do not depend on a proprietary stored subagent persona or prompt template.
+   Host role presets may select a suitable model and narrow job; the selected
+   skill and current packet remain authoritative. Use the
+   [mathematical role contract](references/mathematical-roles.md) for decomposition,
+   proving and verification. Nested workers share the root's finite depth and
+   descendant concurrency budget.
    Choose by the mathematical judgment needed to establish correctness:
 
    - **Literal evidence collection and coordination**:
