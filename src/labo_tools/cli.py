@@ -20,6 +20,7 @@ from .build import (
     run_source_build,
 )
 from .evidence import EvidenceError, KINDS, check_evidence, init_catalog, snapshot
+from . import exploration
 from .layout import LayoutError, init_layout, new_item
 from .paper import PaperError, map_openings, read_section
 from .plans import PlanError, ResearchPlan, read_workspace
@@ -212,6 +213,45 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
             sub.add_argument("--tag")
             sub.add_argument("--search")
             sub.add_argument("--format", choices=("text", "json"), default="text")
+
+    explore = research_actions.add_parser("exploration", help="opt-in exploration tree and work states")
+    explore_actions = explore.add_subparsers(dest="exploration_action", required=True)
+    for name in ("init", "configure", "add", "update", "show", "tree", "check"):
+        sub = explore_actions.add_parser(name)
+        _workspace(sub)
+        sub.add_argument("--research", required=True)
+        sub.add_argument("--format", choices=("text", "json"), default="text")
+        if name == "init":
+            sub.add_argument("--if-missing", action="store_true", help="validate and reuse an existing tree without changing its settings")
+        if name in {"init", "configure"}:
+            sub.add_argument("--mode", choices=("sequential", "parallel"), default="sequential" if name == "init" else None)
+            sub.add_argument("--integrator", default="primary" if name == "init" else None)
+            sub.add_argument("--max-workers", type=int, default=2 if name == "init" else None)
+        if name in {"configure", "add", "update"}:
+            sub.add_argument("--actor", required=name == "configure")
+        if name in {"configure", "update"}:
+            sub.add_argument("--expect-revision", required=True, type=int)
+        if name in {"add", "update", "show", "tree"}:
+            sub.add_argument("--node", required=name != "tree")
+        if name in {"add", "update"}:
+            sub.add_argument("--parent", help="parent ID; use '-' to make a root")
+            sub.add_argument("--kind", choices=exploration.KINDS, required=name == "add")
+            sub.add_argument("--title", required=name == "add")
+            sub.add_argument("--summary", required=name == "add")
+            sub.add_argument("--next", dest="next_step", required=name == "add")
+            sub.add_argument("--state", choices=exploration.STATES)
+            sub.add_argument("--owner", help="owner name; '-' clears in sequential mode")
+            sub.add_argument("--record", help="workspace-relative detail file; '-' clears")
+            sub.add_argument("--claim-ref", action="append", help="replace claim references with repeated path#ID values; '-' clears")
+            sub.add_argument("--dependency-ref", action="append", help="replace dependency references; '-' clears")
+            sub.add_argument("--proof-required", action=argparse.BooleanOptionalAction, default=None,
+                             help="require current formal records before done (always true for theorem/lemma)")
+        if name in {"tree", "show"}:
+            sub.add_argument("--with-evidence", action="store_true", help="inspect linked formal-evidence input freshness")
+        if name == "show":
+            sub.add_argument("--details", action="store_true", help="read only this node's detail record")
+        if name == "tree":
+            sub.add_argument("--depth", type=int, help="visible edge depth from selected root, starting at zero")
 
     evidence = areas.add_parser("evidence", help="optional evidence structure and review freshness")
     evidence_actions = evidence.add_subparsers(dest="action", required=True)
@@ -415,6 +455,45 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
                     print("limit: " + limit)
             return int(result["status"] == "error")
         elif args.area == "research":
+            if args.action == "exploration":
+                action = args.exploration_action
+                if action == "init":
+                    result = exploration.initialize(args.workspace, args.research, mode=args.mode,
+                                                    integrator=args.integrator, max_workers=args.max_workers,
+                                                    if_missing=args.if_missing)
+                elif action == "configure":
+                    changes = {key: getattr(args, key) for key in ("mode", "integrator", "max_workers")
+                               if getattr(args, key) is not None}
+                    result = exploration.configure(args.workspace, args.research,
+                                                   expect_revision=args.expect_revision, actor=args.actor, **changes)
+                elif action in {"add", "update"}:
+                    changes = {}
+                    for arg, key in (("parent", "parent"), ("kind", "kind"), ("title", "title"),
+                                     ("summary", "summary"), ("next_step", "next"), ("state", "state"),
+                                     ("owner", "owner"), ("record", "record"),
+                                     ("proof_required", "proof_required"),
+                                     ("claim_ref", "claim_refs"), ("dependency_ref", "dependency_refs")):
+                        value = getattr(args, arg)
+                        if value is not None:
+                            changes[key] = [] if value == ["-"] else None if value == "-" else value
+                    if action == "add":
+                        result = exploration.add(args.workspace, args.research, id=args.node, actor=args.actor, **changes)
+                    else:
+                        result = exploration.update(args.workspace, args.research, args.node,
+                                                    expect_revision=args.expect_revision, actor=args.actor, **changes)
+                else:
+                    result = exploration.inspect(args.workspace, args.research, action=action,
+                                                node_id=getattr(args, "node", None), depth=getattr(args, "depth", None),
+                                                details=getattr(args, "details", False), with_evidence=getattr(args, "with_evidence", False))
+                if args.format == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                elif action in {"init", "configure", "add", "update"}:
+                    print(f"OK: {action}; revision={result['revision']}")
+                    if "node" in result:
+                        print(f"{result['node']['id']}: node revision={result['node']['revision']}")
+                else:
+                    print(exploration.render(result))
+                return int(result.get("status") == "error")
             plans, errors = read_workspace(args.workspace)
             if errors:
                 for error in errors:
@@ -484,7 +563,7 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
             print(f"Output files: {result.file_count} (limit {result.max_files})")
             if result.over_limit:
                 print("warning: protected or unrecognized files keep output above the limit", file=sys.stderr)
-    except (PlanError, PaperError, WorkspaceError, LayoutError, EvidenceError, ReadingError, OSError, UnicodeError) as exc:
+    except (PlanError, PaperError, WorkspaceError, LayoutError, EvidenceError, ReadingError, exploration.ExplorationError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     return 0

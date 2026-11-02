@@ -193,6 +193,9 @@ class SubmoduleRuntimeTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue((self.workspace / "research/new-program/plan.md").is_file())
+        tree = self.workspace / "research/new-program/exploration/tree.json"
+        self.assertEqual(json.loads(tree.read_text(encoding="utf-8"))["nodes"], [])
+        self.assertFalse((self.workspace / "research/new-program/claims.yaml").exists())
         result = self.invoke(self.unrelated, "research", "check")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("2 research plan", result.stdout)
@@ -368,6 +371,43 @@ class SubmoduleRuntimeTests(unittest.TestCase):
                     "research/private-project/source.md": hashlib.sha256(source.read_bytes()).hexdigest(),
                 })
         self.assertEqual(before, {path: path.read_bytes() for path in folder.rglob("*") if path.is_file()})
+        self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
+        for name in ("scripts", "src", "skills", ".agents", ".claude", "policy-runtime"):
+            if name != self.mount_name:
+                self.assertFalse((self.workspace / name).exists())
+
+    def test_exploration_uses_actual_mount_from_unrelated_cwd(self):
+        prefix = ("research", "exploration")
+        program = ("--research", "private-project")
+        folder = self.workspace / "research/private-project"
+        plan_before = (folder / "plan.md").read_bytes()
+        result = self.invoke(self.unrelated, *prefix, "tree", *program, "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["adoption"], "not_enabled")
+        self.assertFalse((folder / "exploration").exists())
+        for cwd in (self.workspace, self.mount, self.unrelated):
+            with self.subTest(cwd=cwd):
+                if not (folder / "exploration").exists():
+                    result = self.invoke(cwd, *prefix, "init", *program)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                result = self.invoke(cwd, *prefix, "tree", *program, "--format", "json")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["adoption"], "enabled")
+        result = self.invoke(self.unrelated, *prefix, "add", *program, "--node", "route", "--kind", "category",
+                             "--title", "Synthetic route", "--summary", "Explore a synthetic question", "--next", "Inspect inputs")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.invoke(self.unrelated, *prefix, "update", *program, "--node", "route", "--expect-revision", "1", "--state", "done")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.invoke(self.unrelated, *prefix, "check", *program, "--format", "json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["guarantees"]["route"]["state"], "not_required")
+        tree = folder / "exploration/tree.json"
+        frozen = tree.read_bytes()
+        for _ in range(2):
+            result = self.invoke(self.unrelated, *prefix, "init", *program, "--if-missing")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(tree.read_bytes(), frozen)
+        self.assertEqual((folder / "plan.md").read_bytes(), plan_before)
         self.assertEqual(self.git(self.mount, "status", "--porcelain"), "")
         for name in ("scripts", "src", "skills", ".agents", ".claude", "policy-runtime"):
             if name != self.mount_name:

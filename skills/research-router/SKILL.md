@@ -121,6 +121,14 @@ prerequisite closure or change impact, use
 [knowledge-dependencies](../knowledge-dependencies/SKILL.md). Its declared hard
 dependencies constrain logical order; reader order can include clear previews.
 
+For nested mathematical exploration, compact progress trees or bounded
+parallel node ownership, use [research-exploration](../research-exploration/SKILL.md).
+For accepted plan edits or exploration in an existing program, use
+[labo-layout's safe migration](../labo-layout/references/research-migration.md)
+to add missing current structure. Read-only work leaves it intact; missing
+structure is not a compliance or proof failure. Existing plans retain their format and two statuses; tree
+classification is separate from logical dependencies and formal-proof evidence.
+
 Research planning, substantive manuscript writing, changed contribution claims,
 submission preparation, and own-research talks with novelty/comparative claims
 must pass the [research-positioning checkpoints](../reading-reference/references/research-positioning.md).

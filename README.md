@@ -210,6 +210,66 @@ handles their assignment and provenance. See the
 [creation workflow](skills/labo-layout/references/creation.md) and
 [directory contract](skills/labo-layout/references/layout.md) for details.
 
+## Mathematical exploration and safe layout migration
+
+[research-exploration](skills/research-exploration/SKILL.md) adds nested
+categories, theorem/question nodes and compact progress trees to the standard
+research layout. `layout new research` creates `plan.md`, `inbox/` and an empty
+`exploration/tree.json`. When the agent accepts plan edits or exploration in an
+existing program, [labo-layout](skills/labo-layout/references/research-migration.md)
+adds missing structure as part of that work, preserves original material and
+reuses existing nodes. Inventories, explanations, report-only reviews and checks
+remain read-only. A missing tree is simply a structural absence; old plans and
+claim statuses retain their meanings. The versioned tree identifies its format
+without a second style field in `plan.md` or `claims.yaml`. Classification, work progress and mathematical
+dependencies are separate. Read summaries first and selected detail files next:
+
+```sh
+python3 .agents/scripts/labo.py research exploration init --research finite-observations --if-missing
+python3 .agents/scripts/labo.py research exploration add --research finite-observations \
+  --node reconstruction --kind question --title 'Reconstruction question' \
+  --summary 'Identify the hypotheses needed for reconstruction.' \
+  --next 'Test a finite counterexample.' --proof-required
+python3 .agents/scripts/labo.py research exploration tree --research finite-observations --depth 2
+python3 .agents/scripts/labo.py research exploration show --research finite-observations --node reconstruction
+python3 .agents/scripts/labo.py research exploration tree --research finite-observations --with-evidence
+python3 .agents/scripts/labo.py research exploration check --research finite-observations
+```
+
+The lightweight tree reads metadata only and labels formal records unchecked.
+`--with-evidence` and `check` additionally inspect linked evidence and input
+freshness; counts describe scoped work, never a percentage of mathematics proved.
+Mutations use native process locks, atomic JSON replacement and per-node
+optimistic revisions; failed stale updates must be reread and reconciled.
+Parallel workers have named nodes and separate records/modules; one integrator
+owns the program story, shared Lean definitions and final integration.
+
+The initializer safely reuses an existing tree, including concurrent work;
+it neither duplicates nodes nor overwrites settings. Start with the current
+scoped work rather than generating nodes from every historical claim. Create
+`claims.yaml` when registering concrete claims. Sequential/parallel mode is an
+execution choice, separate from layout adoption and task authorization.
+
+For work recorded in the tree, every proof-bearing result needs Lean evidence before
+its task can be `done`. Theorem/lemma nodes require it automatically; mark all
+other mathematical conclusions, examples and counterexamples `--proof-required`.
+Reuse `claims.yaml` as the theorem index, with exact source/declaration,
+substantive kernel and mathematical-alignment reports, and directly covering
+current formal reviews for the claim and its prerequisites. Existing evidence
+formats and legacy research statuses retain their meanings. See
+[Lean completion and placement](skills/research-exploration/references/lean.md).
+
+Prefer small modules in projects grouped by their Lean environment. Current
+fingerprints cover the whole mapped project's `.lean` sources: adding a module
+can stale another result's review. Finish related edits before renewing reviews;
+different change/reuse boundaries can justify separate projects. Stale done
+tasks require rechecking. `current_records` describes input-matching assessment
+records, not automatic mathematical certification. Existing selected-source
+replay does not rebuild all prepared imports or support every local dependency;
+unsupported execution stays pending. Explicit local-dependency tree snapshots
+are required for completion records using path packages. No background scheduler
+or automatic legacy formalization is introduced.
+
 ## Required research positioning
 
 Before framing or substantially reframing a program, starting substantive
