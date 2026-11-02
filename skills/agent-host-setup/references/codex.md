@@ -4,6 +4,18 @@ Official sources (recheck for the installed release):
 
 - [Subagents and standalone role schema](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
 - [Configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+- [Local skill locations and directory symlinks](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)
+
+Consult an available official `openai-docs` skill when useful, preserving the
+session's local-inspection-first source order and reusing completed source
+checks. The [project example](../assets/codex-agents.toml) and
+[deployment procedure](deployment.md) are included in this distributable
+checkout; external generated config is not needed to reconstruct the setup.
+When the real policy submodule is `.claude`, use the installer's
+`--host codex --register-skills` to expose per-skill directory links in
+`.agents/skills`. When the submodule is already `.agents`, registration is a
+no-op for those source entries. Never make a second policy checkout as a host
+discovery shortcut.
 
 Inspect `codex --version`, `codex --help`, and `codex debug models` when those
 commands exist. Filter the model catalogue to IDs and supported effort;

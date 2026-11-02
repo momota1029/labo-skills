@@ -75,26 +75,45 @@ class HostRoleTests(unittest.TestCase):
             destination.mkdir(parents=True)
             (destination / "SKILL.md").write_text("user-owned skill")
             with self.assertRaisesRegex(ValueError, "preserve existing skill"):
-                roles.register_claude_skills(root, policy, apply=True)
+                roles.register_skills(root, policy, "claude", apply=True)
             self.assertEqual((destination / "SKILL.md").read_text(), "user-owned skill")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             policy = self.mounted(root, ".agents")
-            self.assertEqual(len(roles.register_claude_skills(root, policy)), 1)
+            self.assertEqual(len(roles.register_skills(root, policy, "claude")), 1)
             self.assertFalse((root / ".claude").exists())
-            roles.register_claude_skills(root, policy, apply=True)
+            roles.register_skills(root, policy, "claude", apply=True)
             path = root / ".claude/skills/research-router"
             self.assertTrue(path.is_symlink())
             self.assertFalse(path.readlink().is_absolute())
             self.assertEqual(path.resolve(), (policy / "skills/research-router").resolve())
-            self.assertEqual(roles.register_claude_skills(root, policy, apply=True), [])
+            self.assertEqual(roles.register_skills(root, policy, "claude", apply=True), [])
 
     def test_claude_policy_mount_needs_no_forwarding_links(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             policy = self.mounted(root, ".claude")
-            self.assertEqual(roles.register_claude_skills(root, policy, apply=True), [])
+            self.assertEqual(roles.register_skills(root, policy, "claude", apply=True), [])
             self.assertFalse((policy / "skills/research-router").is_symlink())
+
+    def test_codex_registration_from_claude_mount_and_conflict(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".claude")
+            path = root / ".agents/skills/research-router"
+            path.mkdir(parents=True)
+            (path / "SKILL.md").write_text("user-owned Codex skill")
+            with self.assertRaisesRegex(ValueError, "preserve existing skill"):
+                roles.register_skills(root, policy, "codex", apply=True)
+            self.assertEqual((path / "SKILL.md").read_text(), "user-owned Codex skill")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = self.mounted(root, ".claude")
+            roles.register_skills(root, policy, "codex", apply=True)
+            path = root / ".agents/skills/research-router"
+            self.assertTrue(path.is_symlink())
+            self.assertEqual(path.resolve(), (policy / "skills/research-router").resolve())
+            self.assertEqual(roles.register_skills(root, policy, "codex", apply=True), [])
 
     def test_symlink_escape_and_restricted_model_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:

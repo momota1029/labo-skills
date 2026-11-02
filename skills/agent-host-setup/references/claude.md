@@ -8,6 +8,11 @@ Official sources (recheck for the installed release):
 - [Settings](https://code.claude.com/docs/en/settings)
 - [Skill locations and directory symlinks](https://code.claude.com/docs/en/skills#choose-where-skills-load)
 
+The [settings example](../assets/claude-settings.json) and
+[deployment procedure](deployment.md) are included in this distributable
+checkout. Reconstruct native files from them and local capability evidence;
+an earlier workspace's external settings are not required.
+
 Inspect `claude --version`, `claude --help`, existing project roles/settings and
 only relevant user setting keys. Installed official `claude-code-setup` and
 `plugin-dev/agent-development` skills can help discover existing automation and

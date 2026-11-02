@@ -101,16 +101,18 @@ def install(files: dict[Path, str], *, apply: bool = False) -> list[str]:
     return changes
 
 
-def register_claude_skills(workspace: Path, policy_root: Path,
-                          *, apply: bool = False) -> list[str]:
+def register_skills(workspace: Path, policy_root: Path, host: str,
+                    *, apply: bool = False) -> list[str]:
     """Register the real checkout with per-skill links, never forwarding copies."""
     workspace, policy_root = workspace.resolve(), policy_root.resolve()
     if not policy_root.is_relative_to(workspace):
         raise ValueError("policy checkout must be mounted within the target workspace")
     source = policy_root / "skills"
-    destination = workspace / ".claude/skills"
+    if host not in {"codex", "claude"}:
+        raise ValueError(f"unknown host: {host}")
+    destination = workspace / (".agents" if host == "codex" else ".claude") / "skills"
     if not destination.resolve().is_relative_to(workspace):
-        raise ValueError("Claude skill directory escapes the workspace")
+        raise ValueError(f"{host} skill directory escapes the workspace")
     links = {}
     for folder in sorted(source.iterdir()):
         if not folder.is_dir() or not (folder / "SKILL.md").is_file():
@@ -136,17 +138,15 @@ def main() -> int:
     parser.add_argument("--effort", required=True)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--register-skills", action="store_true",
-                        help="also register current shared skills for Claude using relative symlinks")
+                        help="also register current shared skills for the selected host using relative symlinks")
     args = parser.parse_args()
     try:
         files = render_roles(args.workspace, args.host, args.model, args.effort)
         policy_root = Path(__file__).resolve().parents[3]
         if args.register_skills:
-            if args.host != "claude":
-                raise ValueError("--register-skills applies only to Claude")
-            register_claude_skills(args.workspace, policy_root)
+            register_skills(args.workspace, policy_root, args.host)
         changes = install(files, apply=args.apply)
-        registrations = register_claude_skills(args.workspace, policy_root, apply=args.apply) if args.register_skills else []
+        registrations = register_skills(args.workspace, policy_root, args.host, apply=args.apply) if args.register_skills else []
     except (ValueError, OSError) as exc:
         parser.exit(2, f"error: {exc}\n")
     print(json.dumps({"applied": args.apply, "create": changes,

@@ -127,6 +127,13 @@ allocates a shared finite descendant budget; the
 specify exact lemma interfaces, hypothesis discharge, integration and independent
 verification. Native caps and behavioral allocation are reported separately.
 
+Distribute only this policy directory, as a submodule at either `.agents` or
+`.claude`. The [deployment procedure](skills/agent-host-setup/references/deployment.md)
+includes native settings examples and reconstructs both hosts' roles and skill
+entry points. Reciprocal discovery uses relative links to the one real
+checkout; the matching host needs no self-links. Fresh deployments, relocation
+and actual submodules at both mounts are covered by the host/submodule tests.
+
 The actual skills are `skills/<name>/SKILL.md` inside this checkout.
 `plugin.json` also describes the collection for
 [Agent Plugin](https://agent-plugins.org/specification) hosts; plugin installation
