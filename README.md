@@ -1,5 +1,7 @@
 # labo-skills
 
+English | [日本語](README.ja.md)
+
 Shared research skills developed through actual mathematical work.
 **Fork this repository, then add your fork as the `.agents` submodule in
 your own research repository.** Use and improve its skills, rules, and tools
