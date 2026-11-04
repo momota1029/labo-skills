@@ -77,6 +77,7 @@ class BookMaterialsTests(unittest.TestCase):
         self.assertNotEqual(self.call("build", "--course", "sample").returncode, 0)
         self.assertEqual(outside.read_bytes(), b"untouched")
 
+    @unittest.skipIf(sys.platform == "win32", "POSIX permission bits / shebang launcher")
     def test_check_rejects_disabled_hook_and_filter_override(self):
         self.assertEqual(self.call("install").returncode, 0)
         hook = self.root / "materials/.git/hooks/pre-push"
@@ -200,6 +201,7 @@ class BookMaterialsTests(unittest.TestCase):
             self.assertEqual(self.parent_git("config", "--get", key).stdout.strip(), baseline)
         self.assertNotEqual(self.parent_git("push", str(receiver), "HEAD:refs/heads/main", check=False).returncode, 0)
 
+    @unittest.skipIf(sys.platform == "win32", "POSIX permission bits / shebang launcher")
     def test_internal_build_keeps_outputs_and_cache_outside_child_git(self):
         self.guarded_parent()
         self.root = self.workspace / "local"

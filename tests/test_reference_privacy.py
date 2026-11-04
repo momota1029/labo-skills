@@ -82,6 +82,7 @@ class ReferencePrivacyTests(unittest.TestCase):
         tag = self.git('rev-parse', 'leak-tag').stdout.strip()
         self.assertNotEqual(self.guard('check-push', self.push_input(tag)).returncode, 0)
 
+    @unittest.skipIf(sys.platform == "win32", "POSIX hook execution / executable bit")
     def test_existing_hook_is_chained_and_reinstall_preserves_baseline(self):
         hook = self.root / '.git' / 'hooks' / 'pre-push'
         hook.write_text('#!/bin/sh\ncat > chained-input\nexit 17\n')
@@ -208,6 +209,7 @@ class CorpusPrivacyTests(ReferencePrivacyTests):
         self.install()
         self.assertNotEqual(self.guard('check-push', self.push_input()).returncode, 0)
 
+    @unittest.skipIf(sys.platform == "win32", "POSIX hook execution / executable bit")
     def test_changed_intermediate_file_mode_is_rejected(self):
         self.legacy_corpus()
         (self.root / 'writing/.corpus/index.md').chmod(0o755)

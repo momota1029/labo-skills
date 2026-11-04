@@ -167,6 +167,7 @@ class PublicationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('non-regular', result.stderr)
 
+    @unittest.skipIf(sys.platform == "win32", "executes POSIX sh hook directly")
     def test_preserves_existing_hook_stdin_args_and_exit_code(self):
         hook = self.root / '.git/hooks/pre-push'
         hook.write_text('#!/bin/sh\ncat > received-input\nprintf "%s\\n" "$@" > received-args\nexit 17\n')

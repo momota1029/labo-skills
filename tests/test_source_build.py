@@ -159,7 +159,7 @@ class SourceBuildTests(unittest.TestCase):
 
     def test_postprocess_option_runs_and_records_each_step(self):
         self._successful_build()
-        step = f"{sys.executable} -c \"open('output/sample-paper.pdf','wb').write(b'normalized')\""
+        step = f"{Path(sys.executable).as_posix()} -c \"open('output/sample-paper.pdf','wb').write(b'normalized')\""
         run_postprocess(self.root, [step], source=self.source)
         self.assertEqual((self.root / "output/sample-paper.pdf").read_bytes(), b"normalized")
         ok, message = verify_current(self.root, source=self.source)
