@@ -193,7 +193,7 @@ def main():
     args = parser.parse_args()
     try:
         root = args.repo.resolve()
-        if git(root, 'rev-parse', '--show-toplevel').decode().strip() != str(root):
+        if Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != root:
             raise GuardError('select the repository root')
         if args.mode == 'install':
             if not args.role:

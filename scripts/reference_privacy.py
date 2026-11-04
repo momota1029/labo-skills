@@ -132,7 +132,7 @@ def hooks_directory(root):
 def require_local_boundary(root):
     """Verify exclusion and the installed parent guard before private placement."""
     root = root.resolve()
-    if git(root, 'rev-parse', '--show-toplevel').decode().strip() != str(root):
+    if Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != root:
         raise PrivacyError('select the parent repository root')
     ignore = root / '.gitignore'
     if ignore.is_symlink() or not ignore.is_file() or '/local/' not in ignore.read_text().splitlines():
@@ -153,7 +153,7 @@ def require_local_boundary(root):
 
 def install(root, verified_baseline=None):
     root = root.resolve()
-    if git(root, 'rev-parse', '--show-toplevel').decode().strip() != str(root):
+    if Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != root:
         raise PrivacyError('select the repository root')
     # Refresh is allowed only with both independently established boundaries.
     # Validate everything before replacing hooks; never infer trust from HEAD.
@@ -199,7 +199,7 @@ def install_archive(root, archive):
         raise PrivacyError('archive must use independent Git, not a submodule/worktree')
     if not (child / '.git').exists():
         git(child, 'init', '-q')
-    if git(child, 'rev-parse', '--show-toplevel').decode().strip() != str(child):
+    if Path(git(child, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != child.resolve():
         raise PrivacyError('archive must own its independent Git')
     if git(child, 'remote').strip():
         raise PrivacyError('archive Git must have no remotes')

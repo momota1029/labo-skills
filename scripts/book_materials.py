@@ -62,12 +62,12 @@ def validate(root: Path, workspace: Path) -> None:
     if (root / ".git").exists() or gitroot.is_symlink() or (gitroot / ".git").is_symlink() or not (gitroot / ".git").is_dir():
         raise ValueError("only materials/ must own a real .git directory")
     top = run("git", "rev-parse", "--show-toplevel", cwd=gitroot).stdout.strip()
-    if top != str(gitroot.resolve()):
+    if Path(top).resolve() != gitroot.resolve():
         raise ValueError("materials/ must own its independent Git")
     if run("git", "remote", cwd=gitroot).stdout.strip():
         raise ValueError("local materials Git must have no remotes")
     hook = gitroot / ".git" / "hooks" / "pre-push"
-    if not hook.is_file() or hook.is_symlink() or hook.read_text() != DENY_PUSH or not (hook.stat().st_mode & stat.S_IXUSR):
+    if not hook.is_file() or hook.is_symlink() or hook.read_text() != DENY_PUSH or (os.name != "nt" and not (hook.stat().st_mode & stat.S_IXUSR)):
         raise ValueError("executable deny-all pre-push hook is missing or modified")
     hooks_path = run("git", "config", "--local", "--get", "core.hooksPath", cwd=gitroot).stdout.strip()
     if not hooks_path or Path(hooks_path).resolve() != hook.parent.resolve():
