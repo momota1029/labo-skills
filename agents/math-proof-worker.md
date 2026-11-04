@@ -2,6 +2,8 @@
 name: math-proof-worker
 description: Prove one bounded mathematical statement or produce a counterexample,
   with explicit dependency use and exact remaining obligations.
+model: claude-opus-5-5
+effort: high
 tools:
 - Read
 - Glob

@@ -1,6 +1,10 @@
 ---
 name: math-verifier
 description: Independently check a frozen mathematical proof against its exact statement and permitted primary sources, reporting located gaps or checked scope.
+context: fork
+agent: general-purpose
+model: claude-opus-5-5
+effort: high
 ---
 
 # Independent mathematical verifier
@@ -22,8 +26,8 @@ owning review skill's required report format when one is selected.
 
 Keep this role read-only: do not edit, repair, spawn another worker or become
 the proof producer. A repair needs a separate producer and a fresh review
-thread. A native adapter may restrict tools; loading this skill alone does not.
-If no fresh independent context is available, report that independent review is
-unavailable. Do not switch this read-only assignment into editing; the producer
-can continue under its own assignment. No context boundary certifies a proof
-or filesystem isolation. Report available check evidence and its limits.
+thread. The Claude native adapter enforces a Read/Glob/Grep tool list; direct
+skill execution uses a built-in general-purpose agent, so this behavioral
+boundary does not establish the same technical tool restriction. Neither
+entrypoint's context boundary certifies a mathematical proof or filesystem
+isolation. Report available check evidence and its limits.
