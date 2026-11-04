@@ -32,6 +32,17 @@ Before drafting, identify what the reader should be able to reconstruct and
 which background results may be used as stated tools. Do not create a separate
 plan document for an ordinary explanation.
 
+For mathematical definitions, claims, proofs and calculations, apply
+[mathematical substance and proof detail](references/mathematical-substance.md).
+Purpose and intuition must accompany checkable mathematical content, not replace
+it. For lecture materials, this includes intermediate calculations, the reader
+threshold, and correcting source defects through their downstream uses.
+
+From the first draft, organize multi-stage proofs by their actual obligations.
+For persistent mathematical documents, use [mathematical-navigation](../mathematical-navigation/SKILL.md)
+alongside the proof-detail rules. Read the workspace author profile when available;
+carry explicit recurring preferences into drafting and checks, not only final polish.
+
 ## Build a usable route through the argument
 
 Make the question, claim, main obstacle and decisive move visible. Introduce
@@ -113,6 +124,10 @@ Bounded questions and purely theoretical arguments retain their scope; the
 reading skill owns source checks.
 
 ## Check the result
+
+Check the mathematical argument and its teachability separately under
+[the substance checks](references/mathematical-substance.md#工程を通じた確認).
+A sound plan, fluent prose or complete headings do not establish either.
 
 For structured explanations, run the [heading audit H1--H5](references/roles-and-headings.md#audit-the-headings-against-the-body):
 check role boundaries/order, both title parts, fulfillment by the body, progression

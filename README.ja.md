@@ -20,10 +20,20 @@
 
 ## 公開と非公開の分離、所有
 
+長大な本由来の教材は [reading-book](skills/reading-book/SKILL.md) が正本文、訂正の統合、
+引継ぎ、公式出力を担当する。[reading-book-math-review](skills/reading-book-math-review/SKILL.md)
+と [reading-book-output-review](skills/reading-book-output-review/SKILL.md) は
+[共通の引継ぎ契約](skills/reading-book/references/production-handoff.md)に従い、
+固定版を確認して担当別の保存先へ所見を返す。
+
 - 公開: このリポジトリ、そのスキル、番号付きのレビュー規則、ソフトウェア、
   架空の例、プルリクエストで提案される汎用的な変更。
-- 非公開: あなたの研究リポジトリ。研究計画、元の inbox 資料、Lean ファイル、
+- 原則ローカルのみ: あなたの研究リポジトリ。研究計画、元の inbox 資料、Lean ファイル、
   原稿、参考文献、発表資料、個人用スキル、未公開の文章を置く。
+  独立した `.agents` の方針Git以外は、privateを含めGitHubへ送らない。
+  pushもPRも方針Gitだけから行い、親Gitはローカル履歴用にする。
+  `.claude -> .agents` はローカルの入口であり、別の送信対象ではない。
+  共通規則は [公開範囲](skills/labo-git/SKILL.md#publication-boundary)を参照する。
 - 配布モデルは**フォークして、使って、改善して、選んで上流に貢献する**こと。
   研究者のフォークがその人の公開研究方針を持ち、非公開の親リポジトリは
   そのフォークのどのコミットを使っているかを記録する。サブモジュールは
@@ -54,9 +64,9 @@ git submodule add https://github.com/YOUR_ACCOUNT/labo-skills.git .agents
 `.gitmodules` は自分のフォークを指すようにして、上流 PR がマージされる前でも
 研究ワークスペースが自分の改善を使えるようにする。
 
-非公開リポジトリには `.gitmodules` と `.agents` の gitlink をコミットする。
-親が保存するのはコミット参照で、スキルのコピーではない。
-設定済みの `labo` をクローンした後は、記録されたチェックアウトを初期化する:
+版を採用するときは、親のローカル履歴に `.gitmodules` と `.agents` の gitlink を記録する。
+これはスキルのpush・PRとは独立しており、配布のために親を送信する必要はない。
+設定済みのローカルワークスペースを復元した後は、記録されたチェックアウトを初期化する:
 
 ```sh
 git submodule update --init --recursive -- .agents
@@ -70,6 +80,10 @@ git submodule update --init --recursive -- .agents
 
 ## フォークで改善し、上流へ貢献する
 
+環境の設定は [labo-git](skills/labo-git/SKILL.md) を使う。研究のGitはローカル保存用にし、
+スキル側には送信先とレビュー済みコミットを照合するpushチェックを設ける。
+既存の資料保護とローカルコミットを保ち、PRの作成は `labo-pr` が担当する。
+
 通常の流れ:
 
 ```text
@@ -80,9 +94,9 @@ git submodule update --init --recursive -- .agents
 1. 研究で使いながら、`.agents` にある実際のスキルやツールを編集する。
    改善はフォークのブランチにコミットする。観察した問題を説明し、
    小さな再現可能な例で変更を確認する。
-2. その版を研究リポジトリで使うには、親の gitlink にコミットを記録する。
-   親のコミットを共有する前に、`.gitmodules` に書いたフォークへ方針コミットを
-   push して、他の人が取得できるようにする。
+2. 版を採用するときは、親のローカルな gitlink にコミットを記録する。
+   pushの依頼があれば、方針Gitから確認済みのフォークへ対象ブランチを送る。
+   両者は互いを前提にせず、親のpushも伴わない。
 3. 改善が他の人にも役立つなら、自分のフォークのブランチから共有上流へ
    焦点を絞った PR を送る。再利用できる変更と合成例だけを含め、原稿や
    フォーク固有の選択とは切り離す。改善の開発は `labo-self-improve`、
@@ -205,9 +219,10 @@ python3 .agents/scripts/labo.py build --paper example-paper --dry-run
 必要な構造を作り、`research-management` を使って実際の研究計画を育てる。
 初期化は `layout init` として直接も使える。足りないコアディレクトリを追加し、
 既存ファイルと `AGENTS.md` の内容を保ち、ワークスペースの ignore パターンを加える。
-割り当て前のルート `inbox/` の中身はローカルのステージング置き場で、割り当て済みの
-研究の原本や参考文献 PDF は Git から見える状態に置く。研究プログラムも、方針 README の
-コピーも作らない。
+割り当て前のルート `inbox/` の中身はローカルのステージング置き場である。
+割り当て済みの研究原本は、許される範囲でローカル履歴に記録できる。
+`reference/` とcorpusは親Gitから除外し、研究資料をGitHubへ送る許可とはしない。
+研究プログラムも、方針 README のコピーも作らない。
 
 新しい項目は、layout スキルが管理するテンプレートから作れる:
 

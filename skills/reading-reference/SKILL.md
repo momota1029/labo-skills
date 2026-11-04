@@ -36,6 +36,13 @@ continues to own source identity, reading coverage and deliverable checks.
 
 Read only the references needed for the task:
 
+- [Reading structure](references/reading-structure.md): mandatory before outlining
+  or revising substantial reading material and bounded previews; source hierarchy,
+  retained role sections, source return, optional views and before/after checks.
+- [Roots and lenses](references/roots-and-lenses.md): methods sharing a root but seen
+  through different lenses; what to collect while investigating the sources, the
+  background card, its data format checked by `scripts/check_cards.py`, and how derived
+  talks use it.
 - [Sources](references/source-rules.md): acquisition, versions and coverage.
 - [Terminology and notation audit](references/terminology-audit.md): compare
   manuscript object types, names and conventions against actual same-role
@@ -53,6 +60,9 @@ Read only the references needed for the task:
   or empirical reasoning; use only the applicable branches.
 - [Review](references/review.md): checking coverage, fidelity, understanding
   and rendered deliverables.
+- [PDF navigation checks](../mathematical-navigation/references/pdf-checks.md):
+  shared structural checks, changed-page rendering and representative viewer
+  checks for PDFs; distinct from source fidelity and explanatory coverage.
 - [Research-program synthesis](references/research-program-synthesis.md):
   explaining a local research program across plans, proof records, literature
   and Lean evidence.
@@ -73,6 +83,14 @@ a positioning investigation does not itself request full-paper translation,
 implementation reproduction or manuscript edits.
 
 ## Purpose and completion contract
+
+For substantial reading, first fix the source-unit and required role-section map
+under [Reading structure](references/reading-structure.md). Keep it through revisions
+and inspect it before checking the latest local feedback. The structure reference
+owns the outline; paper preparation owns passage fidelity; application-to-code and
+methods own method content; review checks the delivered result. A bounded preview
+still completes its selected source unit through the target original/translation.
+
 
 Prepare the reader to reconstruct the paper's reasoning and explain it in a
 presentation, especially why its methods answer its questions. Method
@@ -244,6 +262,11 @@ Produce the requested formats and language. For PDFs, build from the notes'
 own TeX root with `labo-build`'s `output build --source reading/<slug>/<root>.tex`
 workflow; it places the PDF and SyncTeX in `output/<slug>.*`, overwrites that
 pair on later builds from the same project, and prunes old output files. The
-viewer stays closed unless `--open` is supplied. Inspect the rendering. Use
-`slide-authoring` for requested decks, retaining this skill's source checks.
+viewer stays closed unless `--open` is supplied. The build runs the shared
+[PDF navigation check](../mathematical-navigation/references/pdf-checks.md).
+Record its status separately from rendering and actual viewer checks under R29;
+use the shared change-aware procedure instead of repeating every GUI click.
+Inspect the rendering and preserve source/content checks even when the structural
+report passes. Use `slide-authoring` for requested decks, retaining this skill's
+source checks.
 Preparing notes does not authorize publication or author contact.
