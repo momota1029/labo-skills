@@ -20,13 +20,33 @@ Use [japanese-translation](skills/japanese-translation/SKILL.md) for a continuou
 Japanese reading copy that includes its equations and figures and preserves
 the source's argument, so wording and reasoning can be examined in Japanese.
 
+For mathematical document numbering, heading colors, links and comprehensive
+indexes, use [mathematical-navigation](skills/mathematical-navigation/SKILL.md).
+Explanation and course-production skills retain their own responsibilities and
+refer to that skill for navigation work.
+Its [shared PDF checks](skills/mathematical-navigation/references/pdf-checks.md)
+run offline after course and writing/reading builds, using Python and `qpdf`.
+Structural results, rendered-page comparisons and representative viewer checks
+are recorded separately; unchanged work need not repeat a full click-through.
+
 ## Separation and ownership
+
+For long book-based courses, [reading-book](skills/reading-book/SKILL.md) owns
+canonical text, correction integration, handoffs and official outputs.
+[reading-book-math-review](skills/reading-book-math-review/SKILL.md) and
+[reading-book-output-review](skills/reading-book-output-review/SKILL.md) review
+frozen versions in separate result areas under the shared
+[production handoff contract](skills/reading-book/references/production-handoff.md).
 
 - Public: this repository, its skills, numbered reviewing rules, software,
   fictional examples, and generic changes proposed by pull request.
-- Private: your research repository, with research plans, original
+- Local-only by default: your research repository, with research plans, original
   inbox material, Lean files, manuscripts, references, presentations, personal
-  skills, and any unpublished writing.
+  skills, and any unpublished writing. Everything outside the independent
+  `.agents` policy Git stays off GitHub, even private GitHub repositories.
+  Both push and PR use the policy Git only; the parent retains local history.
+  The local `.claude -> .agents` alias is not a second publication target.
+  See the [publication boundary](skills/labo-git/SKILL.md#publication-boundary).
 - The distribution model is **fork, use, improve, and selectively contribute
   upstream**. The researcher's fork holds their public research policy; the
   private parent records which commit of that fork it uses. A submodule is
@@ -58,9 +78,10 @@ If `.agents` already contains files, preserve them before replacing that
 directory with a submodule. `.gitmodules` should point to your fork, so the
 research workspace can use your improvements before any upstream PR is merged.
 
-Commit `.gitmodules` and the `.agents` gitlink in the private
-repository. The parent stores a commit reference, not copies of the skills.
-After cloning an already-configured `labo`, initialize the recorded checkout:
+Record `.gitmodules` and the `.agents` gitlink in the parent's local history
+when adopting a version. This is independent of policy pushes and PRs; do not
+publish the parent to distribute the skills. After restoring a configured
+local workspace, initialize the recorded checkout:
 
 ```sh
 git submodule update --init --recursive -- .agents
@@ -74,6 +95,15 @@ the researcher's fork. Preserve uncommitted changes. Do not silently run
 
 ## Improve in your fork and contribute upstream
 
+Use [labo-git](skills/labo-git/SKILL.md) to keep research Git local and install
+reviewed skills-only push checks. It preserves local commits and existing
+source guards; [labo-pr](skills/labo-pr/SKILL.md) owns the focused contribution.
+
+For skill creation and revision, follow
+[reviewable skill design](skills/labo-self-improve/references/skill-design.md).
+Keep each reusable responsibility together, limit existing-skill changes to
+necessary integration, and make the diff understandable as a focused future PR.
+
 The normal flow is:
 
 ```text
@@ -84,9 +114,9 @@ shared labo-skills ← selected pull requests ← improvements in your fork
 1. Edit the actual skills or tools in `.agents` while using them for research.
    Commit the improvement on a branch in your fork. Describe the observed
    problem and check the change with a small reproducible example.
-2. To use that version in your research repository, record its commit in the
-   parent gitlink. Before sharing the parent commit, push the policy commit
-   to the fork named in `.gitmodules` so others can fetch it.
+2. When adopting that version, record its commit in the local parent gitlink.
+   When a push is requested, send the reviewed policy branch from its own Git
+   to the verified fork. Neither action requires the other or a parent push.
 3. When an improvement would help others, propose a focused PR from a branch
    in your fork to the shared upstream. Include the reusable change and
    synthetic examples, independently of manuscripts and fork-specific choices.
@@ -220,8 +250,10 @@ skill creates the necessary structure and uses `research-management` to
 develop the actual research plan. Initialization is also directly available
 as `layout init`: it adds missing core directories, preserves existing files
 and `AGENTS.md` content, and adds workspace ignore patterns. Unassigned root
-`inbox/` contents are local staging; assigned research originals and reference
-PDFs stay visible to Git. It creates no research programs or policy README
+`inbox/` contents are local staging; assigned research originals may have local
+history where permitted. `reference/` and the corpus
+stay excluded from the parent Git. No research material is thereby authorized
+for GitHub. It creates no research programs or policy README
 copies.
 
 New items can be created from templates maintained in the layout skill:
@@ -307,6 +339,14 @@ Before framing or substantially reframing a program, starting substantive
 manuscript work or revising its contribution narrative, and presenting
 novelty/comparative claims in an own-research talk, the skills require a
 [research-positioning investigation](skills/reading-reference/references/research-positioning.md).
+Its `scripts/provenance_lint.py` finds self-attribution of AI-created code, figures and
+text ("our code", 自作, 自前) in a deliverable's sources before release.
+Its [roots and lenses](skills/reading-reference/references/roots-and-lenses.md) define how
+methods that share a problem are introduced through their different lenses (a shared
+example, the method applied to it, its own specific example and its limit), from the
+first source investigation through the reading note to a talk; `check_cards.py` checks
+the card data (every field with a named source), and `cards_to_plan.py` in
+paper-talk-planning turns it into the talk plan's root list and motivation cards.
 Refresh affected comparisons when the question, result, assumptions or method
 changes, and search again before submission. Routine bookkeeping and typo-only
 edits do not restart the survey; report-only reviews do not authorize file edits.
@@ -333,6 +373,18 @@ For an introduction's central question, concrete significance and narrative
 order, use [paper-introduction](skills/paper-introduction/SKILL.md) alongside
 `paper-writing`. It shapes the story from the actual results and positioning
 evidence, without forcing a novelty claim or fixed paragraph formula.
+
+For a talk that introduces a paper, [paper-talk-planning](skills/paper-talk-planning/SKILL.md)
+produces the page-by-page plan (weights, source locators, figure explanations, code
+placement, links between sections, subsections and slides; `source_map.py` indexes
+the source PDF by page, `notes_map.py` a detailed reading note by subsection, and
+`plan_symbols.py` checks that every symbol is introduced before it is used), and [deck-from-references](skills/deck-from-references/SKILL.md)
+builds the slides in the manner of example decks (a dark navigation-first Beamer
+style, design rules, `deck_audit.py` for words per page, text size, and words drawn
+over each other or outside the page,
+`contact_sheet.py` for side-by-side comparison with the examples). It supports two
+decks from one plan: a dense reading deck for understanding and a light, arrow-based
+stage deck for presenting (`talkstyle.sty`, `flowstyle.sty`; rules in `two-decks.md`).
 
 For whole-paper design or structural reassessment, use
 [paper-structure](skills/paper-structure/SKILL.md). It maps current material to
@@ -509,6 +561,9 @@ in place and its cache stays in `.temp/`. Engine directives and packages such
 as `xeCJK` are detected; `--engine` can override them. The
 [build contract](skills/labo-build/references/build-contract.md) describes
 working-directory behavior.
+Every build records its outcome in the source's cache; `output verify-current
+--source <root>` exits 0 only when `output/` holds the PDF of the latest successful
+build, so checks never run on a PDF left behind by a failed build.
 
 ## Quality checks
 
