@@ -23,7 +23,11 @@ background card — used here, root, shared example, lens, applied view, specifi
 limit example ([roots and lenses](roots-and-lenses.md#background-card)) — and, for each code unit, the
 implementation search status ([R18](methods.md)), the adopted code and its license
 ([R6a](source-rules.md)); fill these before the unit's prose is written, so roots, cards
-and code order are designed rather than added afterwards. Add required but missing units too:
+and code order are designed rather than added afterwards. Record also, per unit, its parent, what it `needs` from earlier units and what it
+`produces` for later ones, and the resource-ledger and lineage entries it uses
+([unit chain](unit-chain-and-claim-gloss.md#argument-spine-and-the-chain-of-units),
+[resource ledger](resource-ledger.md), [lineage](lineage-and-comparison.md)); a unit's
+opening names its needs. Add required but missing units too:
 the current draft cannot define its own completeness. Use the actual source and
 agreed scope to establish the expectation. Private source-specific maps belong
 with the artifact, not in this reusable skill.

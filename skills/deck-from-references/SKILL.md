@@ -29,7 +29,10 @@ colour, language and length choices in the project and the author profile, not h
    (words per page, text size relative to the page). Fill the style card of
    [style card](references/style-card.md). When the user names several examples
    and wants "the good parts", record for each element which example it comes from.
-2. **Draft three to five representative pages first** (title, outline, a content
+2. **Build in stages** ([staged build](references/staged-build.md)): the skeleton (every page
+   with one sentence) first, then chunks of the size the user names (usually 1 to 4 pages), each shown and
+   answered before the next; reactions go to `REACTIONS.md`. Never build the whole deck at once unless the
+   user says so. The first chunk is **three to five representative pages** (title, outline, a content
    page with a figure or formula, a section opener, a code page when the talk has
    code). Compare them with the examples on one sheet and fix the differences
    before building more. Show the preview and use the user's reaction as the
@@ -53,10 +56,12 @@ colour, language and length choices in the project and the author profile, not h
    the code, a "look at" list saying what to see and what is characteristic, a
    provenance tag that never calls AI-written code the speaker's own, no line counts
    in titles. `scripts/extract_code.py` extracts the functions and places the markers.
-   **Figure pages** follow [figure reading](references/figure-reading.md): see, learn, trouble, hand-off, with numbered marks on the figure.
+   **Words** come from the page's script ([the script and the words on the page](../paper-talk-planning/references/page-words.md)).
+   **Figure pages** use [figure reading](references/figure-reading.md) as far as the page needs it: the full ladder (see,
+   learn, trouble, hand-off, with numbered marks) for a figure that shows a problem.
 6. **Make the design pass** with [design rules](references/design-rules.md):
-   text size, words per page, one-line titles, alignment, equal panels, figure
-   labels, formulas that fit, code length.
+   length against the example deck, sizes by role (a page may adjust them), the grid with nothing overlapping,
+   one-line titles, figure labels, formulas that fit, code length.
 7. **Review.** Run the two-stage review over every page of both decks, in both stages with fresh
    agents ([motivation review](../paper-talk-planning/references/motivation-review.md), then
    [blind referee](../paper-talk-planning/references/blind-referee.md)).
@@ -66,7 +71,11 @@ colour, language and length choices in the project and the author profile, not h
    what was inspected, which pages were measured and not looked at, and whether
    timing was rehearsed (an estimate is not a rehearsal).
 
-## Reading deck and stage deck
+## Companion first; reading deck and stage deck otherwise
+
+When a companion page of the paper exists, build one source with two builds (the main deck, and the
+deck with appendix) tagged with the companion's units and checked by `scripts/link_companion.py`; see
+[decks from one plan](references/two-decks.md). Without a companion:
 
 A talk often needs both: a dense, source-anchored deck for understanding and a
 visual, arrow-based deck for presenting. They differ in unit, density and how links

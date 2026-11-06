@@ -242,8 +242,11 @@ Beside each code excerpt or full listing, record in this order, so that a derive
    number or equation, and the matching lines).
 2. **Reason** — why this code is shown at this subsection: the obstacle it addresses or
    the root it serves, with the source that states that reason (page).
-3. **Lines to look at and role** — the few characteristic lines and what each is:
-   inherited unchanged, removes the obstacle, serves another aim, only tidies, or leads on.
+3. **Lines to look at, what they do and role** — the few characteristic blocks; for each, what
+   it does in plain words ("sets OD and TD as percentiles of the local density"), where it comes
+   from ("inherited from SPADE, `downsample.R` L95–107", "added by the authors"), and its role:
+   inherited unchanged, removes the obstacle, serves another aim, only tidies, or leads on; for a
+   change, what it changes in the output. A role label alone does not explain the lines.
 4. **Provenance and license** — by the provenance classes (R5a) of [Sources](source-rules.md),
    with the license and the display extent it allows (R6a).
 

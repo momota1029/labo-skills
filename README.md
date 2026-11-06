@@ -335,6 +335,14 @@ or automatic legacy formalization is introduced.
 
 ## Required research positioning
 
+For substantial paper reading, the [resource ledger](skills/reading-reference/references/resource-ledger.md)
+(main text before supplements, must-read supplements, acquisition duty), the
+[lineage and comparison inventory](skills/reading-reference/references/lineage-and-comparison.md)
+and the [unit chain and claim gloss](skills/reading-reference/references/unit-chain-and-claim-gloss.md)
+are kept as one data file that `scripts/check_coverage.py` checks as a completion gate.
+Code of paper methods is run in an isolated environment
+([execution environments](skills/reading-reference/references/methods.md#execution-environments)).
+
 Before framing or substantially reframing a program, starting substantive
 manuscript work or revising its contribution narrative, and presenting
 novelty/comparative claims in an own-research talk, the skills require a
@@ -385,6 +393,13 @@ over each other or outside the page,
 `contact_sheet.py` for side-by-side comparison with the examples). It supports two
 decks from one plan: a dense reading deck for understanding and a light, arrow-based
 stage deck for presenting (`talkstyle.sty`, `flowstyle.sty`; rules in `two-decks.md`).
+
+For understanding a method paper's detailed reading note by seeing and moving it,
+[reading-companion](skills/reading-companion/SKILL.md) builds a private, single-file HTML
+companion: feature by feature, the background, the selling point, the earlier method with its
+code, and the authors' code with parameter values bound to controls beside figures computed by
+running the authors' code on a parameter grid (`build_companion.py`, `check_companion.py`).
+The page stays local; it is not a web publication.
 
 For whole-paper design or structural reassessment, use
 [paper-structure](skills/paper-structure/SKILL.md). It maps current material to

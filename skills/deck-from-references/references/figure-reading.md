@@ -6,9 +6,17 @@ has not used the figure. The design is the same as for code pages
 ([code pages](code-pages.md)): numbered marks on the object, and a list that says what to see and
 what it tells.
 
+**Use it flexibly.** The full ladder fits a figure that shows a problem (a background figure, a limit
+example, a failure of the earlier method, and every figure marked as evidence, 根拠). Other figure pages (an output shown as an example, an input
+and output side by side, a figure that carries a pipeline) use only the steps that apply, or none: their
+words come from the script and say what the figure shows
+([the script and the words on the page](../../paper-talk-planning/references/page-words.md)). The plan
+says which steps a page uses. Flexible means fewer steps on the page, never a figure whose *learn* is missing
+from the script.
+
 ## The reading ladder
 
-For every figure, in this order, each step on the slide next to the figure:
+For a figure that shows a problem, in this order, each step on the slide next to the figure:
 
 1. **See** — the specific marks: "an outer and an inner turn lie side by side"; a mark number on
    the figure points to them.
@@ -65,8 +73,8 @@ unit's limit example. A unit whose figure has no `reads` is not ready.
 
 ## Checks
 
-A referee's finding on a figure page is one of: no see (marks not stated), no learn (the figure
-teaches nothing the next page uses), no trouble, no hand-off, a mark that does not point at what is
-said (view the page), unreadable, provenance not stated. Mechanically check: every figure frame has
-`\figmarked` or a stated reason for none, at least one `\readitem`, one `\readtrouble`, and no
-overlap in `deck_audit.py`. Cut the least necessary clause rather than shrinking text.
+On every figure page: a mark that does not point at what is said (view the page), unreadable labels,
+provenance not stated, words beside the figure that it cannot show, and overlaps (`deck_audit.py
+--overlaps`). On a page that uses the ladder, also: no see (marks not stated), no learn (the figure
+teaches nothing the next page uses), no trouble, no hand-off; such a frame has `\figmarked`, at least one
+`\readitem` and one `\readtrouble`. Cut the least necessary clause rather than shrinking text.

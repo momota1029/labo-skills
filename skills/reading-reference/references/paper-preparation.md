@@ -49,6 +49,13 @@ point-of-use evidence or replacing missing displayed content with a link.
 
 ## Make supporting literature readable
 
+For a paper whose contribution is a method with code, the [method-paper profile](method-paper-profile.md) lists the parts of the note and their owners.
+
+Which works this covers is decided by the [lineage and comparison inventory](lineage-and-comparison.md):
+every inherited, compared, criticised, encompassing, encompassed, earlier-version and
+origin relationship is inventoried and treated at the level given there. Supplements are
+inventoried and read under the [resource ledger](resource-ledger.md).
+
 In substantial explanatory reading material, include the inspected passages from
 other works that supply the definitions, assumptions, method design, application
 evidence or consequential comparisons actually developed in the explanation.
@@ -250,6 +257,10 @@ Before declaring the agreed unit complete, check the actual delivered artifact:
 - Read each view against its declared task, then compare shared claims, exact
   locators, status labels, limits and return links. Check for orphaned references
   and assumptions after filtering; do not demand full-main-text duplication.
+
+- Coverage records (resource ledger, lineage inventory, unit chain, claim gloss) are kept as
+  data and `scripts/check_coverage.py` passes, with every open entry either resolved or
+  accepted in writing by the user. A stand-in exists only with the user's per-resource permission, is labelled AI-created, and does not close an entry.
 
 Missing required translation, explanation, primary evidence, code or navigation
 remains incomplete work even when disclosed. Deliver useful checked units and
