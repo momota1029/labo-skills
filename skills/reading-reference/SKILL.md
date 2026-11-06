@@ -44,6 +44,21 @@ Read only the references needed for the task:
   background card, its data format checked by `scripts/check_cards.py`, and how derived
   talks use it.
 - [Sources](references/source-rules.md): acquisition, versions and coverage.
+- [Literature intake](references/literature-intake.md): the supplement, cited works, code and data of a
+  paper: depth, open routes only, the proposal to the user, substitutes only after confirmation.
+- [Resource ledger](references/resource-ledger.md): inventory of everything the paper
+  consists of, the main-text → supplement reading route, must-read supplements, and what
+  to do with material that cannot be obtained (report it; no AI-created stand-in without the
+  user's per-resource permission).
+- [Method-paper profile](references/method-paper-profile.md): the parts of a detailed note for a
+  paper whose contribution is a method with code (life science, information science), with a
+  skeleton in `assets/method-note/`; not a template for proof-centred mathematical papers.
+- [Lineage and comparison](references/lineage-and-comparison.md): inventory of inherited,
+  compared, criticised, encompassing/encompassed, origin and earlier-version works, and the
+  level at which each is treated, down to code differences.
+- [Unit chain and claim gloss](references/unit-chain-and-claim-gloss.md): needs/produces
+  between sections, the argument spine, the reader floor, and the sentence-level gloss for
+  sentences that rely on prior results or assert properties.
 - [Terminology and notation audit](references/terminology-audit.md): compare
   manuscript object types, names and conventions against actual same-role
   corpus definitions and primary-source pages; distinguish semantic defects,
@@ -224,7 +239,10 @@ when unavailable, and explain each added language's design and verification.
 6. Deliver useful checked units as they become available, with actual content
    and remaining gaps. Continue the rest of the requested scope; an interim
    explanation is not completion of the whole book or paper.
-7. Check the explanation against the sources and the reader's ability to use
+7. Before calling substantial material complete, keep the coverage records
+   (resource ledger, lineage inventory, unit chain, claim gloss) as one data file and run
+   `scripts/check_coverage.py` on it; open entries and record gaps block completion.
+   Check the explanation against the sources and the reader's ability to use
    it. For substantial deliverables, apply the review reference. Report actual
    checks, source versions, covered units and unresolved dependencies.
    Separate primary-source checks, implementation inspection/execution and

@@ -273,6 +273,41 @@ repair. Do not invent a defect quota or mark human understanding as achieved.
   an unqualified "verified" or mark the requested explanation complete while
   required primary evidence or corresponding implementations remain missing;
   disclosure records the gap rather than waiving it.
+- **R31 Coverage records and sentence reading** — Run `scripts/check_coverage.py` on the
+  note's coverage data and report its output, including open entries; a pass shows the
+  records are complete, not that the content is right. Then check the content the records
+  point to. (a) Resources: every must-read supplement is actually displayed or explained at
+  the main-text call site, with locator; an `unobtained` entry shows the places tried and the
+  request, and the failure was reported with free alternatives; an AI-created stand-in exists only
+  with a recorded per-resource permission, is labelled and shown beside an open entry
+  ([ledger](resource-ledger.md)). (b) Lineage: for sampled entries compare the four
+  statements (purpose, place, inherited, changed) with the primary passage, and, where code
+  exists, the side-by-side difference with the stated execution ([lineage](lineage-and-comparison.md)).
+  (c) Chain: at each unit boundary read only the preceding unit's end and the next unit's
+  opening and name the need being taken up; at each parent end find the summary of what the
+  subsections established. (d) Sentences: sample `cite`/`property`/`show` sentences from the
+  delivered text, take the reader floor, and test whether the object, what is known, the
+  exact claim and its benefit can be recovered without leaving the note
+  ([claim gloss](unit-chain-and-claim-gloss.md)). A sentence that leans on a prior result
+  and leaves the reader to ask "what is that, what is known, why does it matter" fails.
+  Locate failures at the sentence, not at the section.
+- **R32 Figure readiness** — For a method paper, judge whether the reader could present each
+  main-text figure, and whether a [companion page](../../reading-companion/SKILL.md) could be
+  built for it. For every main-text figure, and every supplementary figure the main text cites
+  where understanding a main figure depends on it, check in the note: (a) what the figure
+  claims (the main-text sentence that cites it and the caption, with locators) and how to read
+  each panel (axes, colours, sizes, the marks to look at); (b) the computation behind it: step,
+  function, lines and parameter values with where they are stated, and, where the figure or
+  the claim compares methods, the earlier method's code; (c) the data and the
+  [reproduction level](methods.md#reproducing-the-papers-figures) reached, with the run's
+  correspondence to the panel; (d) what the figure does not show; (e) where the figure's
+  difference comes from (steps and lines, marked as the paper's statement or the note's reading);
+  (f) for the whole note, the lineage overview, the code-block notes (what each block does, where
+  it comes from, how it differs) and the values table that a companion takes over. Report a table, one row per
+  figure: ready, ready at a lower level, or blocked, with the missing part named. Put every
+  missing item into the [request list](resource-ledger.md#request-list) and give it to the user
+  with the review. Supplementary figures the main text does not need for understanding are not
+  required here.
 
 Delegate by the evidence needed, with a short task-specific packet and bounded
 paths; no named agent persona or fixed model is required. A source-aware auditor

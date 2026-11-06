@@ -26,7 +26,11 @@ is for manuscripts, not talks.
 
 ## Workflow
 
-1. **Fix the inputs.** Source PDF and version, example decks the user wants to
+1. **Fix the inputs.** When a companion page of the paper exists, it is the primary input: take the
+   claims, figure readings, differences, lineage, code map, presenter's notes and checks from its
+   units (`link_companion.py list`) and plan the main body and an appendix from them
+   ([decks](../deck-from-references/references/two-decks.md)); the detailed note and the PDF are
+   opened only to settle a doubt. Audience, time and language are asked of the user each time. Source PDF and version, example decks the user wants to
    resemble, audience (for example mathematicians who want the method), language(s),
    whether source order must be kept, and time (use only what the user states;
    "no limit" means judge by coherence, not by a slot).
@@ -63,8 +67,14 @@ is for manuscripts, not talks.
    pages; minor ones are kept but thin: the problem in the subtitle, a small failure
    example on the page. Avoid both a handout (too dense) and fragmentation (one idea
    split across many pages).
-5. **Reconstruct the motivation of every concept.** Position in the source (section,
-   subsection, pages) is a label on the page, not the organizing principle. For each
+5. **Reconstruct the motivation of every concept.** A talk that introduces a paper follows the paper from the front:
+   the default order of the pages is the paper's order (Summary and Introduction, then its Results in order, and so on);
+   it is reordered into another story only when the user chooses that, and the reason is written in the plan. Every page
+   carries the passage of the paper where its claim is made (section, paragraph, page); an introduction page takes its claims
+   from the paper's Introduction. A figure from later in the paper may be shown as **evidence** for such a claim, marked as
+   evidence (or example) on the page, only when the cited passage itself states the claim the figure supports; a figure the
+   passage does not bear on is not shown. Within that order, position in the source is a label on the page; the motivation of
+   each concept is still rebuilt where it appears. For each
    concept the talk introduces, fill a motivation card
    ([plan format](references/plan-format.md)): the problem, why the previous tool falls
    short on a concrete case, the idea with its definition, how it is computed in practice
@@ -86,7 +96,9 @@ is for manuscripts, not talks.
    settled, what is left open, what the next unit answers. Mark each link as stated
    by the source (with page) or as the speaker's own.
 7. **Take figures, code and computations from sources first.** Prefer, in this order:
-   figures from the paper and from the original papers it cites; the authors' published
+   figures from the paper and from the original papers it cites; then existing open-licence pictures from a
+   trustworthy place, recorded with licence and credit (see [design rules](../deck-from-references/references/design-rules.md#figures-and-code));
+   when none is found, ask the user with a substitute proposed; AI-made pictures only with the user's permission per picture; the authors' published
    code and published numerical results; only then material made for the talk. Anything
    made for the talk (a schematic, an AI-written function, an AI-run experiment) is the
    last resort, kept minimal, adjusted only for clarity, and visibly labelled; the plan lists,
@@ -97,17 +109,38 @@ is for manuscripts, not talks.
    When code is wanted, give each subsection that has a method one code page
    ([code pages](../deck-from-references/references/code-pages.md)): whose code it is, the
    three or four lines to look at and what is characteristic there. Split rather than
-   shrink long code, and never put a line count in a title. Every figure gets a
-   reading plan ([figure reading](../deck-from-references/references/figure-reading.md)): marks to look at, what each tells (the background), the trouble it shows and the hand-off to the next page, plus axes, colours and source page.
-8. **Write the per-slide plan** in the format of
+   shrink long code, and never put a line count in a title. Every figure gets a reading plan: what it shows and
+   does not show, its key, axes, colours and source page; a figure that shows a problem also gets the marks, the
+   trouble and the hand-off of [figure reading](../deck-from-references/references/figure-reading.md), used as far as
+   the page needs them.
+8. **Write the script first, then transcribe it into the page** ([the script and the words on the page](references/page-words.md)):
+   script with *page* and *spoken* marks (the authority once agreed), the sentence-to-element table, the arrangement
+   (the user's mock-up when there is one), the page, and a check both ways; a difference is fixed on the page.
+   The script walks through the page: every element it shows (each figure, key, concept diagram, arrow) in the order the
+   audience's eye follows, about one short sentence each, how the elements tie together, and the reason. An element with no
+   sentence in the script is not on the page; a sentence about something not on the page means the page lacks it. A figure's
+   sentences start from its companion reading (*see* and *learn*), so the script says what the figure shows for the page's
+   claim, not only what it looks like. Check the script against the page's elements and against those readings, then take the page's words from it: the top line, the bottom line and the next
+   question (full short sentences), keywords, the keys in plain words, and a short tie phrase where the audience cannot see a
+   tie at once. Every word on the page has its sentence in the script; what the speaker can say aloud is not written on the
+   page. How the words are set (sizes, grid, colours) belongs to
+   [design rules](../deck-from-references/references/design-rules.md).
+   **Write the per-slide plan** in the format of
    [plan format](references/plan-format.md), in source order, with locators.
-9. **Check and decide.** Run `scripts/plan_symbols.py` on the plan (no symbol used before
+9. **Check and decide.** The main-text figures are each explained in the body, in the paper's order
+   (Fig.1 to Fig.N ascending), whatever the story order elsewhere; a figure may be shown by a few of its
+   panels, never skipped. The introduction carries a reading primer before the first result figure: what the
+   method's output is made of, what one can learn from it, and every mark, size or colour the later figures use
+   (the companion's `primer`); no encoding is used on a result page before the primer introduced it, as no symbol
+   is used before its introduction. Run `scripts/plan_symbols.py` on the plan (no symbol used before
    its introduction). Verify every locator against the page, the page count
    against the weights, and that each closing question of a page is answered by
    the next. List the unverified items and the decisions that change the plan (theme,
    page count, language handling), recommend a default for each, and ask only
    about those. Save the plan in the project, not in this skill.
-10. **Review in two stages over every page**: first the criterion-based
+10. **Hand over the plan and stop.** The plan (a skeleton with one sentence per page) is confirmed by the user
+    before any page is built; pages are then built in chunks ([staged build of slides](../deck-from-references/references/staged-build.md)).
+    **Review in two stages over every page**: first the criterion-based
     [motivation review](references/motivation-review.md), repair; then the
     [blind referee](references/blind-referee.md) with fresh agents that know nothing but the
     audience, repair and rerun until no missing bridge is reported. Report what each stage

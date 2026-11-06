@@ -296,6 +296,19 @@ Lean の証拠を必要とする。定理/補題ノードは自動的に必要�
 ローカル依存のツリースナップショットが必要。バックグラウンドのスケジューラも、
 過去の自動形式化も導入しない。
 
+## 論文読解の完了条件
+
+実質的な論文読解では、[資料台帳](skills/reading-reference/references/resource-ledger.md)
+（本文→補足の順、必読の補足、取得の責任）、
+[系譜・比較の目録](skills/reading-reference/references/lineage-and-comparison.md)、
+[節の連鎖と一文ごとの注釈](skills/reading-reference/references/unit-chain-and-claim-gloss.md)を
+一つのデータファイルに記録し、`scripts/check_coverage.py` を完了の検査として通す。
+論文の手法のコードは、隔離した環境で実行する
+（[実行環境](skills/reading-reference/references/methods.md#execution-environments)）。
+方法論文の詳細ノートを、見て動かして理解するには、[reading-companion](skills/reading-companion/SKILL.md)
+で私用の1ファイルの HTML を作る。特徴ごとに、背景、売り、既存の方法とそのコード、
+パラメータを操作部に結びつけた著者コード、著者コードを格子点で実行した図を並べる。公開はしない。
+
 ## 必須の研究ポジショニング
 
 プログラムを枠づける、または大きく枠づけ直すとき、実質的な原稿作業を始める、または
