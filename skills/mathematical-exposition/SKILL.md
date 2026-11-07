@@ -56,7 +56,10 @@ several genuinely different angles, connect each concept to those already on
 the page, and place figures where they do work. Keep the page self-contained:
 links and file paths support the text and never carry it, and repository
 paths or internal note names do not appear in reader-facing prose. The
-explanation is longer and gentler than the paper, never vaguer.
+explanation is longer and gentler than the paper, never vaguer. These are jobs
+for the prose, not labels: write natural expository prose in which the content
+carries the structure, without template signposts such as 「結論：」 or
+「ポイントは」 (see [sound like a person](references/reader-pull.md#sound-like-a-person-not-a-template)).
 
 ## Build a usable route through the argument
 
@@ -144,10 +147,10 @@ Check the mathematical argument and its teachability separately under
 [the substance checks](references/mathematical-substance.md#工程を通じた確認).
 A sound plan, fluent prose or complete headings do not establish either.
 
-Run the [readability audit P1--P10](references/reader-pull.md#readability-audit)
+Run the [readability audit P1--P11](references/reader-pull.md#readability-audit)
 on the actual text: hurried-reader first screen, headings alone, section
 openings alone, undefined terms, gaps, next question, angles, connections,
-figures and the no-links test. Repair failures before delivery.
+figures, the no-links test and natural prose. Repair failures before delivery.
 
 For structured explanations, run the [heading audit H1--H5](references/roles-and-headings.md#audit-the-headings-against-the-body):
 check role boundaries/order, both title parts, fulfillment by the body, progression
