@@ -401,6 +401,18 @@ code, and the authors' code with parameter values bound to controls beside figur
 running the authors' code on a parameter grid (`build_companion.py`, `check_companion.py`).
 The page stays local; it is not a web publication.
 
+To stress-test a proof, your own or someone else's, before relying on it,
+[proof-adversarial-review](skills/proof-adversarial-review/SKILL.md) runs seven independent
+viewpoints (line-by-line audit, independent verification, counterexample hunt, hypothesis and
+dependency audit, prior-art attack, hostile referee, numerical check) on a frozen statement, and a
+parent merges the reports, separating confirmed from suspected findings (`findings.py`). To see the
+result on one page, [reading-proof-review](skills/reading-proof-review/SKILL.md) builds a private,
+single-file HTML from a sourced step ledger: a dependency diagram, step cards whose proofs fold,
+the key steps compared with the standard ones, the review findings, the comparison with prior work,
+and a viability indicator whose verdict is capped by explicit rules (`check_ledger.py`,
+`indicator.py`, `build_review_page.py`, `check_review_page.py`). Neither edits the manuscript, and
+neither certifies correctness.
+
 For whole-paper design or structural reassessment, use
 [paper-structure](skills/paper-structure/SKILL.md). It maps current material to
 proposed sections with purpose, inputs, outputs and proof/reader routes.
