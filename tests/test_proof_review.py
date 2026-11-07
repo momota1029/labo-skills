@@ -1,8 +1,10 @@
 """Exercise the fictional proof-review fixtures: ledger, indicator rules, findings, page build and check."""
 
 from pathlib import Path
+import io
 import json
 import shutil
+import tarfile
 import subprocess
 import sys
 import tempfile
@@ -149,6 +151,50 @@ class ProofReviewTests(unittest.TestCase):
         c = self.py(RPR / "scripts/check_review_page.py", self.out, "--spec", self.spec)
         self.assertEqual(c.returncode, 1)
         self.assertIn("step-S3", c.stdout)
+
+    # KaTeX fetch (no network: a local tarball stands in for the registry)
+    def fake_katex_tarball(self, extra=None):
+        buf = io.BytesIO()
+        with tarfile.open(fileobj=buf, mode="w:gz") as t:
+            files = {"package/dist/katex.min.js": b"/*js*/", "package/dist/katex.min.css": b"/*css*/", "package/LICENSE": b"MIT",
+                     "package/dist/fonts/KaTeX_Main-Regular.woff2": b"font", "package/dist/fonts/../../evil.txt": b"x",
+                     "package/dist/katex.js": b"not wanted"}
+            files.update(extra or {})
+            for name, data in files.items():
+                ti = tarfile.TarInfo(name)
+                ti.size = len(data)
+                t.addfile(ti, io.BytesIO(data))
+        data = buf.getvalue()
+        path = Path(self.tmp.name) / "katex.tgz"
+        path.write_bytes(data)
+        sys.path.insert(0, str(RPR / "scripts"))
+        import fetch_katex
+        return path, fetch_katex.integrity(data)
+
+    def test_fetch_katex_verifies_and_extracts_only_wanted_files(self):
+        tgz, integ = self.fake_katex_tarball()
+        dest = Path(self.tmp.name) / "cache"
+        r = self.py(RPR / "scripts/fetch_katex.py", "--dest", dest, "--url", tgz.as_uri(), "--sha512", integ)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(sorted(p.name for p in dest.iterdir()), ["LICENSE", "fonts", "katex.min.css", "katex.min.js"])
+        self.assertEqual([p.name for p in (dest / "fonts").iterdir()], ["KaTeX_Main-Regular.woff2"])
+        self.assertFalse((Path(self.tmp.name) / "evil.txt").exists())
+
+    def test_fetch_katex_refuses_a_wrong_hash_and_unpacks_nothing(self):
+        tgz, _ = self.fake_katex_tarball()
+        dest = Path(self.tmp.name) / "cache"
+        r = self.py(RPR / "scripts/fetch_katex.py", "--dest", dest, "--url", tgz.as_uri(), "--sha512", "sha512-AAAA")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("integrity mismatch", r.stdout + r.stderr)
+        self.assertFalse(dest.exists())
+
+    def test_builder_inlines_a_given_katex_directory(self):
+        tgz, integ = self.fake_katex_tarball()
+        dest = Path(self.tmp.name) / "cache"
+        self.py(RPR / "scripts/fetch_katex.py", "--dest", dest, "--url", tgz.as_uri(), "--sha512", integ)
+        r = self.py(RPR / "scripts/build_review_page.py", self.spec, "--out", self.out, "--katex-dir", dest)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("/*js*/", self.out.read_text())
 
 
 if __name__ == "__main__":

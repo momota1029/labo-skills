@@ -43,7 +43,8 @@ user's reaction after each unless the user has asked to run through to the page.
 5. **Page.** Write the step bodies and the review data, build with
    `python3 <scripts>/build_review_page.py <spec-dir> --out <page.html> --lang <user's language>`
    and verify with `check_review_page.py`, then look at the rendered page
-   ([page contract](references/page.md)).
+   ([page contract](references/page.md)). Math needs KaTeX: `fetch_katex.py` downloads a pinned,
+   integrity-checked copy into a cache once the user agrees.
 
 ## Rules that keep the page honest
 
