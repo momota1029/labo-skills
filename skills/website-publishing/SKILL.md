@@ -43,7 +43,13 @@ existing site format and generator; no specific backend is required.
    any link, and repository paths or `.md` names never appear on it. Keep
    pedagogical reconstruction distinct from what the source states. For a
    substantial paper reading or proof reconstruction, use `reading-reference`.
-4. Build/preview with the site's own tools. Check mathematical rendering,
+4. Before treating a drafted or substantially revised exposition as ready,
+   run the [exposition-review](../exposition-review/SKILL.md) loop on the
+   rendered page: independent flow review, then adversarial critique, triage
+   and re-review. A page only its producer has read is a draft. Run
+   `scripts/check_citations.py` on every changed page against its previous
+   version; no rewrite may leave a dangling citation or drop a reference entry.
+   Build/preview with the site's own tools. Check mathematical rendering,
    diagrams, links and narrow/wide layouts on the actual result. Review the
    selected release files and diff, including assets and linked documents.
 5. Publish when authorized for that content and destination, using the existing

@@ -150,6 +150,28 @@ it ("we return to this in §4"). Useful moves:
 Do not manufacture drama or exaggerate significance; the interest must come from
 the actual mathematics.
 
+## Keep one thread through the whole page
+
+Local continuity between adjacent paragraphs is not enough; the page as a
+whole needs a line. Before drafting, write the thread in a few sentences: the
+question, the steps that answer it, and where each step's need comes from.
+Then:
+
+- **Tell near topics together.** Two passages about the same object, the same
+  idea from two angles, or a problem and its resolution belong in one place or
+  in adjacent sections. If they must be apart (source order, a needed detour),
+  the later one names the earlier one and says what it adds.
+- **Every detour returns.** A digression (background, side remark, a related
+  result) states why it is taken and ends by bringing its result back to the
+  thread.
+- **Every promise is paid.** A question raised is answered, or explicitly left
+  open with a reason; an answer is never given before its question.
+- **Order by need.** A definition, picture or lemma comes when the reader
+  first needs it, not in a front block and not after it was used.
+
+After drafting, the [exposition-review](../../exposition-review/SKILL.md) loop
+checks this thread with a reader who has not seen your plan.
+
 ## Connect concepts explicitly
 
 Whenever a concept, lemma or quantity appears, say how it connects to those
@@ -183,11 +205,35 @@ explanation.
 - State the needed content in place instead of "see X" or "as in the other
   note". A pointer may follow the content, never replace it.
 - In reader-facing prose, do not expose repository paths, `.md` file names,
-  internal note titles, work logs, tool names or process remarks. Put sources in
-  a compact citation (paper, version, theorem/section) at the point of use or
-  in a short sources block at the end.
+  internal note titles, work logs, tool names or process remarks. Cite sources
+  by a compact locator (paper, version, theorem/section) at the point of use,
+  together with the cited content, and collect them in the annotated
+  reference list at the end.
 - Avoid link clusters in running text. One link per claim at most, placed where
   the reader would actually want to check.
+- **References carry their content.** A citation is not a place to send the
+  reader; the page says what the cited work gives. Self-containment is reached
+  by writing the cited content in, never by removing citations.
+  - **At the point of use**, state the cited result the argument needs in
+    usable form: the statement with its hypotheses and the objects it applies
+    to, in the page's notation, plus one or two sentences on why it holds or
+    what idea it rests on when that helps; then check that its hypotheses hold
+    here. "By [8, Theorem 6.22]" alone is a gap. A definition taken from a
+    cited work is written out like any other definition.
+  - **In the reference list** at the end, each entry gives the bibliographic
+    data (authors, title, venue or arXiv identifier with version, year) and an
+    annotation of a few lines: what the work is about, exactly what this page
+    takes from it (result, definition or construction, with its locator) and
+    how that enters the argument; for prior work used for comparison, what it
+    proved and how the present result differs. A reader who reads only the
+    list should know what each work contributes.
+  - Every citation in the text — numbered like `[8, Theorem 6.22]` or by name —
+    resolves to an entry on the same page. If the page keeps the source paper's
+    numbering, keep that numbering. Mark what the cited work states and what
+    this page adds, as for any source.
+  - When rewriting or shortening a page, compare citations, entries and
+    annotations with the previous version; a dropped entry, a dangling `[n]`
+    or a citation reduced to a bare number is a regression, not a simplification.
 - In chat, the same rule holds: answer in prose first; file references, if
   any, go in one short line at the end, and only when the user needs to open them.
 

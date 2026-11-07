@@ -401,6 +401,14 @@ code, and the authors' code with parameter values bound to controls beside figur
 running the authors' code on a parameter grid (`build_companion.py`, `check_companion.py`).
 The page stays local; it is not a web publication.
 
+Before a web page, HTML exposition, companion or long note is handed over,
+[exposition-review](skills/exposition-review/SKILL.md) runs an adversarial review loop:
+the draft is frozen, [exposition-flow-review](skills/exposition-flow-review/SKILL.md)
+rebuilds its actual flow in a fresh context and proposes a reconnected outline with bridges,
+[exposition-critique](skills/exposition-critique/SKILL.md) quotes every passage where the
+intended reader gets lost or misled, and the producer triages each finding, revises and
+sends the new version to a fresh reviewer.
+
 For whole-paper design or structural reassessment, use
 [paper-structure](skills/paper-structure/SKILL.md). It maps current material to
 proposed sections with purpose, inputs, outputs and proof/reader routes.

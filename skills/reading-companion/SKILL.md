@@ -95,7 +95,8 @@ itself is generic and public; its examples are fictional.
    parity records; sources with commits and data identities), then look at every unit in a browser
    and press every preset.
 6. **Review with the user's view.** Hand over the whole page with a review proposal (what to check,
-   against which criteria, by whom, in which order) and ask the user how the review should go before
+   against which criteria, by whom, in which order; by default the
+   [exposition-review](../exposition-review/SKILL.md) loop on the page's text, alongside the checks above) and ask the user how the review should go before
    reviewing; then review and repair.
 
 Report what was run and at which level, which units were looked at in a browser, the open

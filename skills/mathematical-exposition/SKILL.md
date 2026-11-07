@@ -150,6 +150,11 @@ Check the mathematical argument and its teachability separately under
 [the substance checks](references/mathematical-substance.md#工程を通じた確認).
 A sound plan, fluent prose or complete headings do not establish either.
 
+For substantial written artifacts (web pages, HTML, reading companions,
+lecture and reading notes, long explanations), do not hand over a first draft:
+after the self-checks below, run the [exposition-review](../exposition-review/SKILL.md)
+loop with independent flow and critique reviewers. Short chat answers are exempt.
+
 Run the [readability audit P1--P11](references/reader-pull.md#readability-audit)
 on the actual text: hurried-reader first screen, headings alone, section
 openings alone, undefined terms, gaps, next question, angles, connections,

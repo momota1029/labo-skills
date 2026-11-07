@@ -309,6 +309,13 @@ Lean の証拠を必要とする。定理/補題ノードは自動的に必要�
 で私用の1ファイルの HTML を作る。特徴ごとに、背景、売り、既存の方法とそのコード、
 パラメータを操作部に結びつけた著者コード、著者コードを格子点で実行した図を並べる。公開はしない。
 
+Web ページ、HTML の解説、コンパニオン、長いノートは、渡す前に
+[exposition-review](skills/exposition-review/SKILL.md) の敵対的な査読を通す。
+版を固定し、[exposition-flow-review](skills/exposition-flow-review/SKILL.md) が新しい文脈で
+全体を読んで実際の流れを書き出し、つなぎ方を含む構成案を出す。
+[exposition-critique](skills/exposition-critique/SKILL.md) は想定読者が迷う・誤解する箇所を
+引用つきで指摘する。書き手はすべての指摘に判断を付けて直し、新しい版を別の査読者に回す。
+
 ## 必須の研究ポジショニング
 
 プログラムを枠づける、または大きく枠づけ直すとき、実質的な原稿作業を始める、または

@@ -85,7 +85,8 @@ For each user request, follow the [required consultation](references/consultatio
    `slide-authoring` (talk plan for a paper → `paper-talk-planning`; slides in the
    manner of example decks → `deck-from-references`); research positioning, source collection, paper/book
    explanation and reading notes → `reading-reference`; website →
-   `website-publishing`; continuous Japanese reading translations →
+   `website-publishing`; adversarial review of a finished explanation, page or
+   note (flow and passage-level critique) → `exposition-review`; continuous Japanese reading translations →
    [japanese-translation](../japanese-translation/SKILL.md);
    actual Codex/Claude host settings and subagent roles →
    [agent-host-setup](../agent-host-setup/SKILL.md); skill improvements in the user's fork →
