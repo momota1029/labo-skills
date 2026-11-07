@@ -71,11 +71,12 @@ Each section is a short story with the same shape as the whole:
 
 Headings should tell the story on their own. Reading only the headings in
 order, a reader should get the argument's spine. Use claim-shaped or
-question-shaped headings in the reader's words ("Why the old inequality
-fails: four points are enough", "なぜ旧不等式は崩れるのか｜四点で反例が作れる").
-When the owning workflow requires the two-part `role | point` heading, keep
-the role words plain and reader-facing (問い, 結論, 定義, 例, 仕組み, 証明の流れ,
-限界, 次の問い), and put no undefined term in either half.
+question-shaped headings in the reader's words ("Four points break the old
+inequality", 「四点の空間で旧不等式が崩れる」, 「観測直径とは何か」). Do not prefix
+headings with role labels (「問い｜」, 「定義｜」, 「背景｜」, 「結論｜」, "Background:");
+the role is the section's job, shown by its opening, not printed in its title.
+Only source-aligned reading notes keep visible `role | point` headings, under
+[roles and headings](roles-and-headings.md#where-role-labels-are-visible).
 
 ## Define like a paper, explain like a teacher
 
@@ -198,6 +199,7 @@ reader stops trusting it. Make the content carry the structure.
 
 **Signs of template prose, to remove:**
 
+- Role labels in headings or paragraph starts (「問い｜」, 「定義｜」, 「背景：」).
 - Labels and signposts that announce instead of saying: 「結論から言うと」,
   「ポイントは」, 「重要なのは」, 「ここが肝」, 「まとめると」, 「一言で言えば」,
   「本質的には」, 「直感的には」 used as a reflex, "In summary", "The key insight
@@ -283,7 +285,7 @@ failure of each:
 - **P10 No links needed:** Mentally delete every link and path. Does the
   explanation still work? Are any internal paths or file names visible?
 - **P11 Natural prose:** Search the text for the template signs above
-  (labels such as 結論/ポイント/まとめ, meta-narration, repeated opening frames,
+  (role-labelled headings, labels such as 結論/ポイント/まとめ, meta-narration, repeated opening frames,
   rhetorical denials, inflated adjectives, filler). Does each remaining one earn
   its place? Read three section openings side by side: do they sound different
   because their content differs?

@@ -83,14 +83,17 @@ task. Recover an earlier dependency locally when needed. A reference or a
 phrase such as "next", "as above" or "below we implement" does not supply the
 missing connection. Explain what the new step yields for that same purpose.
 
-For structured explanations, follow [subject identity, role skeleton and two-part headings](references/roles-and-headings.md).
+For structured explanations, follow [subject identity, role skeleton and headings](references/roles-and-headings.md).
 Identify the named method or concept before its background; identify the method
 and implementation before a code block. A content-specific message does not
 replace that subject name.
 Fix the role sections and their order from the owning workflow or agreed outline.
-Each added section heading shows **role | concrete point**, so the reader sees
-both the stable skeleton and what this section will say. Keep source titles and
-faithful translation intact; apply this structure to the added explanation.
+The skeleton guides what each section must do. Visible **role | concrete point**
+headings belong only to source-aligned reading notes (or an explicit request);
+in web pages, HTML, chat, lectures and manuscripts, write natural claim- or
+question-shaped headings with no role label such as 「問い｜」 or 「定義｜」.
+Keep source titles and faithful translation intact; apply this structure to the
+added explanation.
 
 Preserve those role boundaries while carrying the prose across them. Combine
 unnecessary subdivisions within a role, not different required roles into one

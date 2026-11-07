@@ -38,8 +38,9 @@ existing site format and generator; no specific backend is required.
    conclusion, a picture, why it matters and the key idea first; then each
    section with a plain opening, gap-free definitions and steps, figures that
    do work, and a closing that leads on; limitations and a route to the exact
-   source last. The page must read fully without following any link, and
-   repository paths or `.md` names never appear on it. Keep
+   source last. Headings are natural claims or questions, without role labels
+   such as 「問い｜」 or 「定義｜」. The page must read fully without following
+   any link, and repository paths or `.md` names never appear on it. Keep
    pedagogical reconstruction distinct from what the source states. For a
    substantial paper reading or proof reconstruction, use `reading-reference`.
 4. Build/preview with the site's own tools. Check mathematical rendering,
