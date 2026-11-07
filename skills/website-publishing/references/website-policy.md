@@ -31,6 +31,9 @@ repairs. Do not turn a small page correction into a full site audit.
   mathematics; a new lemma or stronger claim is not merely a paraphrase.
   Label theorem, conjecture, observation and analogy accurately. Do not repair
   a source gap by inventing a proof or importing an unpublished result.
+  Apply the [readability audit](../../mathematical-exposition/references/reader-pull.md#readability-audit):
+  a hurried reader gets result, significance and key idea from the first
+  screen; terms are defined before use; the page works with every link removed.
 - **W4 Evidence and credit** — Check both sides of historical or novelty
   comparisons. Credit the exact paper and the actual figure/code source;
   distinguish schematic illustrations from measured or reported results.

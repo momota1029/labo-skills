@@ -51,6 +51,10 @@ specific difficulty. A colon or another clear separator is equivalent; the
 criterion is meaning, not a required glyph. A label such as "Supplement" records
 provenance, not the role. "Background" alone omits the point; a concrete title
 alone omits the role. A role followed by "explanation of this role" adds no point.
+Write both halves in the reader's words: plain role names (問い, 結論, 定義, 例,
+仕組み, 証明の流れ, 限界, 次の問い) rather than internal workflow labels, and no
+term the reader has not yet met. Read in order, the headings alone should tell
+the argument's story, as required by [reader pull](reader-pull.md#make-every-section-repeat-this-pattern-in-small).
 
 Keep role names and granularity stable within the artifact. The concrete half
 states what this particular section establishes, asks or does; it must not claim

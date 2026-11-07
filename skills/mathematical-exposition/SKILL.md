@@ -43,6 +43,21 @@ For persistent mathematical documents, use [mathematical-navigation](../mathemat
 alongside the proof-detail rules. Read the workspace author profile when available;
 carry explicit recurring preferences into drafting and checks, not only final polish.
 
+## Write for the reader who must be pulled through
+
+Every substantive explanation follows [reader pull](references/reader-pull.md):
+write for the hurried reader, the reader without the definitions and the reader
+who cannot fill gaps between lines. Put the conclusion, a picture, why it
+matters and the key idea on the first screen; give each section a plain opening
+that states its conclusion and a closing that raises the next question.
+Define terms as exactly as the paper, using only words already available, with
+example and purpose. Write every step's reason. Show the central idea from
+several genuinely different angles, connect each concept to those already on
+the page, and place figures where they do work. Keep the page self-contained:
+links and file paths support the text and never carry it, and repository
+paths or internal note names do not appear in reader-facing prose. The
+explanation is longer and gentler than the paper, never vaguer.
+
 ## Build a usable route through the argument
 
 Make the question, claim, main obstacle and decisive move visible. Introduce
@@ -128,6 +143,11 @@ reading skill owns source checks.
 Check the mathematical argument and its teachability separately under
 [the substance checks](references/mathematical-substance.md#工程を通じた確認).
 A sound plan, fluent prose or complete headings do not establish either.
+
+Run the [readability audit P1--P10](references/reader-pull.md#readability-audit)
+on the actual text: hurried-reader first screen, headings alone, section
+openings alone, undefined terms, gaps, next question, angles, connections,
+figures and the no-links test. Repair failures before delivery.
 
 For structured explanations, run the [heading audit H1--H5](references/roles-and-headings.md#audit-the-headings-against-the-body):
 check role boundaries/order, both title parts, fulfillment by the body, progression
