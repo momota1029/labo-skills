@@ -316,6 +316,16 @@ Web ページ、HTML の解説、コンパニオン、長いノートは、渡�
 [exposition-critique](skills/exposition-critique/SKILL.md) は想定読者が迷う・誤解する箇所を
 引用つきで指摘する。書き手はすべての指摘に判断を付けて直し、新しい版を別の査読者に回す。
 
+証明を、自分のものでも他人のものでも、頼る前に攻めて確かめるには、
+[proof-adversarial-review](skills/proof-adversarial-review/SKILL.md) が、固定した主張に対して
+七つの独立した視点（逐行監査、独立検証、反例探索、仮定と依存関係の監査、先行研究への攻撃、
+敵対的査読、数値確認）を走らせ、親が報告を統合して確定した指摘と疑いを分ける（`findings.py`）。
+その結果を 1 枚で見るには、[reading-proof-review](skills/reading-proof-review/SKILL.md) が、出典つきの
+ステップ台帳から私用の1ファイルの HTML を作る。依存関係図、証明が畳まれるステップのカード、
+キーと標準の比較、査読の指摘、先行研究との比較、規則で上限が決まる論文化の指標を並べる
+（`check_ledger.py`、`indicator.py`、`build_review_page.py`、`check_review_page.py`）。
+どちらも原稿を編集せず、正しさを保証しない。
+
 ## 必須の研究ポジショニング
 
 プログラムを枠づける、または大きく枠づけ直すとき、実質的な原稿作業を始める、または

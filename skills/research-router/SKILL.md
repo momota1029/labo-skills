@@ -123,6 +123,12 @@ use [paper-introduction](../paper-introduction/SKILL.md). It owns discovery and
 telling order, while `paper-writing` owns manuscript edits and `reading-reference`
 owns the positioning investigation. A report-only request remains report-only.
 
+To stress-test a proof with several independent adversarial viewpoints, use
+[proof-adversarial-review](../proof-adversarial-review/SKILL.md); to see which steps are key, what the
+review found, how the result differs from prior work and whether it looks like a paper, on one
+private page, use [reading-proof-review](../reading-proof-review/SKILL.md). Both apply to the user's
+own manuscript or to a published paper, and both are report-only.
+
 For whole-paper architecture or structural reassessment, use
 [paper-structure](../paper-structure/SKILL.md). It maps section roles and
 proposed moves from the actual question and proof route. For explicit
