@@ -25,10 +25,17 @@ published. Text fields are escaped; HTML fields are trusted, so do not paste unt
 
 ## Math
 
-KaTeX is inlined for a single offline file; pass `--katex-dir` (or set `KATEX_DIR`) to a directory
-holding `katex.min.js`, `katex.min.css` and `fonts/`. If only some fonts are available the builder
-warns; do not use the commands those fonts would need (`\mathbb`, `\mathbf`, `\mathcal`, symbols
-such as a filled star). Without KaTeX the TeX source stays visible.
+KaTeX (free, open source, MIT licence) is inlined so the page stays one offline file. It is not
+bundled in this repository. `scripts/fetch_katex.py` downloads a pinned release from the official
+npm registry into a per-user cache (`~/.cache/labo-skills/katex/<version>`), checks it against its
+published sha512 integrity before unpacking, and extracts only the script, stylesheet, fonts and
+licence. `build_review_page.py` looks, in order, at `--katex-dir`, `$KATEX_DIR`, that cache, and a
+TeX Live copy; `--fetch-katex` downloads into the cache when none is found. The user's go-ahead is
+needed before the first download; after that the page builds offline.
+
+With a complete KaTeX the usual math commands work. If a directory has only some fonts (some TeX
+Live copies do) the builder warns, and the commands those fonts would need (`\mathbb`, `\mathbf`,
+`\mathcal`, a filled star) must be avoided. Without KaTeX the TeX source stays visible.
 
 ## Checks
 
