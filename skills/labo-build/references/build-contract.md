@@ -89,6 +89,10 @@ python3 <labo-script> output build --source writing/<slug>/<entry>.tex
 python3 <labo-script> output build --source reading/<slug>/<entry>.tex
 ```
 
+A built standalone HTML page is copied (never moved) with `output copy-html --source reading/<slug>/<page>.html`;
+the master stays beside its spec, and the copy is named by the same rule (stem when it begins with the slug,
+otherwise `<slug>-<stem>`; `index.html` takes its directory's name). `prune` leaves such copies alone.
+
 Several roots of one source (`reading/<slug>/<slug>-ja.tex`, `reading/<slug>/<slug>-ja-expansion.tex`)
 are the intended use of the naming rule below: each publishes its own pair.
 

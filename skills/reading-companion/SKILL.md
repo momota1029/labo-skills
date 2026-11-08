@@ -29,6 +29,11 @@ the request list and unobtained material). Slides belong to
 
 ## The companion is private
 
+The companion is a **standalone** page (it runs code with controls, which the site generator does not
+express): build it from its spec, keep the master in `reading/<slug>/companion/`, and copy it to `output/`
+with `output copy-html`. When a private site exists, prose explanation of the same paper belongs to the
+site route, not here ([the two routes](../labo-layout/references/layout.md#private-html-the-site-route-and-the-standalone-route)).
+
 The HTML is one file that opens in a browser on this machine without a network; nobody else
 sees it unless the file is handed over or put on a web server. Write it and its data under
 `reading/<slug>/companion/`, in the directory of its note (or another path the workspace's parent Git ignores;

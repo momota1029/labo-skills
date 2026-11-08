@@ -20,6 +20,9 @@ and site maintenance. Read [website policy](references/website-policy.md).
 Infer audience, source version, destination and whether the request is for a
 private explanation, a public-page draft or a live publication. Preserve the
 existing site format and generator; no specific backend is required.
+When the workspace has a private site, the private page for a reading unit is a Reader page here, and
+no standalone HTML is built for the same content
+([the two routes](../labo-layout/references/layout.md#private-html-the-site-route-and-the-standalone-route)).
 
 ## Workflow
 

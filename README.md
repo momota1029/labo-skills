@@ -644,7 +644,7 @@ No mathematical assertion is certified by this tooling.
 `output build` delegates to `latexmk`, writing intermediate files to
 `writing/<paper>/.temp` and PDF/SyncTeX outputs directly to `output/`, named
 `<paper>.pdf` and `<paper>.synctex.gz` so all projects can be selected together.
-A source root's output pair is named after the root: its file stem when that
+A built standalone HTML page is copied into `output/` with `output copy-html`; its master stays under `reading/<slug>/` or `writing/<slug>/`. A source root's output pair is named after the root: its file stem when that
 begins with the project slug, otherwise `<slug>-<stem>`. Roots of one project
 keep separate pairs and separate intermediate cache names.
 `--dry-run` prints the invocation.

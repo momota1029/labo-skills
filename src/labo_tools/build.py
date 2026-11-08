@@ -284,6 +284,45 @@ def run_postprocess(workspace: Path, steps: list[str], paper: str | None = None,
     return messages
 
 
+def html_output_name(source: Path, workspace: Path) -> str:
+    """Output name of a built HTML page kept under reading/<slug>/ or writing/<slug>/.
+
+    Same rule as a TeX root: the file stem when it begins with the project slug, otherwise
+    `<slug>-<stem>`. A page named `index.html` takes its directory's name instead.
+    """
+    relative = source.resolve().relative_to(workspace.resolve())
+    slug = relative.parts[1]
+    stem = source.stem
+    if stem == "index" and len(relative.parts) > 3:
+        stem = relative.parts[-2]
+    return stem if stem.startswith(slug) else f"{slug}-{stem}"
+
+
+def copy_html(workspace: Path, source: Path) -> Path:
+    """Copy a built HTML page into output/ as a disposable copy; the master stays in reading/ or writing/."""
+    workspace = workspace.resolve()
+    source = source if source.is_absolute() else workspace / source
+    if source.is_symlink() or not source.is_file() or source.suffix != ".html":
+        raise PaperError("source must be an existing, non-symlinked .html file")
+    try:
+        relative = source.resolve().relative_to(workspace)
+    except ValueError as exc:
+        raise PaperError("source must be inside the workspace") from exc
+    if len(relative.parts) < 3 or relative.parts[0] not in {"writing", "reading"}:
+        raise PaperError("source must be under writing/<slug>/ or reading/<slug>/")
+    if any(p.is_symlink() for p in source.parents if p != workspace and workspace in p.parents):
+        raise PaperError("source directories must not be symlinks")
+    name = html_output_name(source, workspace)
+    with output_transaction(workspace) as output:
+        target = output / f"{name}.html"
+        if target.is_symlink():
+            raise PaperError("output path must not be a symlink")
+        temporary = output / f".{name}.html.tmp"
+        shutil.copy2(source.resolve(), temporary)
+        temporary.replace(target)
+    return target
+
+
 def verify_current(workspace: Path, paper: str | None = None, source: Path | None = None) -> tuple[bool, str]:
     """True only if the latest build of this target succeeded and output/ still holds its PDF."""
     stamp, pdf, output_stem = _target_stamp(workspace, paper, source)

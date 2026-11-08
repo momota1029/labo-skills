@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import json  # noqa: E402
 
 from labo_tools.build import (  # noqa: E402
-    record_postprocess, run_postprocess, run_source_build, source_build_command, verify_current,
+    copy_html, record_postprocess, run_postprocess, run_source_build, source_build_command, verify_current,
 )
 from labo_tools.paper import PaperError  # noqa: E402
 
@@ -168,6 +168,31 @@ class SourceBuildTests(unittest.TestCase):
         for path in (translation, notes):
             ok, message = verify_current(self.root, source=path)
             self.assertTrue(ok, message)
+
+    def test_copy_html_keeps_the_master_and_names_the_copy_like_a_root(self):
+        page = self.root / "reading" / "demo-paper" / "companion" / "index.html"
+        page.parent.mkdir(parents=True)
+        page.write_text("<!doctype html><title>x</title>")
+        target = copy_html(self.root, page)
+        self.assertEqual(target, self.root / "output" / "demo-paper-companion.html")
+        self.assertEqual(target.read_text(), page.read_text())
+        self.assertTrue(page.exists())
+        named = self.root / "reading" / "demo-paper" / "demo-paper-review.html"
+        named.write_text("<p>review</p>")
+        self.assertEqual(copy_html(self.root, named).name, "demo-paper-review.html")
+        other = self.root / "reading" / "demo-paper" / "notes.html"
+        other.write_text("<p>notes</p>")
+        self.assertEqual(copy_html(self.root, other).name, "demo-paper-notes.html")
+
+    def test_copy_html_refuses_pages_outside_a_source_directory(self):
+        stray = self.root / "page.html"
+        stray.write_text("<p>x</p>")
+        with self.assertRaisesRegex(PaperError, "under writing/<slug>/ or reading/<slug>/"):
+            copy_html(self.root, stray)
+        not_html = self.folder / "notes.txt"
+        not_html.write_text("x")
+        with self.assertRaisesRegex(PaperError, ".html file"):
+            copy_html(self.root, not_html)
 
     def test_replaced_pdf_is_not_the_current_build(self):
         self._successful_build()

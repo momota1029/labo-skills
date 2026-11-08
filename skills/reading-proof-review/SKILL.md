@@ -40,7 +40,12 @@ user's reaction after each unless the user has asked to run through to the page.
    unread, never filled in from memory.
 4. **Indicator.** Fill the axes and facts under [the indicator rules](references/indicator.md) and
    check them with `python3 <scripts>/indicator.py review.json`.
-5. **Page.** Write the step bodies and the review data, build with
+5. **Page.** Where the workspace has a private site, a prose reading of a proof is a Reader page
+   ([website-publishing](../website-publishing/SKILL.md)) and this standalone page is built only for what the
+   generator cannot express; otherwise this is the standalone route: keep the master in `reading/<slug>/`
+   and copy it to `output/` with `output copy-html`
+   ([the two routes](../labo-layout/references/layout.md#private-html-the-site-route-and-the-standalone-route)).
+   Write the step bodies and the review data, build with
    `python3 <scripts>/build_review_page.py <spec-dir> --out <page.html> --lang <user's language>`
    and verify with `check_review_page.py`, then look at the rendered page
    ([page contract](references/page.md)). Math needs KaTeX: `fetch_katex.py` downloads a pinned,
