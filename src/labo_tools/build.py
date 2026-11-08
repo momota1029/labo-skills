@@ -234,9 +234,7 @@ def write_build_stamp(cache: Path, output_stem: str, source: Path, status: str,
 def _target_stamp(workspace: Path, paper: str | None, source: Path | None) -> tuple[Path, Path, str]:
     workspace = workspace.resolve()
     if source is not None:
-        _command, _cwd, cache, output, _stem = source_build_command(workspace, source, None)
-        source_path = (source if source.is_absolute() else workspace / source).resolve()
-        output_stem = source_path.relative_to(workspace).parts[1]
+        _command, _cwd, cache, output, output_stem = source_build_command(workspace, source, None)
     elif paper is not None:
         _command, _cwd, cache, output = build_command(workspace, paper, "pdflatex")
         output_stem = paper
@@ -414,8 +412,9 @@ def run_source_build(
     command, cwd, cache, output, stem = source_build_command(workspace, source, engine)
     workspace = workspace.resolve()
     source_path = source if source.is_absolute() else workspace / source
-    relative = source_path.resolve().relative_to(workspace)
-    output_stem = relative.parts[1]
+    # The published pair is named like the job: the root's own stem when it starts with
+    # the project slug, otherwise `<slug>-<stem>`. Roots of one project do not overwrite each other.
+    output_stem = stem
     if not dry_run:
         cache.mkdir(parents=True, exist_ok=True)
         output.mkdir(parents=True, exist_ok=True)

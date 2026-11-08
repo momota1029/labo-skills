@@ -1,6 +1,6 @@
 ---
 name: labo-build
-description: Compile TeX documents in writing/ or reading/ into slug-named PDF and SyncTeX outputs, overwrite prior results, and prune old outputs against a file-count limit.
+description: Compile TeX documents in writing/ or reading/ into PDF and SyncTeX outputs named after the project slug and the root, overwrite prior results, and prune old outputs against a file-count limit.
 ---
 
 # TeX build
@@ -23,8 +23,9 @@ to this skill's **real directory** (follow symlinks first). Use
 for the standard `writing/<slug>/main.tex` layout. For any TeX document root
 under `writing/<slug>/` or `reading/<slug>/`, use
 `output build --source <document-root.tex>`; this detects engine requirements
-and writes one current PDF/SyncTeX pair named `<slug>` for that project,
-overwriting the pair on each build while keeping source-specific cache names.
+and writes one current PDF/SyncTeX pair named after the root: its own file stem
+when that begins with the project slug, otherwise `<slug>-<stem>`. A later build
+of the same root overwrites its pair; other roots of the project keep theirs.
 Successful builds prune old managed outputs
 toward a 30-file limit, warning when protected or unrecognized files keep the
 count higher. The viewer stays closed unless `--open` is supplied; use
@@ -36,9 +37,9 @@ directory; pass `--workspace /absolute/path/to/labo` to override it or when
 using a standalone policy checkout. No project installation is required.
 
 Keep selectable PDFs directly in `output/`, with same-stem SyncTeX beside them.
-Every document root under the same project slug writes the same output pair, so
-the most recently built root is the one available from `output/`. Intermediate
-files stay beside each source in `.temp/`.
+Each document root writes its own pair (see the naming rule above), so a project can
+hold several, for example a translation and an explanation, without one
+overwriting the other. Intermediate files stay beside each source in `.temp/`.
 
 After producing the current artifact, the build runs the shared
 [PDF navigation check](../mathematical-navigation/references/pdf-checks.md)

@@ -71,8 +71,8 @@ class SourceBuildTests(unittest.TestCase):
     def test_build_failure_preserves_previously_published_pair(self):
         output = self.root / "output"
         output.mkdir()
-        pdf = output / "sample-paper.pdf"
-        sync = output / "sample-paper.synctex.gz"
+        pdf = output / "sample-paper_en.pdf"
+        sync = output / "sample-paper_en.synctex.gz"
         pdf.write_bytes(b"previous PDF")
         sync.write_bytes(b"previous SyncTeX")
         with patch("labo_tools.build.subprocess.run"):
@@ -91,11 +91,11 @@ class SourceBuildTests(unittest.TestCase):
             run_source_build(self.root, self.source, None, False)
         self.assertEqual(
             sorted(p.name for p in (self.root / "output").iterdir()),
-            ["sample-paper.pdf", "sample-paper.synctex.gz"],
+            ["sample-paper_en.pdf", "sample-paper_en.synctex.gz"],
         )
         self.assertTrue((self.folder / ".temp/sample-paper_en.aux").exists())
         self.audit.assert_called_once_with(
-            self.root / "output/sample-paper.pdf", self.folder / ".temp", "sample-paper_en",
+            self.root / "output/sample-paper_en.pdf", self.folder / ".temp", "sample-paper_en",
             self.folder / ".temp/sample-paper_en.aux",
             source=self.source,
         )
@@ -111,7 +111,7 @@ class SourceBuildTests(unittest.TestCase):
 
     def test_successful_build_records_a_stamp_that_verify_current_accepts(self):
         self._successful_build()
-        record = json.loads((self.folder / ".temp/sample-paper.build.json").read_text())
+        record = json.loads((self.folder / ".temp/sample-paper_en.build.json").read_text())
         self.assertEqual(record["status"], "ok")
         ok, message = verify_current(self.root, source=self.source)
         self.assertTrue(ok, message)
@@ -122,31 +122,63 @@ class SourceBuildTests(unittest.TestCase):
             (self.folder / ".temp/sample-paper_en.pdf").unlink()
             with self.assertRaises(PaperError):
                 run_source_build(self.root, self.source, None, False)
-        self.assertEqual((self.root / "output/sample-paper.pdf").read_bytes(), b"new PDF")
+        self.assertEqual((self.root / "output/sample-paper_en.pdf").read_bytes(), b"new PDF")
         ok, message = verify_current(self.root, source=self.source)
         self.assertFalse(ok)
         self.assertIn("stale", message)
 
     def test_another_source_in_same_folder_cannot_reuse_the_build_record(self):
-        self._successful_build()
-        other = self.source.with_name("another.tex")
+        # Two roots whose job names coincide share one output name; the record belongs to the one built.
+        self.source.unlink()
+        self.source = self.folder / "sample-paper-talk.tex"
+        self.source.write_text("\\documentclass{article}\n\\begin{document}\nExample.\\end{document}\n")
+        (self.root / "output").mkdir(exist_ok=True)
+
+        def build(command, **kwargs):
+            cache = self.folder / ".temp"
+            (cache / "sample-paper-talk.pdf").write_bytes(b"new PDF")
+            (cache / "sample-paper-talk.synctex.gz").write_bytes(b"new SyncTeX")
+        with patch("labo_tools.build.subprocess.run", side_effect=build):
+            run_source_build(self.root, self.source, None, False)
+        other = self.folder / "talk.tex"
         other.write_text(self.source.read_text())
+        self.assertEqual(source_build_command(self.root, other)[-1], "sample-paper-talk")
         ok, message = verify_current(self.root, source=other)
         self.assertFalse(ok)
         self.assertIn("different source", message)
         ok, message = verify_current(self.root, source=self.source.relative_to(self.root))
         self.assertTrue(ok, message)
 
+    def test_roots_in_one_folder_publish_separate_pairs(self):
+        translation = self.folder / "sample-paper_ja.tex"
+        notes = self.folder / "notes.tex"
+        for path in (translation, notes):
+            path.write_text(self.source.read_text())
+
+        def build(command, **kwargs):
+            job = next(a.split("=", 1)[1] for a in command if a.startswith("-jobname="))
+            cache = self.folder / ".temp"
+            (cache / f"{job}.pdf").write_bytes(job.encode())
+            (cache / f"{job}.synctex.gz").write_bytes(b"sync")
+        with patch("labo_tools.build.subprocess.run", side_effect=build):
+            self.assertEqual(run_source_build(self.root, translation, None, False)[1], "sample-paper_ja")
+            self.assertEqual(run_source_build(self.root, notes, None, False)[1], "sample-paper-notes")
+        self.assertEqual((self.root / "output/sample-paper_ja.pdf").read_bytes(), b"sample-paper_ja")
+        self.assertEqual((self.root / "output/sample-paper-notes.pdf").read_bytes(), b"sample-paper-notes")
+        for path in (translation, notes):
+            ok, message = verify_current(self.root, source=path)
+            self.assertTrue(ok, message)
+
     def test_replaced_pdf_is_not_the_current_build(self):
         self._successful_build()
-        (self.root / "output/sample-paper.pdf").write_bytes(b"some other PDF")
+        (self.root / "output/sample-paper_en.pdf").write_bytes(b"some other PDF")
         ok, message = verify_current(self.root, source=self.source)
         self.assertFalse(ok)
         self.assertIn("differs", message)
 
     def test_recorded_postprocessing_keeps_the_pdf_current_only_after_success(self):
         self._successful_build()
-        (self.root / "output/sample-paper.pdf").write_bytes(b"normalized PDF")
+        (self.root / "output/sample-paper_en.pdf").write_bytes(b"normalized PDF")
         record_postprocess(self.root, "normalize_pdf.py", source=self.source)
         ok, message = verify_current(self.root, source=self.source)
         self.assertTrue(ok, message)
@@ -159,12 +191,12 @@ class SourceBuildTests(unittest.TestCase):
 
     def test_postprocess_option_runs_and_records_each_step(self):
         self._successful_build()
-        step = f"{Path(sys.executable).as_posix()} -c \"open('output/sample-paper.pdf','wb').write(b'normalized')\""
+        step = f"{Path(sys.executable).as_posix()} -c \"open('output/sample-paper_en.pdf','wb').write(b'normalized')\""
         run_postprocess(self.root, [step], source=self.source)
-        self.assertEqual((self.root / "output/sample-paper.pdf").read_bytes(), b"normalized")
+        self.assertEqual((self.root / "output/sample-paper_en.pdf").read_bytes(), b"normalized")
         ok, message = verify_current(self.root, source=self.source)
         self.assertTrue(ok, message)
-        record = json.loads((self.folder / ".temp/sample-paper.build.json").read_text())
+        record = json.loads((self.folder / ".temp/sample-paper_en.build.json").read_text())
         self.assertEqual(record["postprocessed"][0]["step"], step)
 
     def test_failing_postprocess_makes_the_pdf_not_current(self):

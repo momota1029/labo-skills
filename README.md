@@ -87,7 +87,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 
 ### Build, Git and skill maintenance
 
-- [labo-build](skills/labo-build/SKILL.md) — Compile TeX into slug-named PDF and SyncTeX outputs.
+- [labo-build](skills/labo-build/SKILL.md) — Compile TeX into PDF and SyncTeX outputs named after the project slug and the root.
 - [labo-git](skills/labo-git/SKILL.md) — Set up and verify local research Git and the skills fork.
 - [labo-sync](skills/labo-sync/SKILL.md) — Review and selectively adopt shared labo-skills changes.
 - [labo-pr](skills/labo-pr/SKILL.md) — Contribute selected skill improvements upstream.
@@ -644,8 +644,9 @@ No mathematical assertion is certified by this tooling.
 `output build` delegates to `latexmk`, writing intermediate files to
 `writing/<paper>/.temp` and PDF/SyncTeX outputs directly to `output/`, named
 `<paper>.pdf` and `<paper>.synctex.gz` so all projects can be selected together.
-The project slug names the output pair; roots in the same project overwrite
-the same pair. Named sources keep separate intermediate cache names.
+A source root's output pair is named after the root: its file stem when that
+begins with the project slug, otherwise `<slug>-<stem>`. Roots of one project
+keep separate pairs and separate intermediate cache names.
 `--dry-run` prints the invocation.
 Real compilation requires a TeX distribution with `latexmk`. Success requires
 both PDF and SyncTeX; a missing SyncTeX

@@ -76,7 +76,7 @@
 
 ### ビルド・Git・スキルの保守
 
-- [labo-build](skills/labo-build/SKILL.md) — TeX を slug 名の PDF と SyncTeX にビルドする。
+- [labo-build](skills/labo-build/SKILL.md) — TeX を slug とルート名の PDF と SyncTeX にビルドする。
 - [labo-git](skills/labo-git/SKILL.md) — 研究用の Git とスキルの fork を整えて確認する。
 - [labo-sync](skills/labo-sync/SKILL.md) — 共有 labo-skills の変更を確認し、選んで取り込む。
 - [labo-pr](skills/labo-pr/SKILL.md) — 選んだスキルの改善を upstream へ PR で出す。
@@ -568,9 +568,9 @@ Lean ソース、原稿は読まない。ステータスは `in_progress` と `c
 
 `output build` は `latexmk` に委ねる。中間ファイルは `writing/<paper>/.temp` に、
 PDF と SyncTeX は直接 `output/` に `<paper>.pdf` と `<paper>.synctex.gz` として書くので、
-すべてのプロジェクトをまとめて選べる。出力の組はプロジェクトの slug で名づけられ、
-同じプロジェクト内のルートは同じ組を上書きする。名前を付けたソースは、
-中間キャッシュ名を別々に持つ。`--dry-run` は呼び出しを表示する。
+すべてのプロジェクトをまとめて選べる。ソースルートの出力の組は、ルート名で名づけられる。ファイル名の幹が
+プロジェクトの slug で始まればそれを、始まらなければ `<slug>-<幹>` を使う。
+同じプロジェクト内のルートは、別々の組と別々の中間キャッシュを持つ。`--dry-run` は呼び出しを表示する。
 実際のコンパイルには `latexmk` を含む TeX ディストリビューションが必要。
 成功とは PDF と SyncTeX の両方があることで、キャッシュ済みのビルドなのに
 SyncTeX が無いときは、強制再ビルドを最大一回行う。ビルドが成功すると、
@@ -582,8 +582,9 @@ SyncTeX が無いときは、強制再ビルドを最大一回行う。ビルド
 同時ビルドと掃除を直列化する。
 
 既存のドキュメント名には、`writing/<slug>/` か `reading/<slug>/` の下の TeX ルートを指定して
-`output build --source` を使う。出力の組はプロジェクトの slug で名づけられるので、
-同じ slug の下の複数のルートは互いに上書きする。ソースはその場に残り、キャッシュは
+`output build --source` を使う。出力の組はルート名（slug で始まるファイル名はそのまま、
+始まらなければ `<slug>-` を前置）で名づけられるので、
+同じ slug の下の複数のルートは別々の組を持つ。ソースはその場に残り、キャッシュは
 `.temp/` に置かれる。エンジンのディレクティブや `xeCJK` などのパッケージは検出され、
 `--engine` で上書きできる。作業ディレクトリの振る舞いは
 [ビルド契約](skills/labo-build/references/build-contract.md)に書いてある。

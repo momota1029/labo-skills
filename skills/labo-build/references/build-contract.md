@@ -26,8 +26,7 @@ rebuild; it does not disable the cache on every run or claim success without
 the promised outputs.
 
 Each successful build writes `<slug>.pdf` and same-stem SyncTeX directly under
-`output/`. Source roots under one project slug overwrite the same pair; the most
-recently built root is the one available from that project. The viewer stays
+`output/`. A root overwrites only its own pair, named by the rule below. The viewer stays
 closed by default; pass `--open` to launch the host's default PDF handler.
 After a successful build, the command prunes the oldest managed output groups
 toward a 30-file limit. A PDF and its `.synctex.gz` or `.synctex` file are
@@ -91,10 +90,10 @@ python3 <labo-script> output build --source reading/<slug>/<entry>.tex
 ```
 
 Named source builds run from the workspace root, use source-specific job names
-in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/<slug>.*`.
-Existing source-derived output variants under `<slug>_` are retired when a
-slug-named build replaces them. Standard `writing/<slug>/main.tex` also uses
-the project slug as its output name. Do not generate a wrapper or restructure
+in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/<name>.*`, where
+`<name>` is the root's file stem when it begins with `<slug>` and `<slug>-<stem>`
+otherwise (the job name). Roots of one project therefore publish separate pairs.
+Standard `writing/<slug>/main.tex` uses the project slug as its output name. Do not generate a wrapper or restructure
 mathematics just to fit the CLI.
 
 An explicit `--engine` wins, then a `% !TeX program = ...` directive, then
