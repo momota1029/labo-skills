@@ -88,7 +88,8 @@ itself is generic and public; its examples are fictional.
    unit is shown first as a trial. (Understanding material is built in one pass; only slides are built
    in stages: [staged build of slides](../deck-from-references/references/staged-build.md).)
 5. **Check** the whole page with `scripts/check_companion.py` (no pending units; privacy, no
-   external resources, size; every main-text figure in order with claim, reading, presenter's notes
+   external resources, size, duplicate ids and in-page links that lead nowhere in the rendered page
+   (needs Chrome/Chromium; skipped with a note otherwise); every main-text figure in order with claim, reading, presenter's notes
    and the data it was run with; every run with its run card; every figure link resolving to a step;
    comparison ranges inside the excerpts; terms and labels for every parameter; presets on grid
    points; labels present in the note; code excerpts verbatim; grid coverage for both methods;

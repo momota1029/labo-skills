@@ -84,6 +84,20 @@ class ReadingCompanionTests(unittest.TestCase):
         self.assertIn("differs from the current source", c.stdout)
         self.assertIn("not ignored", c.stdout)
 
+    def test_check_finds_duplicate_ids_and_dead_links_in_the_rendered_page(self):
+        sys.path.insert(0, str(SKILL / "scripts"))
+        import check_companion
+        if not check_companion.find_chrome():
+            self.skipTest("no Chrome/Chromium for the rendered-page check")
+        self.assertEqual(self.run_py(BUILD, str(self.spec), "--out", str(self.out)).returncode, 0)
+        good = self.run_py(CHECK, str(self.spec), str(self.out))
+        self.assertEqual(good.returncode, 0, good.stdout)
+        self.out.write_text(self.out.read_text().replace("</body>", '<a href="#nowhere">x</a><p id="top"></p></body>'))
+        bad = self.run_py(CHECK, str(self.spec), str(self.out))
+        self.assertEqual(bad.returncode, 1)
+        self.assertIn('id "top" appears 2 times', bad.stdout)
+        self.assertIn("#nowhere points to no element", bad.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

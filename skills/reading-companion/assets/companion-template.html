@@ -415,6 +415,9 @@ ${(D.unobtained||[]).length?`<h3>${T.unob}</h3><table><tr><th>${T.what}</th><th>
 <h2>${T.gloss}</h2><table><tr><th>${T.terms}</th><th></th><th>${T.defined}</th></tr>${gl.map(([t,f])=>`<tr><th>${esc(t.term)}</th><td>${esc(t.meaning)}</td><td>${f?`<a href="#${esc(f.id)}">${esc(f.title)}</a>`:`<a href="#top">${T.intro}</a>`}</td></tr>`).join('')}</table>`;
 main.appendChild(tail);
 document.getElementById('foot').innerHTML=`<p>${T.privacy}</p>`;
+// run units have no section of their own: show their name where a list or table links to them, without a dead link
+const runIds=new Set(D.features.filter(f=>f.kind==='run').map(f=>f.id));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{ if(runIds.has(a.getAttribute('href').slice(1))){ const s=document.createElement('span'); s.innerHTML=a.innerHTML; a.replaceWith(s); } });
 })();
 </script>
 </body>
