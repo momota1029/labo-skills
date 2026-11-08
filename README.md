@@ -62,8 +62,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 - [reading-book](skills/reading-book/SKILL.md) — Build long courses from books with one canonical body.
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — Review mathematical claims in a frozen long-course version.
 - [reading-book-output-review](skills/reading-book-output-review/SKILL.md) — Review indexes, rendering and navigation in a frozen course PDF.
-- [reading-companion](skills/reading-companion/SKILL.md) — Private interactive HTML companion for a method-and-code paper.
-- [reading-proof-review](skills/reading-proof-review/SKILL.md) — Private HTML page (or proof book) from a proof: key vs standard steps, findings, viability indicator.
+- [reading-proof-review](skills/reading-proof-review/SKILL.md) — Read a paper or proof and make a private explanation page: proof review, proof book, method-and-code companion or prose page, on the site or as one HTML.
 - [japanese-translation](skills/japanese-translation/SKILL.md) — Continuous Japanese reading translation of a manuscript.
 
 ### Explanation and navigation
@@ -463,8 +462,8 @@ decks from one plan: a dense reading deck for understanding and a light, arrow-b
 stage deck for presenting (`talkstyle.sty`, `flowstyle.sty`; rules in `two-decks.md`).
 
 For understanding a method paper's detailed reading note by seeing and moving it,
-[reading-companion](skills/reading-companion/SKILL.md) builds a private, single-file HTML
-companion: feature by feature, the background, the selling point, the earlier method with its
+[reading-proof-review](skills/reading-proof-review/SKILL.md) builds a private, single-file HTML
+companion (its companion kind): feature by feature, the background, the selling point, the earlier method with its
 code, and the authors' code with parameter values bound to controls beside figures computed by
 running the authors' code on a parameter grid (`build_companion.py`, `check_companion.py`).
 The page stays local; it is not a web publication.

@@ -1,4 +1,4 @@
-"""Build and check the fictional reading-companion example, and exercise the main refusals."""
+"""Build and check the fictional companion example, and exercise the main refusals."""
 
 from pathlib import Path
 import json
@@ -8,10 +8,10 @@ import sys
 import tempfile
 import unittest
 
-SKILL = Path(__file__).resolve().parents[1] / "skills/reading-companion"
+SKILL = Path(__file__).resolve().parents[1] / "skills/reading-proof-review"
 BUILD = SKILL / "scripts/build_companion.py"
 CHECK = SKILL / "scripts/check_companion.py"
-EXAMPLE = SKILL / "assets/example"
+EXAMPLE = SKILL / "assets/companion-example"
 
 
 class ReadingCompanionTests(unittest.TestCase):

@@ -117,7 +117,7 @@ A private page for reading is made by exactly one of two routes, and the two are
   [website-publishing](../../website-publishing/SKILL.md).
 - **Standalone route.** When there is no private site, or the page needs behaviour the generator
   cannot express (controls that run code, for example), the page is a standalone, self-contained
-  HTML built from a structured spec by `reading-companion` or `reading-proof-review`, with KaTeX
+  HTML built from a structured spec by `reading-proof-review` (a proof review, a method-and-code companion, or a prose page), with KaTeX
   embedded. Its **master stays in `reading/<slug>/`** beside its spec, and a **copy** goes to
   `output/` with `output copy-html --source <page.html>`; `output/` is disposable, so never keep
   the only copy there. Name it like a TeX root: its stem when that begins with the slug,

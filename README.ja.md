@@ -51,8 +51,7 @@
 - [reading-book](skills/reading-book/SKILL.md) — 本から長いコースを、一つの正本で作る。
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — 固定した長いコースの数学的主張を査読する。
 - [reading-book-output-review](skills/reading-book-output-review/SKILL.md) — 固定したコース PDF の索引・描画・ナビゲーションを査読する。
-- [reading-companion](skills/reading-companion/SKILL.md) — 手法とコードの論文のための、私的な対話型 HTML 読み物。
-- [reading-proof-review](skills/reading-proof-review/SKILL.md) — 証明から作る私的な HTML（または証明の読み物）。要所と標準手順、指摘、見込みの指標。
+- [reading-proof-review](skills/reading-proof-review/SKILL.md) — 論文や証明を読んで作る私的な解説ページ：証明レビュー、証明の読み物、手法とコードの companion、散文の解説。サイトの Reader か 1 枚の HTML。
 - [japanese-translation](skills/japanese-translation/SKILL.md) — 原稿を通して読める日本語訳にする。
 
 ### 説明とナビゲーション
@@ -373,8 +372,8 @@ Lean の証拠を必要とする。定理/補題ノードは自動的に必要�
 一つのデータファイルに記録し、`scripts/check_coverage.py` を完了の検査として通す。
 論文の手法のコードは、隔離した環境で実行する
 （[実行環境](skills/reading-reference/references/methods.md#execution-environments)）。
-方法論文の詳細ノートを、見て動かして理解するには、[reading-companion](skills/reading-companion/SKILL.md)
-で私用の1ファイルの HTML を作る。特徴ごとに、背景、売り、既存の方法とそのコード、
+方法論文の詳細ノートを、見て動かして理解するには、[reading-proof-review](skills/reading-proof-review/SKILL.md)
+の companion で私用の1ファイルの HTML を作る。特徴ごとに、背景、売り、既存の方法とそのコード、
 パラメータを操作部に結びつけた著者コード、著者コードを格子点で実行した図を並べる。公開はしない。
 
 Web ページ、HTML の解説、コンパニオン、長いノートは、渡す前に
