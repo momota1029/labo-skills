@@ -106,11 +106,13 @@ frozen versions in separate result areas under the shared
 
 - Public: this repository, its skills, numbered reviewing rules, software,
   fictional examples, and generic changes proposed by pull request.
-- Local-only by default: your research repository, with research plans, original
+- Private, in your own repository: your research repository, with research plans, original
   inbox material, Lean files, manuscripts, references, presentations, personal
-  skills, and any unpublished writing. Everything outside the independent
-  `.agents` policy Git stays off GitHub, even private GitHub repositories.
-  Both push and PR use the policy Git only; the parent retains local history.
+  skills, and any unpublished writing. Commit and push it to your own **private**
+  remote as you work; never to a public one. The source archive `reference/` and the
+  corpus `writing/.corpus/` have their own Gits and stay local. Skill pushes and PRs go
+  through the independent `.agents` policy Git, whose content is reviewed first; neither
+  needs a parent commit or push, and a parent push publishes no skill.
   The local `.claude -> .agents` alias is not a second publication target.
   See the [publication boundary](skills/labo-git/SKILL.md#publication-boundary).
 - The distribution model is **fork, use, improve, and selectively contribute
@@ -182,7 +184,7 @@ shared labo-skills ← selected pull requests ← improvements in your fork
    problem and check the change with a small reproducible example.
 2. When adopting that version, record its commit in the local parent gitlink.
    When a push is requested, send the reviewed policy branch from its own Git
-   to the verified fork. Neither action requires the other or a parent push.
+   to the verified fork. Neither action requires the other or the parent's own push.
 3. When an improvement would help others, propose a focused PR from a branch
    in your fork to the shared upstream. Include the reusable change and
    synthetic examples, independently of manuscripts and fork-specific choices.

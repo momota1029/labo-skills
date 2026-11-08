@@ -137,5 +137,5 @@ The research plan supplies human context; a skill supplies the operational
 rules. Neither is an excuse to expose private material in public changes.
 
 GitHub operations follow [labo-git's publication boundary](../labo-git/SKILL.md#publication-boundary):
-by default only the independent policy Git is eligible for push or PR;
-everything outside it remains local.
+the independent policy Git is the only skills destination (content-reviewed before a push or PR);
+the parent research repository goes to the user's private remote, never a public one.
