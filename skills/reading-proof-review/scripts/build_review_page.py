@@ -2,7 +2,7 @@
 """Build the single-file proof-review page from a spec directory.
 
 Usage:
-  build_review_page.py SPEC_DIR --out PAGE.html [--lang en|ja] [--katex-dir DIR] [--template FILE]
+  build_review_page.py SPEC_DIR --out PAGE.html [--lang en|ja] [--katex-dir DIR] [--fetch-katex] [--template FILE]
 
 SPEC_DIR holds steps.json (the ledger), bodies.json (per-step l1/l2/l3 HTML), review.json (panel,
 findings, prior-art table, indicator, summary) and, optionally, demo.html (a self-contained snippet
@@ -104,11 +104,13 @@ TIER_COLOR = {"key": "#c2410c", "semi": "#6b4fbb", "standard": "#5b6677"}
 
 def find_katex(explicit=None):
     import os
+    from fetch_katex import default_dest
     cands = []
     if explicit:
         cands.append(pathlib.Path(explicit))
     if os.environ.get("KATEX_DIR"):
         cands.append(pathlib.Path(os.environ["KATEX_DIR"]))
+    cands.append(default_dest())
     try:
         dist = subprocess.run(["kpsewhich", "-var-value", "TEXMFDIST"], capture_output=True, text=True, timeout=10).stdout.strip()
         if dist:
@@ -333,15 +335,19 @@ def main(argv=None):
     ap.add_argument("--out", required=True)
     ap.add_argument("--lang", default="en", choices=sorted(LABELS))
     ap.add_argument("--katex-dir")
+    ap.add_argument("--fetch-katex", action="store_true", help="download the pinned KaTeX (MIT) into the cache when none is found")
     ap.add_argument("--template", default=str(HERE.parent / "assets/review-page-template.html"))
     a = ap.parse_args(argv)
     kdir = find_katex(a.katex_dir)
+    if not kdir and a.fetch_katex:
+        from fetch_katex import fetch
+        kdir = fetch()
     page, missing = build(a.spec_dir, a.lang, kdir, a.template)
     pathlib.Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     pathlib.Path(a.out).write_text(page, encoding="utf-8")
     print(f"wrote {a.out} ({len(page) // 1024} KB)")
     if not kdir:
-        print("WARNING: no KaTeX found (use --katex-dir or KATEX_DIR); math stays as visible TeX source")
+        print("WARNING: no KaTeX found (run fetch_katex.py, or pass --fetch-katex, --katex-dir or set KATEX_DIR); math stays as visible TeX source")
     elif missing:
         print("WARNING: KaTeX fonts missing: " + ", ".join(missing) + " (avoid \\mathbb, \\mathbf, \\mathcal, \\mathit where absent)")
     return 0
