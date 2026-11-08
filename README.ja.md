@@ -570,7 +570,7 @@ Lean ソース、原稿は読まない。ステータスは `in_progress` と `c
 `output build` は `latexmk` に委ねる。中間ファイルは `writing/<paper>/.temp` に、
 PDF と SyncTeX は直接 `output/` に `<paper>.pdf` と `<paper>.synctex.gz` として書くので、
 すべてのプロジェクトをまとめて選べる。作り終えた単独の HTML は `output copy-html` で `output/` にコピーする（元は `reading/<slug>/` か `writing/<slug>/` に残る）。ソースルートの出力の組は、ルート名で名づけられる。ファイル名の幹が
-プロジェクトの slug で始まればそれを、始まらなければ `<slug>-<幹>` を使う。
+プロジェクトの slug で始まればそれを、始まらなければ `<slug>-<幹>` を使う（`main.tex` は主文書として slug になる）。
 同じプロジェクト内のルートは、別々の組と別々の中間キャッシュを持つ。`--dry-run` は呼び出しを表示する。
 実際のコンパイルには `latexmk` を含む TeX ディストリビューションが必要。
 成功とは PDF と SyncTeX の両方があることで、キャッシュ済みのビルドなのに

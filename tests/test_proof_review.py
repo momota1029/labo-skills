@@ -232,7 +232,7 @@ class ProofReviewTests(unittest.TestCase):
         self.assertIn("<figure><svg", body)
         self.assertIn('href="#check"', body)
         self.assertIn('<span class="m">x_1,\\dots,x_9</span>', body)
-        self.assertNotIn("{{", page)
+        self.assertIsNone(re.search(r"\{\{(?:[A-Z_]+|L:[a-z_]+)\}\}", page))  # a real KaTeX copy may contain "{{"
         c = self.py(RPR / "scripts/check_review_page.py", out)
         self.assertEqual(c.returncode, 0, c.stdout + c.stderr)
 

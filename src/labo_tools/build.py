@@ -231,10 +231,22 @@ def write_build_stamp(cache: Path, output_stem: str, source: Path, status: str,
     return stamp
 
 
+def published_stem(slug: str, source: Path, job: str) -> str:
+    """Name of the published PDF/SyncTeX pair of a source root.
+
+    The job name (the root's stem when it begins with the slug, otherwise `<slug>-<stem>`), except that a
+    root called `main.tex` is the project's main document and publishes as `<slug>`, as `writing/<slug>/main.tex`
+    does. The job name, and so the cache files, are unchanged.
+    """
+    return slug if source.name == "main.tex" else job
+
+
 def _target_stamp(workspace: Path, paper: str | None, source: Path | None) -> tuple[Path, Path, str]:
     workspace = workspace.resolve()
     if source is not None:
-        _command, _cwd, cache, output, output_stem = source_build_command(workspace, source, None)
+        _command, _cwd, cache, output, job = source_build_command(workspace, source, None)
+        source_path = (source if source.is_absolute() else workspace / source).resolve()
+        output_stem = published_stem(source_path.relative_to(workspace).parts[1], source_path, job)
     elif paper is not None:
         _command, _cwd, cache, output = build_command(workspace, paper, "pdflatex")
         output_stem = paper
@@ -452,8 +464,9 @@ def run_source_build(
     workspace = workspace.resolve()
     source_path = source if source.is_absolute() else workspace / source
     # The published pair is named like the job: the root's own stem when it starts with
-    # the project slug, otherwise `<slug>-<stem>`. Roots of one project do not overwrite each other.
-    output_stem = stem
+    # the project slug, otherwise `<slug>-<stem>`; `main.tex` publishes as `<slug>`. Roots of one
+    # project do not overwrite each other.
+    output_stem = published_stem(source_path.resolve().relative_to(workspace).parts[1], source_path, stem)
     if not dry_run:
         cache.mkdir(parents=True, exist_ok=True)
         output.mkdir(parents=True, exist_ok=True)

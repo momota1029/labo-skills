@@ -149,6 +149,26 @@ class SourceBuildTests(unittest.TestCase):
         ok, message = verify_current(self.root, source=self.source.relative_to(self.root))
         self.assertTrue(ok, message)
 
+    def test_main_tex_under_reading_publishes_as_the_slug_with_its_job_name_unchanged(self):
+        folder = self.root / "reading" / "demo-paper"
+        folder.mkdir(parents=True)
+        main = folder / "main.tex"
+        main.write_text(self.source.read_text())
+        command, _cwd, cache, output, job = source_build_command(self.root, main)
+        self.assertEqual(job, "demo-paper-main")
+        self.assertIn("-jobname=demo-paper-main", command)
+
+        def build(command, **kwargs):
+            (cache / "demo-paper-main.pdf").write_bytes(b"main PDF")
+            (cache / "demo-paper-main.synctex.gz").write_bytes(b"sync")
+        with patch("labo_tools.build.subprocess.run", side_effect=build):
+            self.assertEqual(run_source_build(self.root, main, None, False)[1], "demo-paper")
+        self.assertEqual((output / "demo-paper.pdf").read_bytes(), b"main PDF")
+        self.assertFalse((output / "demo-paper-main.pdf").exists())
+        ok, message = verify_current(self.root, source=main)
+        self.assertTrue(ok, message)
+        self.audit.assert_called_with(output / "demo-paper.pdf", cache, "demo-paper-main", cache / "demo-paper-main.aux", source=main)
+
     def test_roots_in_one_folder_publish_separate_pairs(self):
         translation = self.folder / "sample-paper_ja.tex"
         notes = self.folder / "notes.tex"

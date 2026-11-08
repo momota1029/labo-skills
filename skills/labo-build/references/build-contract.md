@@ -100,7 +100,8 @@ Named source builds run from the workspace root, use source-specific job names
 in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/<name>.*`, where
 `<name>` is the root's file stem when it begins with `<slug>` and `<slug>-<stem>`
 otherwise (the job name). Roots of one project therefore publish separate pairs.
-Standard `writing/<slug>/main.tex` uses the project slug as its output name. Do not generate a wrapper or restructure
+A root called `main.tex` (under `writing/<slug>/` or `reading/<slug>/`) is the project's main document and
+publishes as `<slug>`; its job name, and so its cache files, are unchanged (`<slug>-main` under `reading/`). Do not generate a wrapper or restructure
 mathematics just to fit the CLI.
 
 An explicit `--engine` wins, then a `% !TeX program = ...` directive, then

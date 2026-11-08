@@ -134,7 +134,7 @@ is required. Use `labo-layout` only when creating or locating workspace items.
 Produce the requested formats and language. For PDFs, build from the notes'
 own TeX root with `labo-build`'s `output build --source reading/<slug>/<root>.tex`
 workflow; it places the PDF and SyncTeX in `output/<name>.*` (the root's stem when
-it begins with the slug, otherwise `<slug>-<stem>`), overwrites only that root's pair
+it begins with the slug, otherwise `<slug>-<stem>`; `main.tex` takes the slug), overwrites only that root's pair
 on later builds, and prunes old output files. The
 viewer stays closed unless `--open` is supplied. The build runs the shared
 [PDF navigation check](../mathematical-navigation/references/pdf-checks.md).

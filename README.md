@@ -646,8 +646,8 @@ No mathematical assertion is certified by this tooling.
 `writing/<paper>/.temp` and PDF/SyncTeX outputs directly to `output/`, named
 `<paper>.pdf` and `<paper>.synctex.gz` so all projects can be selected together.
 A built standalone HTML page is copied into `output/` with `output copy-html`; its master stays under `reading/<slug>/` or `writing/<slug>/`. A source root's output pair is named after the root: its file stem when that
-begins with the project slug, otherwise `<slug>-<stem>`. Roots of one project
-keep separate pairs and separate intermediate cache names.
+begins with the project slug, otherwise `<slug>-<stem>`; a root called `main.tex` takes the slug.
+Roots of one project keep separate pairs and separate intermediate cache names.
 `--dry-run` prints the invocation.
 Real compilation requires a TeX distribution with `latexmk`. Success requires
 both PDF and SyncTeX; a missing SyncTeX

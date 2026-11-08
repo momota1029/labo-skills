@@ -26,7 +26,8 @@ for the standard `writing/<slug>/main.tex` layout. For any TeX document root
 under `writing/<slug>/` or `reading/<slug>/`, use
 `output build --source <document-root.tex>`; this detects engine requirements
 and writes one current PDF/SyncTeX pair named after the root: its own file stem
-when that begins with the project slug, otherwise `<slug>-<stem>`. A later build
+when that begins with the project slug, otherwise `<slug>-<stem>`; a root called `main.tex` is the
+project's main document and takes the slug. A later build
 of the same root overwrites its pair; other roots of the project keep theirs.
 Successful builds prune old managed outputs
 toward a 30-file limit, warning when protected or unrecognized files keep the
