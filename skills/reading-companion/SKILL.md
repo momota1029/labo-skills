@@ -76,7 +76,11 @@ itself is generic and public; its examples are fictional.
    data and a `check` for every *learn*. Take explanations from the note and its glossary, and the
    lineage, code-block notes, difference sources and values from the note's matching parts
    ([method-paper profile](../reading-reference/references/method-paper-profile.md)); a part the
-   note lacks is added to the note first.
+   note lacks is added to the note first. Write the storyline layer of `companion.json` first and
+   check it alone with `scripts/check_outline.py`: the shared introduction, the method map, and the
+   `difficulties` (the obstacles the paper names, each saying why the obvious route or the earlier
+   method fails) with, for every step, `why` it is needed here and the `answers` it gives. Fix the
+   story before writing units; the page then shows each obstacle with the steps that answer it.
 3. **Runs** (about a minute each, at most five: [compute budget](references/fidelity.md#compute-budget-understanding-not-exact-restoration)). Run the authors' code and the earlier method's code over their grids, on the same
    input, at the highest reproduction level available, in an isolated environment
    ([execution](../reading-reference/references/methods.md#execution-environments)); save one small
