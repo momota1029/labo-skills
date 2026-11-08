@@ -1,7 +1,7 @@
 # Reproducible build contract
 
-For `writing/<slug>/main.tex`, use the absolute checkout-local launcher
-resolved in `SKILL.md`:
+For `writing/<slug>/main.tex`, use the checkout-local launcher described in
+`SKILL.md` (`.agents/scripts/labo.py` from the workspace root):
 
 ```sh
 python3 <labo-script> output build --paper <slug> --dry-run
@@ -82,7 +82,7 @@ refused after a failed build.
 
 An imported manuscript may retain its original entry name, repository-root
 paths and TeX configuration. Pass the actual document root (not an included
-section) as an absolute or workspace-relative path:
+section) as a workspace-relative path (an absolute path also works):
 
 ```sh
 python3 <labo-script> output build --source writing/<slug>/<entry>.tex

@@ -123,7 +123,7 @@ A private page for reading is made by exactly one of two routes, and the two are
   the only copy there. Name it like a TeX root: its stem when that begins with the slug,
   otherwise `<slug>-<stem>`; a page called `index.html` takes its directory's name.
 
-Say which route a page uses in the source's `README.md`. Do not put generator output in
+Say which route a page uses in the source's `README.md` (`layout new reading` creates it with a `Route:` line). Do not put generator output in
 `output/`, and do not put a standalone page under `website/`. Moving a page from one route to
 the other is a separate request, not a silent conversion.
 

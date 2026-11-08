@@ -201,9 +201,9 @@ def main(argv: list[str] | None = None, *, checkout: Path | None = None) -> int:
     )
     _workspace(init)
     init.add_argument("--dry-run", action="store_true")
-    new = layout_actions.add_parser("new", help="create a research, paper, or reference source template")
+    new = layout_actions.add_parser("new", help="create a research, paper, reference or reading source template")
     kinds = new.add_subparsers(dest="kind", required=True)
-    for kind in ("research", "paper", "reference"):
+    for kind in ("research", "paper", "reference", "reading"):
         sub = kinds.add_parser(kind)
         sub.add_argument("slug")
         _workspace(sub)
