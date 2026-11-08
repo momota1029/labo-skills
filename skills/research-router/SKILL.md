@@ -1,13 +1,11 @@
 ---
 name: research-router
-description: Route mathematical research tasks to the appropriate labo skill and require a brief consultation on request understanding and the next action.
+description: Route mathematical research tasks to the appropriate labo skill; consultation is required only when a restricted model (Luna, Haiku) coordinates.
 ---
 
 # Research routing
 
-Before substantive work, follow
-[substantive-work eligibility and handoff](references/editing-capability.md).
-Apply this check to your own role as well as delegated workers.
+Luna and Haiku only collect evidence here and hand substantive work to another agent: [roles](references/editing-capability.md).
 
 ## Lightweight workspace preflight
 
@@ -17,7 +15,7 @@ substantive work: inspect the branch, tracking remote, status and submodule
 pins; fetch the tracking remote once and fast-forward only when it is safe;
 locate the existing target for file-producing tasks. It never stashes, resets,
 rebases or updates a submodule to its remote tip. Do not repeat it when the
-same request passes through consultation or another skill.
+same request passes through another skill.
 
 ## Surface relevant capabilities
 
@@ -41,7 +39,7 @@ A provider catalogue alone does not establish host availability. Keep unknown
 metadata unknown; an established parent assignment need not be rediscovered
 by its worker.
 
-Before making any subagent call, including the required consultation, follow
+Before making any subagent call, follow
 the [subagent invocation contract](references/subagent-invocation.md) for
 thread isolation, assignment packets, and independent-review boundaries.
 
@@ -52,8 +50,6 @@ Creating or revising those selections belongs to `agent-host-setup`, with user
 constraints and current host availability as inputs. Apply the eligibility
 rule to work you keep, and hand off work outside your assigned role. If the
 needed role is unavailable, report the completed scope and missing role.
-
-For each user request, follow the [required consultation](references/consultation.md).
 
 1. Identify the **artifact and reader**: research story, Lean, manuscript,
    slide, reading note, reference, website, or repo policy.
@@ -75,7 +71,7 @@ For each user request, follow the [required consultation](references/consultatio
    [labo-git](../labo-git/SKILL.md); selected upstream
    contributions → `labo-pr`; selective upstream adoption into the fork →
    `labo-sync`.
-4. Beyond the required consultation, if task-specific delegation is useful,
+4. If task-specific delegation is useful,
    formulate a short task-specific assignment *from the selected skill* and
    follow the [subagent invocation contract](references/subagent-invocation.md).
    Host role presets supply the operational role/model/effort assignment;

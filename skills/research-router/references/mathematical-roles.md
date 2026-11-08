@@ -4,7 +4,7 @@ Use the host's configured decomposition, proof and verification roles for the
 corresponding work. Apply [assignment and provenance](editing-capability.md)
 without asking each worker to assess its general mathematical competence.
 Record the role configuration or explicit assignment source and native
-model/effort selection. Luna remains evidence/coordination only in this fork.
+model/effort selection. Luna and Haiku remain evidence/coordination only.
 The assignment permits the work; its correctness still needs proof and checks.
 Use separate fresh verification before adopting newly established decisive
 mathematical claims as research results or decisive proof dependencies,
@@ -39,8 +39,7 @@ The role bodies and descriptions live in these skills:
 - [math-verifier](../../math-verifier/SKILL.md)
 
 The owning artifact skill still controls sources, write scope, formal evidence
-and review requirements. Reuse the completed consultation for this assignment;
-missing provenance, consultation or critical packet fields return to the parent
+and review requirements. Missing provenance or critical packet fields return to the parent
 for resolution rather than triggering recursive advisors or a replacement role.
 
 ## Host entry boundaries

@@ -1,37 +1,21 @@
 # Request and next-action consultation
 
-For every user request handled by a labo skill, the coordinating agent must
-send the request and rough next action to a separate advisor and wait for its
-reply before performing or delegating that work, or delivering the substantive
-answer. Reading sources to understand the request can come first. An unanswered
-consultation or advice about another task does not complete this step.
+Required only when a **restricted model** (Luna or Haiku, see
+[roles](editing-capability.md)) coordinates. Every other primary agent proceeds
+without consulting.
 
-Launch the advisor under the [subagent invocation contract](subagent-invocation.md).
-Both roles follow [substantive-work eligibility](editing-capability.md).
-The advisor's approval checks the plan; it does not qualify a restricted
-coordinator to perform the substantive work.
-A restricted coordinator forwards the original request, constraints and literal
-evidence; the qualified advisor supplies the interpretation and proposed next
-action. The coordinator can then relay that checked assignment to the qualified
-worker without supplying its own substantive judgment.
-
-Give the advisor the original request, relevant constraints and source evidence.
-An eligible coordinator also supplies its interpretation and proposed next
-action; a restricted coordinator asks the advisor to supply them. Ask whether
-the interpretation, scope, and action match the request. Apply the [role routing
-criteria](../SKILL.md): request interpretation needs a **content/production**
-assignment, even when the ensuing work is routine; use a configured mathematical
-role when the check requires proof or hypothesis analysis. Carry the explicit
-assignment and provenance forward without a separate competence assessment.
-
-The advisor checks against the request and evidence, rather than merely echoing
-your interpretation. A sound plan needs only brief agreement; otherwise return
-the concrete mismatch and correction. Do not invent objections or extra work.
-Read the reply and resolve identified mismatches before proceeding. This is
-agent-to-agent consultation, not another user-permission step or a full result review.
+The restricted coordinator sends the original request, constraints and literal
+evidence to a separate non-restricted advisor, launched under the
+[subagent invocation contract](subagent-invocation.md), and waits for the reply
+before delegating or answering. It asks the advisor for the interpretation and
+the proposed next action. The advisor checks them against the request and
+evidence, not merely echoes; a sound plan needs only brief agreement, otherwise
+it returns the concrete mismatch and correction. The coordinator then relays the
+checked assignment to the qualified worker without adding its own substantive
+judgment.
 
 Reuse the consultation when the same checked plan passes between skills or
-workers. Consult again when the request, interpretation, or plan materially changes.
-Advisors and delegated workers do not recursively commission advisors for the
-same assignment. If the host cannot provide a separate advisor, state that the
-consultation could not be performed; self-checking is not independent consultation.
+workers; consult again when the request or plan materially changes. Advisors and
+workers do not commission further advisors for the same assignment. If the host
+cannot provide a separate advisor, state that the consultation could not be
+performed; self-checking is not independent consultation.

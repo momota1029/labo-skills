@@ -34,8 +34,8 @@ def render_roles(workspace: Path, host: str, model: str, effort: str,
         relative = ".claude"
     if not model.strip() or "\n" in model:
         raise ValueError("supply one explicitly selected callable model")
-    if "luna" in model.lower():
-        raise ValueError("Luna is restricted to evidence/coordination in this fork")
+    if any(name in model.lower() for name in ("luna", "haiku")):
+        raise ValueError("Luna and Haiku are restricted to evidence/coordination in this fork")
     allowed = {"low", "medium", "high", "xhigh", "max", "ultra"}
     if effort not in allowed or (host == "claude" and effort == "ultra"):
         raise ValueError("unsupported effort spelling; verify support for the selected model")
