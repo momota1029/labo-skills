@@ -33,9 +33,9 @@ listed by `deck-from-references/scripts/link_companion.py list`.
 
 ## Starting and building a pair (provisional)
 
-- `scripts/new_pair.py SLUG --workspace <root> [--paper ...]` creates `reading/SLUG/` (note skeleton, `intake.json`,
-  `coverage.json`, `PAIR.json`) and `reading/SLUG-companion/` (an empty spec whose build lists what is still to
-  fill). It refuses to run when the parent Git does not ignore `reading/`, or a directory exists.
+- `scripts/new_pair.py SLUG --workspace <root> [--paper ...]` creates `reading/SLUG/` (note skeleton `SLUG.tex`, `intake.json`,
+  `coverage.json`, `PAIR.json`) with `reading/SLUG/companion/` inside it (an empty spec whose build lists what is
+  still to fill): one source, one directory. It refuses to run when the parent Git does not ignore `reading/`, or a directory exists.
 - `scripts/build_pair.py PAIR.json --workspace <root> [--skip-note]` builds the note PDF, then the companion
   (the PDF's labels and pages come from its aux, so the PDF is first), runs the companion check, the coverage gate
   and the pair check, and records the build. `companion.template` in `PAIR.json` names a project template when the

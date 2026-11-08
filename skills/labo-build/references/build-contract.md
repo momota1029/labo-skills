@@ -89,6 +89,9 @@ python3 <labo-script> output build --source writing/<slug>/<entry>.tex
 python3 <labo-script> output build --source reading/<slug>/<entry>.tex
 ```
 
+Several roots of one source (`reading/<slug>/<slug>-ja.tex`, `reading/<slug>/<slug>-ja-expansion.tex`)
+are the intended use of the naming rule below: each publishes its own pair.
+
 Named source builds run from the workspace root, use source-specific job names
 in `.temp/`, and copy the checked PDF/SyncTeX pair to `output/<name>.*`, where
 `<name>` is the root's file stem when it begins with `<slug>` and `<slug>-<stem>`

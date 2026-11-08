@@ -31,7 +31,7 @@ the request list and unobtained material). Slides belong to
 
 The HTML is one file that opens in a browser on this machine without a network; nobody else
 sees it unless the file is handed over or put on a web server. Write it and its data under
-`reading/<slug>-companion/` (or another path the workspace's parent Git ignores;
+`reading/<slug>/companion/`, in the directory of its note (or another path the workspace's parent Git ignores;
 `scripts/check_companion.py --workspace` verifies this). Never upload, publish, attach to a
 public page or hand to `website-publishing` unless the user explicitly asks for that as a
 separate task: the page embeds cut-outs of the paper's figures and code excerpts. The skill

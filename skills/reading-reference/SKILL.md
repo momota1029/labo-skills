@@ -122,8 +122,10 @@ the reader; do not let those exceptions leave ordinary explanatory text in a
 different language.
 
 Keep source originals in `reference/<key>/` or their existing inbox; record
-identity in `reference.md`. Persist notes and derived assets in `reading/`,
-with source links and a compact coverage/next-step record when needed to resume.
+identity in `reference.md`. Persist notes and derived assets in `reading/<slug>/`, one directory per source: translation, explanation,
+companion and notes of the same source share that directory, one `reference.md` and one fingerprint record,
+and are told apart by their root file names
+([layout](../labo-layout/references/layout.md#one-source-one-reading-directory)). Keep source links and a compact coverage/next-step record when needed to resume.
 Keep the cross-paper positioning memo with its research program, reusing an
 equivalent existing record; the positioning protocol owns its reusable template.
 Reuse existing records; no fixed manifest, helper CLI, reviewer roster or model
