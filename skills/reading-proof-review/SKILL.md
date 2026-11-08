@@ -40,9 +40,11 @@ user's reaction after each unless the user has asked to run through to the page.
    unread, never filled in from memory.
 4. **Indicator.** Fill the axes and facts under [the indicator rules](references/indicator.md) and
    check them with `python3 <scripts>/indicator.py review.json`.
-5. **Page.** Where the workspace has a private site, a prose reading of a proof is a Reader page
-   ([website-publishing](../website-publishing/SKILL.md)) and this standalone page is built only for what the
-   generator cannot express; otherwise this is the standalone route: keep the master in `reading/<slug>/`
+5. **Page.** Where the workspace has a private site, the reading of a proof is a Reader page
+   ([website-publishing](../website-publishing/SKILL.md)): write the same spec, then
+   `python3 <scripts>/export_site_page.py <spec-dir> --slug <slug> --out-dir website/content/private --lang <lang>`
+   (Markdown with nested folds, tables, mathematics and the dependency diagram as an SVG figure; the site generator
+   builds it) and build no standalone page for the same content. Otherwise this is the standalone route: keep the master in `reading/<slug>/`
    and copy it to `output/` with `output copy-html`
    ([the two routes](../labo-layout/references/layout.md#private-html-the-site-route-and-the-standalone-route)).
    Write the step bodies and the review data, build with

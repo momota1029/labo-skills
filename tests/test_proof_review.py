@@ -189,6 +189,31 @@ class ProofReviewTests(unittest.TestCase):
         self.assertIn("integrity mismatch", r.stdout + r.stderr)
         self.assertFalse(dest.exists())
 
+    def test_site_export_writes_a_page_whose_anchors_and_blocks_are_consistent(self):
+        import re
+        site = Path(self.tmp.name) / "site"
+        r = self.py(RPR / "scripts/export_site_page.py", self.spec, "--slug", "example-review", "--out-dir", site, "--lang", "en")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        page = (site / "example-review.md").read_text()
+        self.assertTrue(page.startswith('+++\ntitle = "'))
+        self.assertIn('slug = "example-review"', page)
+        self.assertTrue((site / "figures/example-review/diagram.svg").read_text().startswith("<svg"))
+        anchors = re.findall(r"^::: details .* \{#([A-Za-z][A-Za-z0-9_-]*)\}$", page, re.M)
+        self.assertEqual(len(anchors), len(set(anchors)))
+        for target in re.findall(r"\]\(#([^)]+)\)", page):
+            self.assertIn(target, anchors)
+        depth = 0
+        for line in page.splitlines():
+            if line.startswith("::: details "):
+                depth += 1
+            elif line == ":::":
+                depth -= 1
+                self.assertGreaterEqual(depth, 0)
+        self.assertEqual(depth, 0)
+        self.assertNotIn("<span", page)
+        self.assertIn("asset:diagram.svg", page)
+        self.assertEqual(self.py(RPR / "scripts/export_site_page.py", self.spec, "--slug", "Bad_Slug", "--out-dir", site).returncode, 1)
+
     def test_builder_inlines_a_given_katex_directory(self):
         tgz, integ = self.fake_katex_tarball()
         dest = Path(self.tmp.name) / "cache"
