@@ -95,6 +95,10 @@ For substantial written artifacts (web pages, HTML, reading companions,
 lecture and reading notes, long explanations), do not hand over a first draft:
 after the self-checks below, run the [exposition-review](../exposition-review/SKILL.md)
 loop with independent flow and critique reviewers. Short chat answers are exempt.
+For ongoing local courses/long notes owned by [course-authoring](../course-authoring/SKILL.md),
+follow that workflow's selective review cadence instead: self-check clarity on
+every unit, and run the full exposition loop only on an explicitly selected frozen
+scope. Ordinary production does not automatically start an adversarial panel.
 
 Run the [readability audit P1--P11](references/reader-pull.md#readability-audit)
 on the actual text: hurried-reader first screen, headings alone, section

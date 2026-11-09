@@ -59,6 +59,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 ### Reading and references
 
 - [reading-reference](skills/reading-reference/SKILL.md) — Research positioning, prior work, notation lineage, source-grounded reading notes.
+- [course-authoring](skills/course-authoring/SKILL.md) — Local book-led or topic-led courses, optional local history, and role-based review handoffs.
 - [reading-book](skills/reading-book/SKILL.md) — Build long courses from books with one canonical body.
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — Review mathematical claims in a frozen long-course version.
 - [reading-book-output-review](skills/reading-book-output-review/SKILL.md) — Review indexes, rendering and navigation in a frozen course PDF.
@@ -96,7 +97,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 
 ## Separation and ownership
 
-For long book-based courses, [reading-book](skills/reading-book/SKILL.md) owns
+For local courses and long notes, [course-authoring](skills/course-authoring/SKILL.md) owns
 canonical text, correction integration, handoffs and official outputs.
 [reading-book-math-review](skills/reading-book-math-review/SKILL.md) and
 [reading-book-output-review](skills/reading-book-output-review/SKILL.md) review
