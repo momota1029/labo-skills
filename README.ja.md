@@ -49,6 +49,7 @@
 ### 読むこと・文献
 
 - [reading-reference](skills/reading-reference/SKILL.md) — 研究の位置づけ、先行研究、記法の系譜、出典に基づく読書ノート。
+- [course-authoring](skills/course-authoring/SKILL.md) — 本由来・テーマ型のローカル教材制作、Git任意、担当別の通常確認／本格査読。
 - [reading-book](skills/reading-book/SKILL.md) — 本から長いコースを、一つの正本で作る。
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — 固定した長いコースの数学的主張を査読する。
 - [reading-book-output-review](skills/reading-book-output-review/SKILL.md) — 固定したコース PDF の索引・描画・ナビゲーションを査読する。
@@ -87,7 +88,7 @@
 
 ## 公開と非公開の分離、所有
 
-長大な本由来の教材は [reading-book](skills/reading-book/SKILL.md) が正本文、訂正の統合、
+ローカル教材・長いノートは [course-authoring](skills/course-authoring/SKILL.md) が正本文、訂正の統合、
 引継ぎ、公式出力を担当する。[reading-book-math-review](skills/reading-book-math-review/SKILL.md)
 と [reading-book-output-review](skills/reading-book-output-review/SKILL.md) は
 [共通の引継ぎ契約](skills/reading-book/references/production-handoff.md)に従い、
