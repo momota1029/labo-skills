@@ -60,6 +60,13 @@ class CompareTests(unittest.TestCase):
         self.assertTrue(out["citations"]["only_in_source"])
         self.assertEqual(out["parentheticals"]["translation_japanese_only"], 1)
 
+    def test_words_inside_text_in_math_are_not_compared(self):
+        en = Path(self.tmp.name) / "en2.tex"
+        ja = Path(self.tmp.name) / "ja2.tex"
+        en.write_text(r"Let $h \text{ be bounded}$ here.", encoding="utf-8")
+        ja.write_text(r"ここで $h \text{ は有界}$ とする。", encoding="utf-8")
+        self.assertEqual(run(en, ja, "--strict").returncode, 0)
+
     def test_macros_are_expanded_before_comparison(self):
         out = json.loads(run(self.en, self.ok, "--json").stdout)
         self.assertEqual(out["formulas"]["only_in_source"], [])

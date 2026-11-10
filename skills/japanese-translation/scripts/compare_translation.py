@@ -63,7 +63,7 @@ def math_items(t):
     for m in re.finditer(r"(?<!\\)\$([^$]+?)(?<!\\)\$", t):
         items.append(m.group(1))
     t = re.sub(r"(?<!\\)\$([^$]+?)(?<!\\)\$", " ", t)
-    items = [DROP.sub("", x).rstrip(".,;") for x in items]
+    items = [DROP.sub("", re.sub(r"\\(?:text|textrm|mbox|mathrm\{text)\{[^{}]*\}", r"\\text{}", x)).rstrip(".,;") for x in items]
     return [x for x in items if x], t
 
 
