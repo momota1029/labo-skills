@@ -8,7 +8,7 @@
 English prose only (.txt, .md, .tex). The profile records, from the corpus alone,
   assumed  : technical terms used in many documents and almost never defined there;
   defined  : terms that the documents themselves usually define when they use them;
-  density  : definition phrases and parenthetical remarks per 1000 words, as quartiles.
+  density  : explicit naming phrases (called, we say, \\emph, ...) and parenthetical remarks per 1000 words; the first counts only explicit cues, not every definition (Let, Put, write), so read it as a rough guide, as quartiles.
 The numbers are descriptive cues about what these authors do, not rules about what is right.
 """
 import argparse
@@ -36,7 +36,7 @@ CALL_OBJ_RE = re.compile(
     r"\bwe call\b[^.;]{1,40}?\b(?:a|an|the)\s+([A-Za-z\-]+(?:\s+[A-Za-z\-]+){0,2}?)(?=\s+(?:if|when|provided|whenever|that|which)\b|[,.;])", re.I)
 CUT = {"if", "when", "provided", "whenever", "that", "which", "for", "by", "with", "of", "and", "or", "in", "on", "at",
        "to", "is", "are", "where", "such", "as"}
-EMPH_RE = re.compile(r"\\(?:emph|textit|textbf|defn|defterm)\{([^{}]{2,60})\}")
+EMPH_RE = re.compile(r"\\(?:emph|textit|defn|defterm)\{([^{}]{2,60})\}")
 PAREN_RE = re.compile(r"\([^()]{6,}\)")
 TOK_RE = re.compile(r"[A-Za-z][A-Za-z\-]*")
 CJK_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
@@ -46,6 +46,9 @@ def read_text(path):
     t = pathlib.Path(path).read_text(encoding="utf-8", errors="ignore")
     if str(path).endswith(".tex"):
         t = re.sub(r"(?<!\\)%.*", "", t)
+        t = re.sub(r"\$\$.*?\$\$|\\\[.*?\\\]|\$[^$]*\$", " ", t, flags=re.S)  # drop math
+        t = re.sub(r"\\(?:begin|end|usepackage|documentclass|newcommand|newtheorem)\b(?:\[[^\]]*\])?(?:\{[^{}]*\})*", " ", t)
+        t = re.sub(r"\\(?!(?:emph|textit|defn|defterm)\{)[A-Za-z]+\*?", " ", t)
     t = re.sub(r"-\n(?=[a-z])", "", t)
     return re.sub(r"\s+", " ", t)
 
@@ -104,7 +107,7 @@ def density(t):
     n = max(1, len(t.split()))
     return {
         "words": n,
-        "definition_phrases_per_1k": round(1000 * (len(DEF_RE.findall(t)) + len(CALL_OBJ_RE.findall(t)) + len(EMPH_RE.findall(t))) / n, 2),
+        "naming_phrases_per_1k": round(1000 * (len(DEF_RE.findall(t)) + len(CALL_OBJ_RE.findall(t)) + len(EMPH_RE.findall(t))) / n, 2),
         "parentheticals_per_1k": round(1000 * len(PAREN_RE.findall(t)) / n, 1),
     }
 
@@ -145,13 +148,14 @@ def build_profile(paths, min_docs=None, assumed_max=0.1, defined_min=0.4):
     assumed.sort(key=lambda r: -r["docs_using"])
     defined.sort(key=lambda r: -r["docs_defining"])
     dens = [density(t) for t in texts]
+    vocab = sorted({w for t in texts for w in words(t) if len(w) >= 4})
     return {
-        "n_docs": n, "min_docs_using": need,
+        "n_docs": n, "min_docs_using": need, "vocabulary": vocab,
         "warning": "fewer than 8 documents: treat every list as anecdotal" if n < 8 else "",
         "assumed": assumed[:80], "defined": defined[:60],
-        "density": {k: quartiles([d[k] for d in dens]) for k in ("definition_phrases_per_1k", "parentheticals_per_1k")},
+        "density": {k: quartiles([d[k] for d in dens]) for k in ("naming_phrases_per_1k", "parentheticals_per_1k")},
         "limits": "Candidate terms are n-grams after a small English stoplist; screen the lists by hand. Descriptive of "
-                  "these documents only. Definition cues: called/we call/we say/is said to be/we define/termed, \\emph-like markup.",
+                  "these documents only. Definition cues: called/we call/we say/is said to be/we define/termed, and emphasis markup (\\emph, \\textit).",
     }
 
 
@@ -159,9 +163,11 @@ def band(value, q):
     if q is None:
         return "no band (too few documents)"
     if value > q["q3"] + 1.5 * (q["q3"] - q["q1"]):
-        return "above the corpus range"
+        return f"above the corpus range (corpus max {q['max']})"
+    if value > q["max"]:
+        return f"above every document in the corpus (corpus max {q['max']})"
     if value < q["q1"] - 1.5 * (q["q3"] - q["q1"]):
-        return "below the corpus range"
+        return f"below the corpus range (corpus min {q['min']})"
     return "within the corpus range"
 
 
@@ -182,6 +188,9 @@ def check(profile, path):
     defined = {r["term"] for r in profile["defined"]}
     ws = words(t)
     counts = collections.Counter(g for k in (1, 2, 3) for g in ngrams(ws, k) if term_ok(g.split(), proper))
+    vocab = set(profile.get("vocabulary", ()))
+    wc = collections.Counter(w for w in ws if len(w) >= 4 and w not in STOP)
+    out["words_not_in_corpus"] = [{"word": w, "count": c} for w, c in wc.most_common() if w not in vocab][:40]
     out["possibly_over_explained"] = sorted(g for g in own_defs if g in assumed)
     out["possibly_undefined"] = sorted(g for g in defined if counts.get(g, 0) >= 2 and g not in own_defs)
     return out

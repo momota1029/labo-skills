@@ -29,8 +29,8 @@ dense their definitions are, estimated from a corpus rather than asserted as a r
    anecdotal. Prefer the author's own samples where voice matters. Keep the private corpus and its
    profile in the workspace; do not copy corpus text into public skill files.
 2. **Estimate.** `python3 scripts/granularity.py profile FILE... --out profile.json --report profile.md`
-   gives the assumed vocabulary, the vocabulary the authors usually define, and the quartiles of definition
-   phrases and parenthetical remarks per 1000 words.
+   gives the assumed vocabulary, the vocabulary the authors usually define, and the quartiles of explicit naming phrases ("called", "we say", emphasis markup) and parenthetical remarks per 1000
+   words. The naming count misses definitions written as "Let", "Put" or "write", so use it as a rough guide only.
 3. **Screen the lists by hand.** Candidates are n-grams after a small stoplist and contain verbs, rhetoric
    and extraction debris. Strike those. Look at the terms the corpus defines every time: a draft that uses
    them must define them. Look at the terms it never defines: a draft that defines them is probably
@@ -42,7 +42,9 @@ dense their definitions are, estimated from a corpus rather than asserted as a r
    vocabulary as "do not flag as undefined" and the density band as a second finding class,
    *over-explanation* (a definition or gloss of assumed vocabulary, or density above the corpus range),
    reported with the same quote-and-minimal-repair format as the others. `granularity.py check PROFILE ARTIFACT`
-   lists definitions of assumed terms and uses of usually-defined terms that stay undefined.
+   lists definitions of assumed terms, uses of usually-defined terms that stay undefined, and words that occur in no
+   corpus document (a gloss that no author in the community needed, such as a word for the object a function class
+   represents, shows up here).
    See [interpreting a profile](references/interpreting-a-profile.md).
 
 ## Limits to state in every use

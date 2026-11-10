@@ -65,6 +65,30 @@ class GranularityTests(unittest.TestCase):
         out = json.loads(run("check", self.profile, art).stdout)
         self.assertTrue(any("literal translation" in n for n in out["notes"]))
 
+    def test_words_not_in_corpus_are_listed(self):
+        art = self.dir / "odd.txt"
+        art.write_text("Every tessellated manifold has a gloomy representative, and a gloomy representative is unique.",
+                       encoding="utf-8")
+        out = json.loads(run("check", self.profile, art).stdout)
+        words = {w["word"] for w in out["words_not_in_corpus"]}
+        self.assertIn("gloomy", words)
+        self.assertNotIn("tessellated", words)
+
+    def test_tex_markup_is_not_read_as_vocabulary(self):
+        art = self.dir / "a.tex"
+        art.write_text("\\begin{itemize}\\item Let $\\mathcal G$ be a tessellated manifold. \\textbf{Gloomy} things.\\end{itemize}",
+                       encoding="utf-8")
+        out = json.loads(run("check", self.profile, art).stdout)
+        words = {w["word"] for w in out["words_not_in_corpus"]}
+        self.assertNotIn("mathcal", words)
+        self.assertNotIn("itemize", words)
+
+    def test_density_above_every_document_is_reported(self):
+        art = self.dir / "dense.txt"
+        art.write_text(" ".join("We call a thing a widget number %d." % i for i in range(40)), encoding="utf-8")
+        out = json.loads(run("check", self.profile, art).stdout)
+        self.assertIn("above", out["density"]["naming_phrases_per_1k"]["verdict"])
+
     def test_refuses_too_few_documents(self):
         r = run("profile", self.files[0], self.files[1], "--out", self.dir / "x.json")
         self.assertNotEqual(r.returncode, 0)
