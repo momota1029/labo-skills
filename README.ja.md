@@ -60,6 +60,7 @@
 - [exposition-review](skills/exposition-review/SKILL.md) — 完成した解説物に対する敵対的な査読の反復。
 - [exposition-critique](skills/exposition-critique/SKILL.md) — 固定した解説物への、読者側からの独立した批評。
 - [exposition-flow-review](skills/exposition-flow-review/SKILL.md) — 解説物の実際の流れを再構成し、つなぎ直しを提案する。
+- [exposition-granularity](skills/exposition-granularity/SKILL.md) — コーパスから、コミュニティがどこまで定義・説明するかを推定し、草稿と査読をそれに照らして確かめる。
 - [mathematical-navigation](skills/mathematical-navigation/SKILL.md) — 番号づけ、見出しの色、相互参照、索引。PDF のリンク検査。
 
 ### 講演とスライド

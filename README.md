@@ -71,6 +71,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 - [exposition-review](skills/exposition-review/SKILL.md) — Adversarial review loop on a finished explanatory artifact.
 - [exposition-critique](skills/exposition-critique/SKILL.md) — Independent reader-side critique of a frozen explanatory artifact.
 - [exposition-flow-review](skills/exposition-flow-review/SKILL.md) — Rebuild the actual flow of an exposition and propose reconnections.
+- [exposition-granularity](skills/exposition-granularity/SKILL.md) — Estimate from a corpus how much a community defines and explains; check drafts and reviews against it.
 - [mathematical-navigation](skills/mathematical-navigation/SKILL.md) — Numbering, heading colors, cross-references and indexes; PDF link audits.
 
 ### Talks and slides
