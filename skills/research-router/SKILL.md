@@ -95,6 +95,10 @@ needed role is unavailable, report the completed scope and missing role.
    assumptions, proof steps, examples or source support reveal an obstacle.
 5. Keep the user's `AGENTS.md` independent. Do not edit it as part of routing.
 
+To work out a talk's or paper's storyline by dialogue before drafting, use
+[story-interview](../story-interview/SKILL.md); it hands the settled line to the
+skills below.
+
 For paper-introduction drafting, restructuring or narrative assessment, also
 use [paper-introduction](../paper-introduction/SKILL.md). It owns discovery and
 telling order, while `paper-writing` owns manuscript edits and `reading-reference`

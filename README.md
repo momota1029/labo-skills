@@ -43,6 +43,7 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 
 ### Papers and review
 
+- [story-interview](skills/story-interview/SKILL.md) — Stress-test a talk or paper storyline by dialogue with an adversarial listener.
 - `paper-introduction` — Discover and shape the story of an introduction.
 - [paper-structure](skills/paper-structure/SKILL.md) — Design or reassess the whole-paper architecture.
 - [paper-writing](skills/paper-writing/SKILL.md) — Draft or revise manuscripts from plans, sources and proof evidence.
@@ -444,6 +445,10 @@ Writing and in-scope reviews also use a
 compare actual object types, roles and conventions with inspected definitions
 and formulas, preserving legitimate alternatives and recording source gaps.
 Corpus style cues remain soft; semantic verification checks the mathematics.
+
+To work out a talk's or paper's storyline by dialogue, before any text exists,
+use [story-interview](skills/story-interview/SKILL.md); it hands the settled line
+to the skills below.
 
 For an introduction's central question, concrete significance and narrative
 order, use [paper-introduction](skills/paper-introduction/SKILL.md) alongside

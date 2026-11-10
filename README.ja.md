@@ -32,6 +32,7 @@
 
 ### 論文と査読
 
+- [story-interview](skills/story-interview/SKILL.md) — 発表や論文の筋を、敵対的な聞き手との対話で詰める。
 - `paper-introduction` — 序文の物語を見つけて整える。
 - [paper-structure](skills/paper-structure/SKILL.md) — 論文全体の構成を設計・見直す。
 - [paper-writing](skills/paper-writing/SKILL.md) — 計画・出典・証明の証拠から原稿を書く・直す。
@@ -420,6 +421,9 @@ checkout にあり、記入済みの非公開記録は研究プログラムと�
 実際の対象の型、役割、慣習を、確認した定義や式と比べ、正当な別表現は残し、
 資料の欠落は記録する。コーパスの文体の手がかりはあくまで弱い手がかりで、
 意味の検証は数学そのものを確認する。
+
+文章が存在する前に、発表や論文の筋を対話で詰めるには
+[story-interview](skills/story-interview/SKILL.md) を使う。固まった筋は以下のスキルへ渡す。
 
 イントロダクションの中心的な問い、具体的な意義、語りの順序には、`paper-writing` と並べて
 [paper-introduction](skills/paper-introduction/SKILL.md) を使う。実際の結果と
