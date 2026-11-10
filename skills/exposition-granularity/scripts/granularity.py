@@ -150,7 +150,7 @@ def build_profile(paths, min_docs=None, assumed_max=0.1, defined_min=0.4):
     dens = [density(t) for t in texts]
     vocab = sorted({w for t in texts for w in words(t) if len(w) >= 4})
     return {
-        "n_docs": n, "min_docs_using": need, "vocabulary": vocab,
+        "schema": 2, "n_docs": n, "min_docs_using": need, "vocabulary": vocab,
         "warning": "fewer than 8 documents: treat every list as anecdotal" if n < 8 else "",
         "assumed": assumed[:80], "defined": defined[:60],
         "density": {k: quartiles([d[k] for d in dens]) for k in ("naming_phrases_per_1k", "parentheticals_per_1k")},
@@ -172,6 +172,8 @@ def band(value, q):
 
 
 def check(profile, path):
+    if profile.get("schema") != 2:
+        sys.exit("profile has an old or unknown schema; rebuild it with the profile command")
     t = read_text(path)
     out = {"artifact": str(path), "notes": []}
     cjk = len(CJK_RE.findall(t)) / max(1, len(t))
