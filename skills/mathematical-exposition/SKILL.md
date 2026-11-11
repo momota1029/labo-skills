@@ -68,6 +68,15 @@ For an external theorem used as a black box, state the usable result, verify
 that its hypotheses apply, and give a source location when available. Explain
 the decisive argument when that is what the user asked to understand.
 
+Let notation show what each object depends on. When an object is built from
+data that varies in the statement (a space, a measure, a parameter), carry
+that data in the symbol, as in $H_X$ or $K_X$ for objects built from $X$,
+unless the text fixes the data once and says so. When a symbol is a bound
+variable of a union, supremum or limit, state the range it runs over and
+where that range comes from, at the formula itself. A reader should never
+have to guess whether a defined object depends on the input; an omitted
+dependence reads as a claim of independence.
+
 ### Carry the argument across adjacent passages
 
 The reader must be able to follow each move from the adjoining text, without
