@@ -24,6 +24,9 @@ paper's notation decisions belong with that paper.
   uses it, not in an earlier definition that merely prepares it.
 - Put normalising constants into the definition, so later conditions read
   "$\operatorname{dis} S\le\eta$" rather than "$2\operatorname{dis} S\le\eta$".
+- Distinguish a defining equality from an asserted one: write
+  `\coloneqq` (mathtools) when a symbol is being defined and `=` only for
+  equalities that are claimed or computed.
 - Typeset multi-part statements (a), (b), ... as a list.
 - Put the citation of a quoted result in the theorem name, for example
   `\begin{proposition}[Prokhorov's theorem {\cite[Thm.~5.1]{B}}]`, not in the
