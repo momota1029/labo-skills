@@ -90,6 +90,12 @@ task. Recover an earlier dependency locally when needed. A reference or a
 phrase such as "next", "as above" or "below we implement" does not supply the
 missing connection. Explain what the new step yields for that same purpose.
 
+Across sections and subsections, keep the chain explicit: each unit's opening names what
+it takes from earlier units and what it adds for its parent, and a parent closes with what
+its parts established. For a reading note the chain, the reader floor and the sentence-level
+gloss of claims that lean on prior results are in
+[unit chain and claim gloss](../reading-reference/references/unit-chain-and-claim-gloss.md).
+
 For structured explanations, role sections and headings, computational-method
 explanations, optional views and supporting-source reading, follow
 [the detailed rules](references/adjacent-passages.md).
