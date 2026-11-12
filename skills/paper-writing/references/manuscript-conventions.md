@@ -15,6 +15,12 @@ paper's notation decisions belong with that paper.
   coin a translation when books in that language keep the original word (for
   example, Japanese texts usually write "coupling", not a translated noun).
 
+## Markup
+
+- Inside TeX, use TeX markup only: `\emph{...}` for emphasis or run-in
+  headings, never Markdown such as `**...**` or backticks, even when the text
+  is stored in Markdown-based files.
+
 ## Definitions and statements
 
 - A definition names objects and fixes notation; it does not assert facts.
