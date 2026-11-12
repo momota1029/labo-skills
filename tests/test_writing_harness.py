@@ -147,6 +147,17 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertEqual(len(re.findall(r"<article id=", page)), 5)
         self.assertIn('href="#def-settled"', page)
         self.assertIn("Is the bound N(a+b)", page)
+        self.assertFalse((self.h / "index.html").exists())  # no list unless asked
+        other = self.h / "other"
+        other.mkdir()
+        (other / "index.html").write_text("x")
+        with open(self.h / "harness.toml", "a") as f:
+            f.write('\n[html_index]\ntitle = "Viewers"\nlinks = [{ text = "Back", href = "../" }]\n')
+        self.assertEqual(self.run_cards("html").returncode, 0)
+        index = (self.h / "index.html").read_text()
+        self.assertIn('<a href="html/">html</a>', index)
+        self.assertIn('<a href="other/">other</a>', index)
+        self.assertIn('<a href="../">Back</a>', index)
 
     def test_init_scaffolds_and_refuses_overwrite(self):
         new = self.ws / "writing/other/harness"

@@ -145,5 +145,7 @@ hand-written root of the same paper). The preamble is generated for
 `python3 <labo-script> output build --source <harness>/paper/cards.tex`.
 
 `html` writes one static viewer (`html/index.html`) with search, status
-colors, links between uses, and the warnings of `check`. Put it wherever the
+colors, links between uses, and the warnings of `check`. With `[html_index]` in
+`harness.toml` it also writes a list of every viewer in the parent of
+`html_out`, so several papers can share one site directory. Put it wherever the
 workspace serves private pages; it is a reading aid, not a publication.

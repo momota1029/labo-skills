@@ -15,5 +15,9 @@ author = ""
 # text = "All papers"
 # href = "../"
 
+# [html_index]          # also write ../index.html listing every viewer next to this one
+# title = "Card harness"
+# links = [{ text = "Back", href = "../" }]
+
 # [mathjax_macros]
 # dist = "d_{\\mathrm{dist}}"

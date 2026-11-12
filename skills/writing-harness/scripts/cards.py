@@ -563,7 +563,25 @@ def cmd_html(h, a):
     outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text(page, encoding='utf-8')
     print(f'-> {h.rel(outp)}')
+    idx = h.cfg.get('html_index')
+    if idx is not None:
+        write_html_index(h, outp.parent.parent, idx if isinstance(idx, dict) else {})
     return 0
+
+
+def write_html_index(h, site, opt):
+    """List every sibling viewer (a directory holding index.html) on one page."""
+    title = _html.escape(str(opt.get('title', 'Card harness')))
+    papers = sorted(d.name for d in site.iterdir() if d.is_dir() and (d / 'index.html').exists())
+    items = ''.join(f'<li><a href="{_html.escape(d)}/">{_html.escape(d)}</a></li>' for d in papers)
+    back = ''.join(f'<p><a href="{_html.escape(str(l.get("href", "")))}">{_html.escape(str(l.get("text", "")))}</a></p>'
+                   for l in opt.get('links') or [])
+    out = site / 'index.html'
+    out.write_text(f'<!doctype html><html lang="{_html.escape(h.language)}"><meta charset="utf-8">'
+                   '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                   f'<title>{title}</title><style>body{{font:16px/1.6 system-ui,sans-serif;max-width:700px;'
+                   f'margin:40px auto;padding:0 16px}}</style><h1>{title}</h1><ul>{items}</ul>{back}', encoding='utf-8')
+    print(f'-> {h.rel(out)} ({len(papers)} viewers)')
 
 
 PAGE = r"""<!doctype html><html lang="%LANG%"><head><meta charset="utf-8"><title>%TITLE%</title>
