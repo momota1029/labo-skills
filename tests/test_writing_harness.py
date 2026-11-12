@@ -115,8 +115,9 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         tex = (self.h / "paper/cards.tex").read_text()
         self.assertTrue(tex.startswith("% !TeX program = pdflatex"))
-        self.assertIn(r"\begin{lemma}[Tails]\label{lem:tail}", tex)
+        self.assertIn(r"\begin{lemma}[{Tails}]\label{lem:tail}", tex)
         self.assertIn(r"By \ref{def:settled}", tex)
+        self.assertIn(r"\begin{theorem}[{Sums \cite[Lemma~2]{Fictional2001}}]", tex)
         self.assertIn("% agent reference proof (lem-tail)", tex)
         self.assertIn("Beyond the larger of the two indices", tex)  # the author's proof wins
         self.assertNotIn("% agent reference proof (thm-sum-settled)", tex)
@@ -137,7 +138,7 @@ class WritingHarnessTests(unittest.TestCase):
             r = subprocess.run(["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "cards.tex"],
                                cwd=self.h / "paper", capture_output=True, text=True)
             self.assertEqual(r.returncode, 0, r.stdout[-2000:])
-        self.assertNotRegex(r.stdout, r"undefined|Warning: Reference")
+        self.assertNotRegex(r.stdout, r"Reference `[^']*' .*undefined")
 
     def test_html_viewer(self):
         r = self.run_cards("html")

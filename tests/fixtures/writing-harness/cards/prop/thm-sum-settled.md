@@ -2,7 +2,7 @@
 id: thm-sum-settled
 kind: theorem
 label: thm:sum
-title: Sums
+title: "Sums \\cite[Lemma~2]{Fictional2001}"
 requires: [def-settled, lem-tail]
 status: drafted
 questions: ["Is the bound N(a+b) <= max(N(a),N(b)) sharp?"]

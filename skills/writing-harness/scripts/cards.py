@@ -396,7 +396,8 @@ def render_card(cards, cid, opt, author_proofs):
     c = cards[cid]
     if c.kind == 'explanation':
         return '' if c.meta.get('role') == 'proof' else f'% card {cid}\n{c.body.strip()}\n'
-    title = f'[{c.meta["title"]}]' if c.meta.get('title') else ''
+    # braces keep a ']' inside the title (e.g. \cite[...]) out of the optional argument
+    title = f'[{{{c.meta["title"]}}}]' if c.meta.get('title') else ''
     out = [f'% card {cid} ({c.meta.get("status")})', f'\\begin{{{c.kind}}}{title}\\label{{{card_label(c)}}}',
            link_refs(c.sec('Statement'), cards), f'\\end{{{c.kind}}}']
     if c.kind in PROP_KINDS:
@@ -434,7 +435,7 @@ def cmd_render(h, a):
         body.append(render_card(cards, cid, opt, author_proofs))
     bib = ''
     if h.cfg.get('bibliography'):
-        bibfile = h.path('bibliography', '')
+        bibfile = h.path('bibliography', '').resolve()
         bib = f'\n\\bibliographystyle{{amsplain}}\n\\bibliography{{{bibfile.with_suffix("").as_posix()}}}\n'
     out = h.path('paper_dir', 'paper') / (a.out or 'cards.tex')
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -552,9 +553,11 @@ def cmd_html(h, a):
     summary = ' '.join(f'<span class="badge s-{k}">{k} {v}</span>' for k, v in sorted(counts.items()))
     warn_html = ''.join(f'<li>{_html.escape(w)}</li>' for w in errors + warn)
     macros = json.dumps(h.cfg.get('mathjax_macros') or {})
+    links = ' · '.join(f'<a href="{_html.escape(str(l.get("href", "")))}">{_html.escape(str(l.get("text", "")))}</a>'
+                       for l in h.cfg.get('html_links') or [])
     page = (PAGE.replace('%TITLE%', _html.escape(st.get('title') or h.cfg.get('title') or 'Cards'))
             .replace('%LANG%', _html.escape(h.language)).replace('%MATHJAX%', _html.escape(h.cfg.get('mathjax', DEFAULT_MATHJAX)))
-            .replace('%MACROS%', macros).replace('%NAV%', nav).replace('%CARDS%', '\n'.join(out))
+            .replace('%MACROS%', macros).replace('%LINKS%', f'<p>{links}</p>' if links else '').replace('%NAV%', nav).replace('%CARDS%', '\n'.join(out))
             .replace('%SUMMARY%', summary).replace('%WARN%', f'<ul class="warn">{warn_html}</ul>' if warn_html else ''))
     outp = h.path('html_out', 'html') / 'index.html'
     outp.parent.mkdir(parents=True, exist_ok=True)
@@ -597,7 +600,7 @@ header h3{margin:0;font-family:monospace;font-size:15px} header .title{font-weig
 @media (max-width:700px){body{display:block}nav{position:static;width:auto;height:auto}main{padding:8px 16px}}
 </style></head><body>
 <nav><input id="q" placeholder="search cards"><div>%SUMMARY%</div>%NAV%</nav>
-<main><h1>%TITLE%</h1>%WARN%%CARDS%</main>
+<main>%LINKS%<h1>%TITLE%</h1>%WARN%%CARDS%</main>
 <script>
 document.getElementById('q').addEventListener('input', e => {
   const q = e.target.value.toLowerCase();
