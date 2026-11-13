@@ -100,7 +100,7 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
     title = _html.escape(st.get('title') or h.cfg.get('title') or 'Draft')
     macros = json.dumps(h.cfg.get('mathjax_macros') or {})
     page = (PAGE.replace('%TITLE%', title).replace('%LANG%', _html.escape(h.language))
-            .replace('%MATHJAX%', _html.escape(h.cfg.get('mathjax', 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js')))
+            .replace('%MATHJAX%', _html.escape(h.cfg.get('mathjax', 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js')))
             .replace('%MACROS%', macros).replace('%NAV%', nav).replace('%BODY%', '\n'.join(out))
             .replace('%SIZE%', str(h.cfg.get('reader_font_px', 21))).replace('%WIDTH%', str(h.cfg.get('reader_width_em', 34))))
     for k, v in LABELS['ja' if h.language == 'ja' else 'en'].items():
@@ -127,6 +127,7 @@ MathJax = {tex: {inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['\\[','\\
 :root[data-theme="dark"]{--bg:#1b1b1d;--fg:#e8e6e1;--muted:#9a968e;--rule:#3a3936;--box:#25242a;--accent:#e0b060;--link:#8ab4f8;--hl:#5a4a10}
 html{background:var(--bg)}
 body{margin:0;color:var(--fg);background:var(--bg);font-family:"Noto Serif","Source Serif 4","Georgia","Times New Roman","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",serif;font-size:var(--fs);line-height:1.95}
+mjx-container.msel{background:Highlight;color:HighlightText;border-radius:2px}
 main{max-width:var(--w);margin:0 auto;padding:4.5em 1em 40vh}
 h1{font-size:1.5em;line-height:1.5;margin:.5em 0 1.5em}
 h2{font-size:1.2em;margin:2.5em 0 1em;padding-bottom:.2em;border-bottom:1px solid var(--rule)}
@@ -196,6 +197,18 @@ mark.cm{background:var(--hl);color:inherit}
     d.querySelectorAll('mjx-container').forEach(m=>m.replaceWith(m.dataset.tex||''));
     return d.textContent;
   }
+  // Formulas draw their glyphs outside the text, so mark the ones inside the selection ourselves.
+  let marked=[];
+  document.addEventListener('selectionchange',()=>{
+    marked.forEach(m=>m.classList.remove('msel')); marked=[];
+    const s=getSelection(); if(!s.rangeCount||s.isCollapsed)return;
+    for(let i=0;i<s.rangeCount;i++){
+      let a=s.getRangeAt(i).commonAncestorContainer; if(a.nodeType!==1)a=a.parentNode;
+      const own=a.closest('mjx-container');
+      for(const m of own?[own]:a.querySelectorAll('mjx-container'))
+        if(s.containsNode(m,true)){m.classList.add('msel');marked.push(m)}
+    }
+  });
   document.addEventListener('copy',e=>{
     const s=getSelection(); if(!s.rangeCount)return;
     const t=selText(s); if(t===s.toString())return;
