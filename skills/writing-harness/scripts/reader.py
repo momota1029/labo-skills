@@ -62,12 +62,63 @@ def tex_to_html(text, cards, num, label_to_id, card_label):
     return ''.join(f'<p>{x.strip()}</p>' for x in re.split(r'\n\s*\n', t) if x.strip())
 
 
+STEP_RE = re.compile(r'(?m)^\((\d+)\)[ \t]*')
+EXT_STEP_RE = re.compile(r'([a-z][a-z0-9-]*)([ \t]*(?:の証明|proof)[ \t]*)\((\d+)\)')
+
+
+def step_references(cards):
+    """Step numbers of each card's proof that other cards cite as "<id>の証明 (k)" / "<id> proof (k)"."""
+    ext = {}
+    for c in cards.values():
+        for m in EXT_STEP_RE.finditer(c.body):
+            ext.setdefault(m.group(1), set()).add(m.group(3))
+    return ext
+
+
+def stepped_ids(cards, ext):
+    """Cards whose proof steps are referenced and therefore displayed as "Step k"."""
+    out = set()
+    for c in cards.values():
+        if not c.is_fact:
+            continue
+        proof = c.sec('Proof')
+        steps = set(STEP_RE.findall(proof))
+        internal = {m.group(1) for m in re.finditer(r'\((\d+)\)', proof) if m.start() and proof[m.start() - 1] != '\n'}
+        if steps & (internal | ext.get(c.id, set())):
+            out.add(c.id)
+    return out
+
+
+def proof_display(cid, proof, stepped):
+    """Working labels "(k)" open proof paragraphs in the cards. On display they are dropped,
+    unless some step is referenced: then they read "Step k" and so do the references."""
+    proof = re.sub(r'\n\((\d+)\)', r'\n\n(\1)', proof)
+    steps = set(STEP_RE.findall(proof))
+    if not steps:
+        return proof
+    if cid not in stepped:
+        return STEP_RE.sub('', proof)
+    proof = re.sub(r'(?<=[^\n])\((\d+)\)', lambda m: f'Step {m.group(1)}' if m.group(1) in steps else m.group(0), proof)
+    return STEP_RE.sub(lambda m: f'\\emph{{Step {m.group(1)}.}} ', proof)
+
+
+def external_steps_display(text, stepped):
+    """"<id>の証明 (k)" becomes "<id>の証明のStep k" when that proof displays its steps."""
+    def sub(m):
+        if m.group(1) not in stepped:
+            return m.group(0)
+        mid = m.group(2)
+        return m.group(1) + mid + ('の' if 'の証明' in mid else ' ') + f'Step {m.group(3)}'
+    return EXT_STEP_RE.sub(sub, text)
+
+
 def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
     num = numbering(cards, items, fact_kinds)
     label_to_id = {card_label(c): c.id for c in cards.values() if c.is_fact}
     author_proofs = {x: c for c in cards.values() if c.kind == 'explanation' and c.meta.get('role') == 'proof'
                      for x in c.meta.get('explains') or []}
-    conv = lambda s: tex_to_html(s, cards, num, label_to_id, card_label)  # noqa: E731
+    stepped = stepped_ids(cards, step_references(cards))
+    conv = lambda s: tex_to_html(external_steps_display(s, stepped), cards, num, label_to_id, card_label)  # noqa: E731
     out, toc, cur, appendix = [], [], object(), False
     for si, stitle, cid, opt in items:
         if cid not in cards:
@@ -91,7 +142,8 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
         parts = [f'<div class="stmt">{conv(c.sec("Statement"))}</div>']
         if c.kind in prop_kinds:
             mode = opt.get('proof') or ('author' if cid in author_proofs else 'fact')
-            proof = author_proofs[cid].body if mode == 'author' and cid in author_proofs else c.sec('Proof')
+            proof = (author_proofs[cid].body if mode == 'author' and cid in author_proofs
+                     else proof_display(cid, c.sec('Proof'), stepped))
             if mode in ('fact', 'author') and proof.strip():
                 parts.append(f'<details class="proof"><summary>{{proof}}</summary>{conv(proof)}</details>')
         out.append(f'<article id="{cid}" class="card k-{c.kind}" data-card="{cid}">'

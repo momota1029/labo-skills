@@ -393,6 +393,12 @@ def link_refs(text, cards):
     return out
 
 
+def _reader():
+    sys.path.insert(0, str(SKILL / 'scripts'))
+    import reader
+    return reader
+
+
 def render_card(cards, cid, opt, author_proofs):
     c = cards[cid]
     if c.kind == 'explanation':
@@ -400,13 +406,14 @@ def render_card(cards, cid, opt, author_proofs):
     # braces keep a ']' inside the title (e.g. \cite[...]) out of the optional argument
     title = f'[{{{c.meta["title"]}}}]' if c.meta.get('title') else ''
     out = [f'% card {cid} ({c.meta.get("status")})', f'\\begin{{{c.kind}}}{title}\\label{{{card_label(c)}}}',
-           link_refs(c.sec('Statement'), cards), f'\\end{{{c.kind}}}']
+           link_refs(_reader().external_steps_display(c.sec('Statement'), opt['_stepped']), cards), f'\\end{{{c.kind}}}']
     if c.kind in PROP_KINDS:
         mode = opt.get('proof') or ('author' if cid in author_proofs else 'fact')
         if mode == 'author' and cid in author_proofs:
             out += ['\\begin{proof}', author_proofs[cid].body.strip(), '\\end{proof}']
         elif mode in ('fact', 'author') and c.sec('Proof'):
-            proof = re.sub(r'\n\((\d+)\)', r'\n\n(\1)', link_refs(c.sec('Proof'), cards))
+            proof = link_refs(_reader().external_steps_display(
+                _reader().proof_display(cid, c.sec('Proof'), opt['_stepped']), opt['_stepped']), cards)
             out += [f'% agent reference proof ({cid})', '\\begin{proof}', proof, '\\end{proof}']
         elif mode == 'appendix':
             out += ['\\noindent\\emph{Proof in the appendix.}']
@@ -423,6 +430,7 @@ def cmd_render(h, a):
     author_proofs = {x: c for c in cards.values() if c.kind == 'explanation' and c.meta.get('role') == 'proof'
                      for x in c.meta.get('explains') or []}
     title = st.get('title') or h.cfg.get('title') or 'Draft'
+    stepped = _reader().stepped_ids(cards, _reader().step_references(cards))
     body, cur, appendix = [], object(), False
     for si, stitle, cid, opt in structure_items(st):
         if cid not in cards or (a.sections is not None and (si is None or si >= a.sections)):
@@ -433,7 +441,7 @@ def cmd_render(h, a):
         elif si is not None and si != cur:
             body.append(f'\\section{{{stitle}}}\n')
             cur = si
-        body.append(render_card(cards, cid, opt, author_proofs))
+        body.append(render_card(cards, cid, {**opt, '_stepped': stepped}, author_proofs))
     bib = ''
     if h.cfg.get('bibliography'):
         bibfile = h.path('bibliography', '').resolve()

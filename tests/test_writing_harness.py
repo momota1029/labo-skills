@@ -183,6 +183,16 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertNotIn('p1-lem と', found)
         self.assertEqual(found.count('\\ref{'), 2, found)
 
+    def test_proof_step_labels_on_display(self):
+        sys.path.insert(0, str(CARDS.parent))
+        import reader
+        plain = "(1) First.\n(2) Second."
+        self.assertEqual(reader.proof_display("x", plain, set()), "First.\n\nSecond.")
+        cited = "(1) First.\n(2) By (1), done."
+        shown = reader.proof_display("x", cited, {"x"})
+        self.assertIn("\\emph{Step 2.} By Step 1, done.", shown)
+        self.assertEqual(reader.external_steps_display("x proof (2)", {"x"}), "x proof Step 2")
+
     def test_init_scaffolds_and_refuses_overwrite(self):
         new = self.ws / "writing/other/harness"
         r = self.run_cards("init", new, cwd=self.ws)
