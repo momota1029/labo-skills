@@ -12,6 +12,8 @@ questions) is written in the author's own language, or in a language the
 author names, recorded as `language` in `harness.toml`. An edition in another
 language is a later output step, made with
 [japanese-translation](../../japanese-translation/SKILL.md) or by the author.
+In Japanese, never type a space between Japanese and Latin letters, digits
+or inline math; (u)pLaTeX inserts that spacing itself.
 
 ## 1. Story
 

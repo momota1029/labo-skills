@@ -170,6 +170,19 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn("Copy to clipboard", page)  # language en
         self.assertNotIn("{{", page)
 
+    def test_card_ids_resolve_next_to_japanese_text(self):
+        # Japanese text carries no space before or after a card id (TeX spaces it).
+        sys.path.insert(0, str(CARDS.parent))
+        import cards as cards_mod
+
+        class Card:
+            def __init__(self, cid):
+                self.id, self.is_fact, self.meta = cid, True, {'label': 'x:' + cid}
+
+        found = cards_mod.link_refs('p1-lemとp1-lem．', {'p1-lem': Card('p1-lem')})
+        self.assertNotIn('p1-lem と', found)
+        self.assertEqual(found.count('\\ref{'), 2, found)
+
     def test_init_scaffolds_and_refuses_overwrite(self):
         new = self.ws / "writing/other/harness"
         r = self.run_cards("init", new, cwd=self.ws)

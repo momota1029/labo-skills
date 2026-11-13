@@ -385,10 +385,10 @@ def link_refs(text, cards):
     """Turn bare card labels and bare card ids in running text into \\ref."""
     labels = {card_label(c) for c in cards.values() if c.is_fact}
     ids = {c.id: c for c in cards.values() if c.is_fact}
-    out = re.sub(r'(?<![{\w:-])([a-z]+:[a-z0-9-]+)(?![\w}-])',
+    out = re.sub(r'(?<![{A-Za-z0-9_:-])([a-z]+:[a-z0-9-]+)(?![A-Za-z0-9_}-])',
                  lambda m: f'\\ref{{{m.group(1)}}}' if m.group(1) in labels else m.group(0), text)
     for cid in sorted(ids, key=len, reverse=True):
-        out = re.sub(r'(?<![{\w:-])' + re.escape(cid) + r'(?![\w}-])',
+        out = re.sub(r'(?<![{A-Za-z0-9_:-])' + re.escape(cid) + r'(?![A-Za-z0-9_}-])',
                      lambda m, c=ids[cid]: '\\ref{' + card_label(c) + '}', out)
     return out
 
@@ -467,7 +467,7 @@ def tex_to_html(text, label_map, ids):
     t = re.sub(r'\\textbf\{([^{}]*)\}', r'<strong>\1</strong>', t)
     t = t.replace('~', ' ')
     for cid in sorted(ids, key=len, reverse=True):
-        t = re.sub(r'(?<![\w#-])' + re.escape(cid) + r'(?![\w-])', f'<a href="#{cid}">{cid}</a>', t)
+        t = re.sub(r'(?<![A-Za-z0-9_#-])' + re.escape(cid) + r'(?![A-Za-z0-9_-])', f'<a href="#{cid}">{cid}</a>', t)
     return ''.join(f'<p>{x.strip()}</p>' for x in re.split(r'\n\s*\n', t) if x.strip())
 
 

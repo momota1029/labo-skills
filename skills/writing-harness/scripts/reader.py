@@ -55,7 +55,7 @@ def tex_to_html(text, cards, num, label_to_id, card_label):
     t = re.sub(r'\\item(\[[^\]]*\])?', lambda m: '</li><li>' + (f'<b>{m.group(1)[1:-1]}</b> ' if m.group(1) else ''), t)
     t = t.replace('~', ' ')
     for cid in sorted(num, key=len, reverse=True):
-        t = re.sub(r'(?<![\w#/-])' + re.escape(cid) + r'(?![\w-])',
+        t = re.sub(r'(?<![A-Za-z0-9_#/-])' + re.escape(cid) + r'(?![A-Za-z0-9_-])',
                    f'<a class="ref" href="#{cid}">{KIND_NAMES[cards[cid].kind]} {num[cid]}</a>', t)
     # one paragraph per blank line; proof steps "(n) " start their own paragraph
     t = re.sub(r'\n\((\d+)\) ', r'\n\n(\1) ', t)
