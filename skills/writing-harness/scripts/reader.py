@@ -113,7 +113,12 @@ PAGE = r"""<!doctype html><html lang="%LANG%"><head><meta charset="utf-8"><title
 <script>
 MathJax = {tex: {inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['\\[','\\]'],['$$','$$']],
   processEnvironments: true, tags: 'ams', macros: %MACROS%},
-  options: {skipHtmlTags: ['script','noscript','style','textarea','code']}};
+  options: {skipHtmlTags: ['script','noscript','style','textarea','code']},
+  startup: {pageReady() { return MathJax.startup.defaultPageReady().then(() => {
+    for (const it of MathJax.startup.document.math) {
+      const m = it.math, root = it.typesetRoot; if (!root) continue;
+      root.dataset.tex = !it.display ? '$' + m + '$' : (m.startsWith('\\begin') ? m : '\\[' + m + '\\]');
+    }});}}};
 </script>
 <script defer src="%MATHJAX%"></script>
 <style>
@@ -182,6 +187,20 @@ mark.cm{background:var(--hl);color:inherit}
   const save=()=>{try{sessionStorage.setItem(key+':c',JSON.stringify(comments))}catch(e){}};
   let pending=null;
   function cardOf(node){while(node&&node!==document.body){if(node.dataset&&node.dataset.card)return node; node=node.parentNode}return null}
+  // Selected text with every formula replaced by its TeX source (data-tex set after typesetting).
+  function selText(s){
+    if(!s.rangeCount)return '';
+    const d=document.createElement('div');
+    for(let i=0;i<s.rangeCount;i++)d.appendChild(s.getRangeAt(i).cloneContents());
+    if(!d.querySelector('mjx-container'))return s.toString();
+    d.querySelectorAll('mjx-container').forEach(m=>m.replaceWith(m.dataset.tex||''));
+    return d.textContent;
+  }
+  document.addEventListener('copy',e=>{
+    const s=getSelection(); if(!s.rangeCount)return;
+    const t=selText(s); if(t===s.toString())return;
+    e.clipboardData.setData('text/plain',t); e.preventDefault();
+  });
   function label(el){const h=el.querySelector('.kname');return (h?h.textContent+' ':'')+'['+el.dataset.card+']'}
   function render(){
     $('ccount').textContent=comments.length;
@@ -190,7 +209,7 @@ mark.cm{background:var(--hl);color:inherit}
   }
   document.addEventListener('mouseup',e=>{
     if(e.target.closest('#cbox,#bar,#addc'))return;
-    const s=getSelection(); const txt=s.toString().trim(); const b=$('addc');
+    const s=getSelection(); const txt=selText(s).trim(); const b=$('addc');
     if(!txt){b.style.display='none';return}
     const el=cardOf(s.anchorNode); if(!el){b.style.display='none';return}
     pending={where:label(el),quote:txt.replace(/\s+/g,' ')};
