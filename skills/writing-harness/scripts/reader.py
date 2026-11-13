@@ -108,7 +108,7 @@ def external_steps_display(text, stepped):
         if m.group(1) not in stepped:
             return m.group(0)
         mid = m.group(2)
-        return m.group(1) + mid + ('の' if 'の証明' in mid else ' ') + f'Step {m.group(3)}'
+        return m.group(1) + mid.rstrip() + ('の' if 'の証明' in mid else ' ') + f'Step {m.group(3)}'
     return EXT_STEP_RE.sub(sub, text)
 
 
