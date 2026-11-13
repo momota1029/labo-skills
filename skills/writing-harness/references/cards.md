@@ -127,6 +127,7 @@ python3 <skill>/scripts/cards.py status
 python3 <skill>/scripts/cards.py graph          # knowledge-dependencies schema v1
 python3 <skill>/scripts/cards.py render [--sections N] [--out NAME]
 python3 <skill>/scripts/cards.py html
+python3 <skill>/scripts/cards.py read           # reading page: paper order, large type, comments
 python3 <skill>/scripts/cards.py impact ID...
 python3 <skill>/scripts/cards.py anchor ID
 python3 <skill>/scripts/cards.py terms [FILE] [--assumed profile.json] [--json]
@@ -143,6 +144,13 @@ hand-written root of the same paper). The preamble is generated for
 `macros` appended, or read whole from `preamble`. Build the PDF through
 [labo-build](../../labo-build/SKILL.md):
 `python3 <labo-script> output build --source <harness>/paper/cards.tex`.
+
+`read` writes `read.html` next to the viewer: the paper in reading order with the
+paper's numbers, proofs folded, references as links, adjustable type size and line
+length (remembered by the browser), light and dark themes. The author selects text,
+adds a comment and copies all comments, each with its card id and the quoted text,
+to paste back to the agent. Comments stay in the browser tab. `reader_font_px` and
+`reader_width_em` in `harness.toml` set the defaults.
 
 `html` writes one static viewer (`html/index.html`) with search, status
 colors, links between uses, and the warnings of `check`. With `[html_index]` in

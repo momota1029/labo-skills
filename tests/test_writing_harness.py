@@ -159,6 +159,17 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn('<a href="other/">other</a>', index)
         self.assertIn('<a href="../">Back</a>', index)
 
+    def test_reading_page(self):
+        r = self.run_cards("read")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        page = (self.h / "html/read.html").read_text()
+        self.assertIn('id="lem-tail"', page)
+        self.assertIn('<span class="kname">Lemma 2.1</span>', page)
+        self.assertIn('<a class="ref" href="#def-settled">Definition 1.1</a>', page)  # bare card id in a proof
+        self.assertIn("Beyond the larger of the two indices", page)  # the author's proof
+        self.assertIn("Copy to clipboard", page)  # language en
+        self.assertNotIn("{{", page)
+
     def test_init_scaffolds_and_refuses_overwrite(self):
         new = self.ws / "writing/other/harness"
         r = self.run_cards("init", new, cwd=self.ws)

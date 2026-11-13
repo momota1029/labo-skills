@@ -40,7 +40,8 @@ research evidence; this skill owns the harness in which the author writes.
 - Lean: link declarations in `lean:`; raise a card to `lean` only when its own
   objects and statement are formalized.
 - Render with `render` and build through [labo-build](../labo-build/SKILL.md);
-  `html` gives the card viewer for reading.
+  `html` gives the card viewer; `read` gives the reading page, where the author
+  marks passages and copies the comments back to the agent.
 - Before handing a part to the author as a paper, run a
   [review round](references/review-loop.md) on a frozen copy.
 

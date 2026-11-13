@@ -11,6 +11,7 @@ the current directory.
     python3 cards.py graph             # export the knowledge-dependencies graph
     python3 cards.py render [--sections N] [--out NAME]
     python3 cards.py html              # static card viewer
+    python3 cards.py read              # reading page (paper order, large type, comments)
     python3 cards.py impact ID...      # facts and prose to recheck after a change
     python3 cards.py anchor ID         # record current fingerprints in a prose card
     python3 cards.py terms [FILE] [--assumed PROFILE.json]
@@ -628,6 +629,22 @@ document.getElementById('q').addEventListener('input', e => {
 </script></body></html>"""
 
 
+def cmd_read(h, a):
+    """Reading page: the paper in reading order, large type, comments copied to the clipboard."""
+    sys.path.insert(0, str(SKILL / 'scripts'))
+    import reader
+    cards, _ = load_cards(h)
+    st = load_structure(h)
+    if not st:
+        sys.exit('no structure.yaml')
+    page = reader.build(h, cards, st, list(structure_items(st)), card_label, PROP_KINDS, FACT_KINDS)
+    outp = h.path('html_out', 'html') / 'read.html'
+    outp.parent.mkdir(parents=True, exist_ok=True)
+    outp.write_text(page, encoding='utf-8')
+    print(f'-> {h.rel(outp)}')
+    return 0
+
+
 # ---------------------------------------------------------------- terms (story harness)
 
 def load_vocab(h):
@@ -693,7 +710,7 @@ def main(argv=None):
     sp = ap.add_subparsers(dest='cmd', required=True)
     sp.add_parser('init').add_argument('dir')
     sp.add_parser('check').add_argument('--json', action='store_true')
-    for n in ('status', 'graph', 'html'):
+    for n in ('status', 'graph', 'html', 'read'):
         sp.add_parser(n)
     p = sp.add_parser('render')
     p.add_argument('--sections', type=int, help='only the first N sections')
