@@ -8,6 +8,8 @@ import html as _html
 import json
 import re
 
+import comment_layer
+
 LABELS = {'ja': {'toc': '目次', 'smaller': '文字を小さく', 'larger': '文字を大きく', 'narrower': '行を短く', 'wider': '行を長く', 'theme': '明暗', 'comments': 'コメント', 'copy': 'クリップボードにコピー', 'copied': 'コピーしました', 'add': 'コメントする', 'placeholder': 'コメント', 'save': '追加', 'cancel': '取り消し', 'none': 'コメントはまだありません．本文を選ぶとボタンが出ます．', 'delete': '削除', 'clear': '全部消す', 'close': '閉じる', 'confirm': 'コメントを全部消しますか？', 'nocomment': '(コメントなし)', 'proof': '証明', 'appendix': '付録'},
           'en': {'toc': 'Contents', 'smaller': 'Smaller text', 'larger': 'Larger text', 'narrower': 'Shorter lines', 'wider': 'Longer lines', 'theme': 'Light/dark', 'comments': 'Comments', 'copy': 'Copy to clipboard', 'copied': 'Copied', 'add': 'Comment', 'placeholder': 'Comment', 'save': 'Add', 'cancel': 'Cancel', 'none': 'No comments yet. Select text to add one.', 'delete': 'Delete', 'clear': 'Clear all', 'close': 'Close', 'confirm': 'Delete all comments?', 'nocomment': '(no comment)', 'proof': 'Proof', 'appendix': 'Appendix'}}
 
@@ -155,6 +157,7 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
             .replace('%MATHJAX%', _html.escape(h.cfg.get('mathjax', 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js')))
             .replace('%MACROS%', macros).replace('%NAV%', nav).replace('%BODY%', '\n'.join(out))
             .replace('%SIZE%', str(h.cfg.get('reader_font_px', 21))).replace('%WIDTH%', str(h.cfg.get('reader_width_em', 34))))
+    page = page.replace('%COMMENTS%', comment_layer.script('ja' if h.language == 'ja' else 'en'))
     for k, v in LABELS['ja' if h.language == 'ja' else 'en'].items():
         page = page.replace('{{' + k + '}}', _html.escape(v))
     return page
@@ -179,7 +182,6 @@ MathJax = {tex: {inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['\\[','\\
 :root[data-theme="dark"]{--bg:#1b1b1d;--fg:#e8e6e1;--muted:#9a968e;--rule:#3a3936;--box:#25242a;--accent:#e0b060;--link:#8ab4f8;--hl:#5a4a10}
 html{background:var(--bg)}
 body{margin:0;color:var(--fg);background:var(--bg);font-family:"Noto Serif","Source Serif 4","Georgia","Times New Roman","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",serif;font-size:var(--fs);line-height:1.95}
-mjx-container.msel{background:Highlight;color:HighlightText;border-radius:2px}
 main{max-width:var(--w);margin:0 auto;padding:4.5em 1em 40vh}
 h1{font-size:1.5em;line-height:1.5;margin:.5em 0 1.5em}
 h2{font-size:1.2em;margin:2.5em 0 1em;padding-bottom:.2em;border-bottom:1px solid var(--rule)}
@@ -199,15 +201,10 @@ a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
 ol,ul{padding-left:1.4em}
 mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden}
 #bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;gap:.4em;align-items:center;padding:.4em .8em;background:var(--bg);border-bottom:1px solid var(--rule);font:14px system-ui,sans-serif}
-#bar button,#cbox button{font:13px system-ui,sans-serif;padding:.2em .6em;border:1px solid var(--rule);background:var(--box);color:var(--fg);border-radius:4px;cursor:pointer}
+#bar button{font:13px system-ui,sans-serif;padding:.2em .6em;border:1px solid var(--rule);background:var(--box);color:var(--fg);border-radius:4px;cursor:pointer}
 #bar .sp{flex:1}
 #toc{display:none;position:fixed;top:2.6em;left:.8em;z-index:6;max-height:70vh;overflow:auto;background:var(--bg);border:1px solid var(--rule);padding:.5em .8em;font:14px/1.8 system-ui,sans-serif}
 #toc a{display:block}
-#addc{position:absolute;display:none;z-index:7;font:13px system-ui,sans-serif;padding:.25em .7em;border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:4px;cursor:pointer}
-#cbox{display:none;position:fixed;right:1em;bottom:1em;z-index:8;width:min(30em,90vw);max-height:60vh;overflow:auto;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:.6em .8em;font:14px/1.6 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.18)}
-#cbox textarea{width:100%;box-sizing:border-box;min-height:4em;font:14px system-ui,sans-serif;background:var(--bg);color:var(--fg);border:1px solid var(--rule)}
-#clist .c{border-top:1px solid var(--rule);padding:.3em 0}
-#clist .q{color:var(--muted)}
 mark.cm{background:var(--hl);color:inherit}
 </style></head><body>
 <div id="bar"><button id="btoc">{{toc}}</button><button id="bsm" title="{{smaller}}">A−</button><button id="blg" title="{{larger}}">A＋</button>
@@ -217,10 +214,6 @@ mark.cm{background:var(--hl);color:inherit}
 <main><h1>%TITLE%</h1>
 %BODY%
 </main>
-<button id="addc">{{add}}</button>
-<div id="cbox"><div id="cedit" style="display:none"><div class="q" id="cquote"></div><textarea id="ctext" placeholder="{{placeholder}}"></textarea>
-<button id="csave">{{save}}</button> <button id="ccancel">{{cancel}}</button></div>
-<div id="clist"></div><p><button id="cclear">{{clear}}</button> <button id="cclose">{{close}}</button></p></div>
 <script>
 (function(){
   const root=document.documentElement, store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
@@ -235,64 +228,5 @@ mark.cm{background:var(--hl);color:inherit}
   $('bth').onclick=()=>{const d=root.dataset.theme==='dark'||(!root.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);root.dataset.theme=d?'light':'dark';store.set(key+':theme',root.dataset.theme)};
   $('btoc').onclick=()=>{const t=$('toc');t.style.display=t.style.display==='block'?'none':'block'};
   $('toc').onclick=()=>{$('toc').style.display='none'};
-  // comments: only in this tab (sessionStorage survives a reload)
-  let comments=[]; try{comments=JSON.parse(sessionStorage.getItem(key+':c')||'[]')}catch(e){}
-  const save=()=>{try{sessionStorage.setItem(key+':c',JSON.stringify(comments))}catch(e){}};
-  let pending=null;
-  function cardOf(node){while(node&&node!==document.body){if(node.dataset&&node.dataset.card)return node; node=node.parentNode}return null}
-  // Selected text with every formula replaced by its TeX source (data-tex set after typesetting).
-  function selText(s){
-    if(!s.rangeCount)return '';
-    const d=document.createElement('div');
-    for(let i=0;i<s.rangeCount;i++)d.appendChild(s.getRangeAt(i).cloneContents());
-    if(!d.querySelector('mjx-container'))return s.toString();
-    d.querySelectorAll('mjx-container').forEach(m=>m.replaceWith(m.dataset.tex||''));
-    return d.textContent;
-  }
-  // Formulas draw their glyphs outside the text, so mark the ones inside the selection ourselves.
-  let marked=[];
-  document.addEventListener('selectionchange',()=>{
-    marked.forEach(m=>m.classList.remove('msel')); marked=[];
-    const s=getSelection(); if(!s.rangeCount||s.isCollapsed)return;
-    for(let i=0;i<s.rangeCount;i++){
-      let a=s.getRangeAt(i).commonAncestorContainer; if(a.nodeType!==1)a=a.parentNode;
-      const own=a.closest('mjx-container');
-      for(const m of own?[own]:a.querySelectorAll('mjx-container'))
-        if(s.containsNode(m,true)){m.classList.add('msel');marked.push(m)}
-    }
-  });
-  document.addEventListener('copy',e=>{
-    const s=getSelection(); if(!s.rangeCount)return;
-    const t=selText(s); if(t===s.toString())return;
-    e.clipboardData.setData('text/plain',t); e.preventDefault();
-  });
-  function label(el){const h=el.querySelector('.kname');return (h?h.textContent+' ':'')+'['+el.dataset.card+']'}
-  function render(){
-    $('ccount').textContent=comments.length;
-    $('clist').innerHTML=comments.map((c,i)=>'<div class="c"><b>'+c.where+'</b><div class="q">「'+c.quote.replace(/</g,'&lt;')+'」</div><div>'+c.text.replace(/</g,'&lt;')+'</div><button data-i="'+i+'">{{delete}}</button></div>').join('')||'<p class="q">{{none}}</p>';
-    $('clist').querySelectorAll('button').forEach(b=>b.onclick=()=>{comments.splice(+b.dataset.i,1);save();render()});
-  }
-  document.addEventListener('mouseup',e=>{
-    if(e.target.closest('#cbox,#bar,#addc'))return;
-    const s=getSelection(); const txt=selText(s).trim(); const b=$('addc');
-    if(!txt){b.style.display='none';return}
-    const el=cardOf(s.anchorNode); if(!el){b.style.display='none';return}
-    pending={where:label(el),quote:txt.replace(/\s+/g,' ')};
-    const r=s.getRangeAt(0).getBoundingClientRect();
-    b.style.left=(window.scrollX+r.right+6)+'px'; b.style.top=(window.scrollY+r.top-4)+'px'; b.style.display='block';
-  });
-  $('addc').onclick=()=>{ $('addc').style.display='none'; $('cbox').style.display='block'; $('cedit').style.display='block';
-    $('cquote').textContent=pending.where+'「'+pending.quote+'」'; $('ctext').value=''; $('ctext').focus(); };
-  $('csave').onclick=()=>{ if(!pending)return; comments.push({...pending,text:$('ctext').value.trim()}); pending=null; save(); $('cedit').style.display='none'; render(); };
-  $('ccancel').onclick=()=>{ pending=null; $('cedit').style.display='none'; };
-  $('bcom').onclick=()=>{ const b=$('cbox'); b.style.display=b.style.display==='block'?'none':'block'; render(); };
-  $('cclose').onclick=()=>{ $('cbox').style.display='none'; };
-  $('cclear').onclick=()=>{ if(confirm('{{confirm}}')){comments=[];save();render()} };
-  $('bcopy').onclick=async()=>{
-    const text=comments.map(c=>c.where+'\n「'+c.quote+'」\n→ '+(c.text||'{{nocomment}}')).join('\n\n');
-    try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}
-    $('bcopy').textContent='{{copied}}'; setTimeout(()=>$('bcopy').textContent='{{copy}}',1500);
-  };
-  render();
 })();
-</script></body></html>"""
+</script>%COMMENTS%</body></html>"""

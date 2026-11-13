@@ -152,6 +152,13 @@ adds a comment and copies all comments, each with its card id and the quoted tex
 to paste back to the agent. Comments stay in the browser tab. `reader_font_px` and
 `reader_width_em` in `harness.toml` set the defaults.
 
+The comments come from `assets/comment-layer.js`, which works on any HTML page
+with MathJax 3 or KaTeX (formulas are quoted as their TeX source; "where" is the
+card, a `data-comment-label`, or the nearest heading). Add it to another page,
+for example a reading-proof-review page, with
+`python3 <skill>/scripts/comment_layer.py page.html --lang ja`; the script is
+inlined and a rerun replaces it.
+
 `html` writes one static viewer (`html/index.html`) with search, status
 colors, links between uses, and the warnings of `check`. With `[html_index]` in
 `harness.toml` it also writes a list of every viewer in the parent of

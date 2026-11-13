@@ -193,6 +193,16 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn("\\emph{Step 2.} By Step 1, done.", shown)
         self.assertEqual(reader.external_steps_display("x proof (2)", {"x"}), "x proof Step 2")
 
+    def test_comment_layer_injects_once(self):
+        sys.path.insert(0, str(CARDS.parent))
+        import comment_layer
+        page = "<html><body><h1>T</h1><p>x</p></body></html>"
+        once = comment_layer.inject(page, "ja")
+        twice = comment_layer.inject(once, "ja")
+        self.assertEqual(once, twice)
+        self.assertIn("window.CommentLayer", once)
+        self.assertLess(once.index("cl-add"), once.index("</body>"))
+
     def test_init_scaffolds_and_refuses_overwrite(self):
         new = self.ws / "writing/other/harness"
         r = self.run_cards("init", new, cwd=self.ws)
