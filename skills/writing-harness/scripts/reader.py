@@ -20,8 +20,8 @@ KIND_NAMES = {'definition': 'Definition', 'theorem': 'Theorem', 'proposition': '
 def numbering(cards, items, fact_kinds):
     """Paper numbers: section.counter with one shared counter per section, A.n in the appendix."""
     num, sec_no, count, last = {}, 0, 0, object()
-    for si, _, cid, _ in items:
-        if cid not in cards:
+    for si, _, cid, opt in items:
+        if cid not in cards or opt.get('_proof_only'):
             continue
         if si != last:
             last = si
@@ -134,6 +134,15 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
             cur = si
             out.append(f'<h2 id="sec-{si + 1}">{si + 1}　{_html.escape(stitle)}</h2>')
             toc.append((f'sec-{si + 1}', f'{si + 1}　{_html.escape(stitle)}'))
+        if opt.get('_proof_only'):
+            proof = (author_proofs[cid].body if cid in author_proofs
+                     else proof_display(cid, c.sec('Proof'), stepped))
+            name = '{proof}'
+            out.append(f'<article id="{cid}-proof" class="card k-proof" data-card="{cid}"><header>'
+                       f'<span class="kname"><a href="#{cid}">{KIND_NAMES[c.kind]} {num.get(cid, "")}</a></span>'
+                       f'<span class="cid">{cid}</span></header>'
+                       f'<details class="proof" open><summary>{name}</summary>{conv(proof)}</details></article>')
+            continue
         if c.kind == 'explanation':
             if c.meta.get('role') == 'proof':
                 continue
