@@ -17,14 +17,18 @@ CHECKOUT = Path(__file__).resolve().parents[1]
 @unittest.skipUnless(shutil.which("git"), "Git is required for actual submodule tests")
 class DistributedHostTests(unittest.TestCase):
     def git(self, cwd, *args):
-        return subprocess.run(["git", "-C", str(cwd), "-c", "commit.gpgsign=false",
-                               "-c", "user.name=Host Test", "-c", "user.email=host@example.invalid",
-                               *args], check=True, capture_output=True, text=True).stdout.strip()
+        # A local clone must see a stable object store. Detached auto-maintenance
+        # can repack/delete loose objects while the next fixture command copies them.
+        result = subprocess.run(["git", "-C", str(cwd), "-c", "maintenance.auto=false",
+                                 "-c", "commit.gpgsign=false", "-c", "user.name=Host Test",
+                                 "-c", "user.email=host@example.invalid", *args],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        return result.stdout.strip()
 
     def invoke(self, workspace, script, cwd, host):
         return subprocess.run([sys.executable, "-B", "-I", str(script), "--workspace", str(workspace),
-                               "--host", host, "--model", "gpt-6-astra" if host == "codex" else "claude-opus-5-5",
-                               "--effort", "high", "--apply"], cwd=cwd, capture_output=True, text=True)
+                               "--host", host, "--apply"], cwd=cwd, capture_output=True, text=True)
 
     def test_native_agents_native_claude_and_whole_directory_alias(self):
         for mode in ("codex", "claude", "both"):
@@ -73,7 +77,8 @@ class DistributedHostTests(unittest.TestCase):
                     for path in (native / "agents").glob("math-*.md"):
                         front, prompt = path.read_text().split("---", 2)[1:]
                         metadata = yaml.safe_load(front)
-                        self.assertEqual(metadata["model"], "claude-opus-5-5")
+                        self.assertNotIn("model", metadata)
+                        self.assertNotIn("effort", metadata)
                         self.assertEqual(metadata["skills"], [path.stem])
                         self.assertTrue((native / "skills" / path.stem / "SKILL.md").is_file())
                 launcher = policy / "scripts/labo.py"

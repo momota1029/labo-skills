@@ -73,3 +73,18 @@ This is a behavioral instruction, not a sandbox or a runtime write barrier. Skil
 links and project instructions make it discoverable; they do not prove
 compliance. Report observed handoffs and checks separately from any claim of
 technical enforcement.
+
+## Native defaults and sequential work
+
+Named host presets are optional implementations of responsibilities. Native defaults
+and inheritance are valid for non-restricted producers. Keep concrete runtime model
+IDs and reasoning overrides in the consuming host configuration or native invocation,
+not in mathematical task packets. Record unavailable runtime metadata as unknown.
+
+When delegation is unavailable, a non-restricted producer may decompose and prove
+sequentially within the user's authorized assignment, following the owning proof
+skill. This is author work and self-checking, never independent verification.
+Before adopting a newly established decisive mathematical result, retain the owning
+skill's separate fresh verification requirement. If that review is unavailable, hold
+that adoption and continue unaffected drafting or exploration. A restricted or
+explicitly evidence-only worker still hands substantive work back.

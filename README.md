@@ -61,8 +61,9 @@ Every skill in `skills/`, grouped by what it is for. Each entry links to its `SK
 ### Reading and references
 
 - [reading-reference](skills/reading-reference/SKILL.md) — Research positioning, prior work, notation lineage, source-grounded reading notes.
+- [course-planning](skills/course-planning/SKILL.md) — Design bounded books, prerequisite connections, reader routes and final integration.
 - [course-authoring](skills/course-authoring/SKILL.md) — Local book-led or topic-led courses, optional local history, and role-based review handoffs.
-- [reading-book](skills/reading-book/SKILL.md) — Build long courses from books with one canonical body.
+- [reading-book](skills/reading-book/SKILL.md) — Build long courses from books with one canonical body; review depth scales with whether one context can read the whole, and a host-neutral driver runs long courses cycle by cycle.
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — Review mathematical claims in a frozen long-course version.
 - [reading-book-output-review](skills/reading-book-output-review/SKILL.md) — Review indexes, rendering and navigation in a frozen course PDF.
 - [reading-proof-review](skills/reading-proof-review/SKILL.md) — Read a paper or proof and make a private explanation page: proof review, proof book, method-and-code companion or prose page, on the site or as one HTML.
@@ -668,8 +669,8 @@ without compiling. A retained workspace-level lock serializes concurrent builds
 and cleanup through native POSIX or Windows locking.
 
 For existing document names, use `output build --source` with a TeX root under
-`writing/<slug>/` or `reading/<slug>/`. Its output pair is named by the project
-slug, so multiple roots under that slug overwrite one another. The source stays
+`writing/<slug>/` or `reading/<slug>/`. Its output pair uses the root stem when that starts with the project
+slug, otherwise `<slug>-<stem>`; `main.tex` uses the slug. Multiple roots keep separate pairs. The source stays
 in place and its cache stays in `.temp/`. Engine directives and packages such
 as `xeCJK` are detected; `--engine` can override them. The
 [build contract](skills/labo-build/references/build-contract.md) describes

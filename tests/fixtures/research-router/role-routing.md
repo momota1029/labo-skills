@@ -17,3 +17,14 @@ certification or evidence of runtime enforcement.
 | Luna or Haiku is assigned a prose edit with high effort. | Hand off the entire substantive edit to a configured production worker. | The fork's evidence/coordination restriction still applies. |
 | Packet model selection conflicts with host-session metadata. | Resolve the conflict with the parent before substantive work. | Role assignment does not erase conflicting invocation provenance. |
 | Host exposes no effort control but supplies model provenance and a proof-role assignment. | Record effort as unsupported and execute the bounded role. | Unsupported effort is not a missing-role condition. |
+
+## Portable availability cases retained by the fork
+
+| Case | Expected work and boundary |
+| --- | --- |
+| No named host adapter exists but a general-purpose child is callable. | Assign the bounded responsibility using native defaults; no host installation is needed. |
+| There is no delegation tool and a non-restricted producer must reconstruct a routine argument. | Follow the proof-worker instructions and self-check sequentially. Keep independently required decisive-result adoption pending until fresh review exists. |
+| A host explicitly assigns evidence-only permissions. | Do not make substantive edits; return the concrete assignment limit. |
+| Only adapters for another host are installed. | Use the actual callable interface or the authorized sequential fallback. |
+| The assigned non-restricted producer has no exposed runtime metadata. | Execute the directly authorized task and record metadata as unknown. |
+| A native child invocation fails due to capacity or access. | Use a genuinely callable route or authorized sequential fallback, without looping or changing configuration. |

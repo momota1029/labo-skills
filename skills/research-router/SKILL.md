@@ -31,13 +31,15 @@ personal facts there rather than in skill text; update only explicit durable
 facts or corrections from the user, or facts they ask to save, with source
 context. Apply the selected skill's normal verification rules.
 
-Before the first delegation, inspect the host's configured roles and native
-invocation interface. Reuse their explicit role/model/effort assignments and
-check that the needed roles are callable. Record the current assignment and
-invocation provenance under the [eligibility rule](references/editing-capability.md).
-A provider catalogue alone does not establish host availability. Keep unknown
-metadata unknown; an established parent assignment need not be rediscovered
-by its worker.
+Before delegation, inspect the actual callable interface and relevant local roles.
+Use an available matching adapter or a bounded general-purpose assignment; another
+host's preset is not a requirement. Default/inherited selection is valid unless the
+coordinator is restricted ([invocation contract](references/subagent-invocation.md)). Keep
+concrete model choices out of portable instructions and task handoffs. Missing
+presets or runtime metadata alone are not reasons to stop. Follow
+[task assignment](references/editing-capability.md) and the
+[invocation contract](references/subagent-invocation.md). Actual host setup is a
+separate task, not a routine prerequisite for writing.
 
 Before making any subagent call, follow
 the [subagent invocation contract](references/subagent-invocation.md) for
@@ -51,6 +53,8 @@ constraints and current host availability as inputs. Apply the eligibility
 rule to work you keep, and hand off work outside your assigned role. If the
 needed role is unavailable, report the completed scope and missing role.
 
+Slides are built in stages, with the user's reaction at each gate: see [staged build of slides](../deck-from-references/references/staged-build.md).
+
 1. Identify the **artifact and reader**: research story, Lean, manuscript,
    slide, reading note, reference, website, or repo policy.
 2. Consult the matching skill, read it completely, and follow **its own**
@@ -60,7 +64,8 @@ needed role is unavailable, report the completed scope and missing role.
    drafting or revision → `paper-writing`; mathematical paper review →
    `paper-referee`; paper compilation → `labo-build`; slides →
    `slide-authoring` (talk plan for a paper → `paper-talk-planning`; slides in the
-   manner of example decks → `deck-from-references`); research positioning, source collection, paper/book
+   manner of example decks → `deck-from-references`); a private interactive HTML companion to a method
+   paper's reading note → `reading-proof-review` (companion mode); research positioning, source collection, paper/book
    explanation and reading notes → `reading-reference`; website →
    `website-publishing`; adversarial review of a finished explanation, page or
    note (flow and passage-level critique) → `exposition-review`; continuous Japanese reading translations →
@@ -74,8 +79,8 @@ needed role is unavailable, report the completed scope and missing role.
 4. If task-specific delegation is useful,
    formulate a short task-specific assignment *from the selected skill* and
    follow the [subagent invocation contract](references/subagent-invocation.md).
-   Host role presets supply the operational role/model/effort assignment;
-   the selected skill and current packet control its scope. Use the
+   Host role presets are optional; the selected skill and current packet control
+   responsibility and scope. Use the
    [mathematical role contract](references/mathematical-roles.md) for decomposition,
    proving and verification. Nested workers share the root's finite depth and
    descendant concurrency budget.
@@ -90,7 +95,8 @@ needed role is unavailable, report the completed scope and missing role.
      research result or decisive proof dependency. Routine explanations and
      clearly marked tentative work follow their own assigned scope.
 
-   Reconstructing missing arguments uses the proof role, even in a summary.
+   Reconstructing missing arguments uses the proof responsibility, even in a summary;
+   the authorized producer may do it sequentially when delegation is unavailable.
    Follow [concrete escalation triggers](references/editing-capability.md) when
    assumptions, proof steps, examples or source support reveal an obstacle.
 5. Keep the user's `AGENTS.md` independent. Do not edit it as part of routing.

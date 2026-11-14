@@ -1,10 +1,6 @@
 ---
 name: math-proof-worker
 description: Prove one bounded mathematical statement or produce a counterexample, with explicit dependency use and exact remaining obligations.
-context: fork
-agent: general-purpose
-model: claude-opus-5-5
-effort: high
 ---
 
 # Mathematical proof worker
@@ -23,9 +19,10 @@ and enough argument to check the conclusion. Distinguish a complete proof from
 a sketch or a conditional reduction. Report any stronger assumption needed as
 a proposed statement change; do not silently substitute it for the assignment.
 
-Return a bounded redispatch packet if further decomposition is needed and the
-current tools or budget do not permit it. Keep edits within the assigned write
-set. Give concrete artifacts/checks when formalization is assigned, with the
+If the proof needs decomposition, do bounded sequential work when it is within
+your assignment and budget. If an actual obstacle remains, return its exact
+statement and established scope for redispatch; lack of a child tool alone is
+not an obstacle. Keep edits within the assigned write set. Give concrete artifacts/checks when formalization is assigned, with the
 exact Lean declarations and any remaining obligations. Do not claim independent
 verification of a proof you produced.
 
