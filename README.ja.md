@@ -50,6 +50,7 @@
 ### 読むこと・文献
 
 - [reading-reference](skills/reading-reference/SKILL.md) — 研究の位置づけ、先行研究、記法の系譜、出典に基づく読書ノート。
+- [course-planning](skills/course-planning/SKILL.md) — 本の区切り・前提・読書の流れ・最終統合を設計する。
 - [course-authoring](skills/course-authoring/SKILL.md) — 本由来・テーマ型のローカル教材制作、Git任意、担当別の通常確認／本格査読。
 - [reading-book](skills/reading-book/SKILL.md) — 本から長いコースを、一つの正本で作る。
 - [reading-book-math-review](skills/reading-book-math-review/SKILL.md) — 固定した長いコースの数学的主張を査読する。
@@ -591,7 +592,7 @@ SyncTeX が無いときは、強制再ビルドを最大一回行う。ビルド
 
 既存のドキュメント名には、`writing/<slug>/` か `reading/<slug>/` の下の TeX ルートを指定して
 `output build --source` を使う。出力の組はルート名（slug で始まるファイル名はそのまま、
-始まらなければ `<slug>-` を前置）で名づけられるので、
+始まらなければ `<slug>-` を前置し、`main.tex` は slug を使う）で名づけられるので、
 同じ slug の下の複数のルートは別々の組を持つ。ソースはその場に残り、キャッシュは
 `.temp/` に置かれる。エンジンのディレクティブや `xeCJK` などのパッケージは検出され、
 `--engine` で上書きできる。作業ディレクトリの振る舞いは

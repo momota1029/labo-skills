@@ -19,3 +19,12 @@ workers; consult again when the request or plan materially changes. Advisors and
 workers do not commission further advisors for the same assignment. If the host
 cannot provide a separate advisor, state that the consultation could not be
 performed; self-checking is not independent consultation.
+
+## When the required advisor is unavailable
+
+Do not invent a consultation or change host settings to manufacture a callable
+advisor. A restricted coordinator reports the concrete missing role and keeps
+substantive work pending; non-restricted producers continue within their authorized
+assignment without consultation. A missing preset or hidden runtime metadata alone
+does not block a directly assigned non-restricted producer. This fallback never
+waives an independently required fresh proof review or expands evidence-only access.
