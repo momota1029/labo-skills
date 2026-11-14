@@ -192,6 +192,9 @@ class WritingHarnessTests(unittest.TestCase):
         shown = reader.proof_display("x", cited, {"x"})
         self.assertIn("\\emph{Step 2.} By Step 1, done.", shown)
         self.assertEqual(reader.external_steps_display("x proof (2)", {"x"}), "x proof Step 2")
+        math = "(1) First.\n(2) By (1), $o(1)+\\lambda^{(2)}$ and \\[f(1)\\]."
+        shown = reader.proof_display("x", math, {"x"})
+        self.assertIn("By Step 1, $o(1)+\\lambda^{(2)}$ and \\[f(1)\\].", shown)
 
     def test_statement_first_proof_later(self):
         self.edit("structure.yaml", "      - lem-tail\n      - thm-sum-settled\n",

@@ -68,6 +68,28 @@ STEP_RE = re.compile(r'(?m)^\((\d+)\)[ \t]*')
 EXT_STEP_RE = re.compile(r'([a-z][a-z0-9-]*)([ \t]*(?:の証明|proof)[ \t]*)\((\d+)\)')
 
 
+MATH_RE = re.compile(r'\$\$.*?\$\$|\$[^$]*\$|\\\[.*?\\\]|\\begin\{(equation|align|gather|multline)\*?\}.*?\\end\{\1\*?\}', re.S)
+
+
+def _outside_math(text):
+    """Spans of text outside inline and display math."""
+    pos = 0
+    for m in MATH_RE.finditer(text):
+        yield pos, m.start()
+        pos = m.end()
+    yield pos, len(text)
+
+
+def _sub_outside_math(pattern, repl, text):
+    out, pos = [], 0
+    for m in MATH_RE.finditer(text):
+        out.append(re.sub(pattern, repl, text[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(re.sub(pattern, repl, text[pos:]))
+    return ''.join(out)
+
+
 def step_references(cards):
     """Step numbers of each card's proof that other cards cite as "<id>の証明 (k)" / "<id> proof (k)"."""
     ext = {}
@@ -85,7 +107,8 @@ def stepped_ids(cards, ext):
             continue
         proof = c.sec('Proof')
         steps = set(STEP_RE.findall(proof))
-        internal = {m.group(1) for m in re.finditer(r'\((\d+)\)', proof) if m.start() and proof[m.start() - 1] != '\n'}
+        internal = {m.group(1) for a, b in _outside_math(proof)
+                    for m in re.finditer(r'\((\d+)\)', proof[a:b]) if a + m.start() and proof[a + m.start() - 1] != '\n'}
         if steps & (internal | ext.get(c.id, set())):
             out.add(c.id)
     return out
@@ -100,7 +123,7 @@ def proof_display(cid, proof, stepped):
         return proof
     if cid not in stepped:
         return STEP_RE.sub('', proof)
-    proof = re.sub(r'(?<=[^\n])\((\d+)\)', lambda m: f'Step {m.group(1)}' if m.group(1) in steps else m.group(0), proof)
+    proof = _sub_outside_math(r'(?<=[^\n])\((\d+)\)', lambda m: f'Step {m.group(1)}' if m.group(1) in steps else m.group(0), proof)
     return STEP_RE.sub(lambda m: f'\\emph{{Step {m.group(1)}.}} ', proof)
 
 
