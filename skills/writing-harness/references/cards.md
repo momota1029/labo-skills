@@ -109,6 +109,7 @@ sections:
       - {card: thm-main, proof: later}       # statement first ...
       - lem-step
       - {proof_of: thm-main}                 # ... its proof after the lemmas it uses
+      - {subsection: Proofs}                 # a numbered subsection heading
 appendix:
   - lem-technical
 ```

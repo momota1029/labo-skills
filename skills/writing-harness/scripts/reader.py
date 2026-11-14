@@ -122,7 +122,18 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
     stepped = stepped_ids(cards, step_references(cards))
     conv = lambda s: tex_to_html(external_steps_display(s, stepped), cards, num, label_to_id, card_label)  # noqa: E731
     out, toc, cur, appendix = [], [], object(), False
+    sub = 0
     for si, stitle, cid, opt in items:
+        if opt.get('_subsection'):
+            if si != cur:
+                cur = si
+                out.append(f'<h2 id="sec-{si + 1}">{si + 1}　{_html.escape(stitle)}</h2>')
+                toc.append((f'sec-{si + 1}', f'{si + 1}　{_html.escape(stitle)}'))
+                sub = 0
+            sub += 1
+            out.append(f'<h3 id="sec-{si + 1}-{sub}">{si + 1}.{sub}　{_html.escape(opt["_subsection"])}</h3>')
+            toc.append((f'sec-{si + 1}-{sub}', f'{si + 1}.{sub}　{_html.escape(opt["_subsection"])}'))
+            continue
         if cid not in cards:
             continue
         c = cards[cid]
@@ -132,6 +143,7 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
             toc.append(('sec-A', 'A　{{appendix}}'))
         elif si is not None and si != cur:
             cur = si
+            sub = 0
             out.append(f'<h2 id="sec-{si + 1}">{si + 1}　{_html.escape(stitle)}</h2>')
             toc.append((f'sec-{si + 1}', f'{si + 1}　{_html.escape(stitle)}'))
         if opt.get('_proof_only'):

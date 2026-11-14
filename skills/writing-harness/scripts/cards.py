@@ -139,6 +139,8 @@ def structure_items(st):
         for it in sec.get('items') or []:
             if isinstance(it, str):
                 yield i, sec['title'], it, {}
+            elif 'subsection' in it:
+                yield i, sec['title'], '', {'_subsection': it['subsection']}
             elif 'proof_of' in it:
                 yield i, sec['title'], it['proof_of'], {'_proof_only': True}
             else:
@@ -211,6 +213,8 @@ def check(h, cards, errors):
     if st:
         pos, proof_pos, later = {}, {}, set()
         for n, (si, _, cid, opt) in enumerate(structure_items(st)):
+            if opt.get('_subsection'):
+                continue
             if cid not in cards:
                 errors.append(f'structure: unknown card {cid}')
                 continue
@@ -460,6 +464,12 @@ def cmd_render(h, a):
     stepped = _reader().stepped_ids(cards, _reader().step_references(cards))
     body, cur, appendix = [], object(), False
     for si, stitle, cid, opt in structure_items(st):
+        if opt.get('_subsection') and (a.sections is None or (si is not None and si < a.sections)):
+            if si != cur:
+                body.append(f'\\section{{{stitle}}}\n')
+                cur = si
+            body.append(f'\\subsection{{{opt["_subsection"]}}}\n')
+            continue
         if cid not in cards or (a.sections is not None and (si is None or si >= a.sections)):
             continue
         if si is None and not appendix:

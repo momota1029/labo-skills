@@ -208,6 +208,16 @@ class WritingHarnessTests(unittest.TestCase):
         self.edit("structure.yaml", "      - {proof_of: thm-sum-settled}\n", "")
         self.assertNotEqual(self.check_json()[0], 0)
 
+    def test_subsection_items(self):
+        self.edit("structure.yaml", "      - lem-tail\n", "      - {subsection: Proofs}\n      - lem-tail\n")
+        code, data = self.check_json()
+        self.assertEqual(code, 0, data)
+        self.assertEqual(self.run_cards("render").returncode, 0)
+        tex = (self.h / "paper/cards.tex").read_text()
+        self.assertLess(tex.index(r"\section{Results}"), tex.index(r"\subsection{Proofs}"))
+        self.assertLess(tex.index(r"\subsection{Proofs}"), tex.index(r"\begin{lemma}"))
+        self.assertEqual(self.run_cards("read").returncode, 0)
+
     def test_comment_layer_injects_once(self):
         sys.path.insert(0, str(CARDS.parent))
         import comment_layer
