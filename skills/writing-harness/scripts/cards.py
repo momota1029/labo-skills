@@ -140,7 +140,7 @@ def structure_items(st):
             if isinstance(it, str):
                 yield i, sec['title'], it, {}
             elif 'subsection' in it:
-                yield i, sec['title'], '', {'_subsection': it['subsection']}
+                yield i, sec['title'], '', {'_subsection': it['subsection'], '_label': it.get('label')}
             elif 'proof_of' in it:
                 yield i, sec['title'], it['proof_of'], {'_proof_only': True}
             else:
@@ -455,6 +455,12 @@ def render_card(cards, cid, opt, author_proofs):
     return '\n'.join(out) + '\n'
 
 
+def section_head(st, si, stitle):
+    """\\section with the optional `label:` of that section in structure.yaml."""
+    label = (st.get('sections') or [])[si].get('label')
+    return f'\\section{{{stitle}}}' + (f'\\label{{{label}}}' if label else '') + '\n'
+
+
 def cmd_render(h, a):
     global REF_COMMAND
     REF_COMMAND = h.cfg.get('ref_command', 'ref')
@@ -472,9 +478,10 @@ def cmd_render(h, a):
     for si, stitle, cid, opt in structure_items(st):
         if opt.get('_subsection') and (a.sections is None or (si is not None and si < a.sections)):
             if si != cur:
-                body.append(f'\\section{{{stitle}}}\n')
+                body.append(section_head(st, si, stitle))
                 cur = si
-            body.append(f'\\subsection{{{opt["_subsection"]}}}\n')
+            sub_label = f'\\label{{{opt["_label"]}}}' if opt.get('_label') else ''
+            body.append(f'\\subsection{{{opt["_subsection"]}}}{sub_label}\n')
             continue
         if cid not in cards or (a.sections is not None and (si is None or si >= a.sections)):
             continue
@@ -482,7 +489,7 @@ def cmd_render(h, a):
             body.append(f'\\appendix\n\\section{{{h.cfg.get("appendix_title", "Deferred proofs")}}}\n')
             appendix = True
         elif si is not None and si != cur:
-            body.append(f'\\section{{{stitle}}}\n')
+            body.append(section_head(st, si, stitle))
             cur = si
         body.append(render_card(cards, cid, {**opt, '_stepped': stepped, '_lang': h.language}, author_proofs))
     bib = ''
