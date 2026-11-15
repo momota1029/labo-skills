@@ -403,15 +403,18 @@ def card_label(c):
     return c.meta.get('label') or f'card:{c.id}'
 
 
+REF_COMMAND = 'ref'   # set from harness.toml `ref_command` (e.g. "Cref" with cleveref) at render time
+
+
 def link_refs(text, cards):
-    """Turn bare card labels and bare card ids in running text into \\ref."""
+    """Turn bare card labels and bare card ids in running text into \\ref (or the configured command)."""
     labels = {card_label(c) for c in cards.values() if c.is_fact}
     ids = {c.id: c for c in cards.values() if c.is_fact}
     out = re.sub(r'(?<![{A-Za-z0-9_:-])([a-z]+:[a-z0-9-]+)(?![A-Za-z0-9_}-])',
-                 lambda m: f'\\ref{{{m.group(1)}}}' if m.group(1) in labels else m.group(0), text)
+                 lambda m: f'\\{REF_COMMAND}{{{m.group(1)}}}' if m.group(1) in labels else m.group(0), text)
     for cid in sorted(ids, key=len, reverse=True):
         out = re.sub(r'(?<![{A-Za-z0-9_:-])' + re.escape(cid) + r'(?![A-Za-z0-9_}-])',
-                     lambda m, c=ids[cid]: '\\ref{' + card_label(c) + '}', out)
+                     lambda m, c=ids[cid]: '\\' + REF_COMMAND + '{' + card_label(c) + '}', out)
     return out
 
 
@@ -433,7 +436,8 @@ def render_card(cards, cid, opt, author_proofs):
         body = (author_proofs[cid].body.strip() if cid in author_proofs else link_refs(_reader().external_steps_display(
             _reader().proof_display(cid, c.sec('Proof'), opt['_stepped']), opt['_stepped']), cards))
         ja = {'theorem': '定理', 'proposition': '命題', 'lemma': '補題', 'corollary': '系'}
-        head = (f'{{{ja.get(c.kind, "")}\\ref{{{card_label(c)}}}の証明}}' if opt.get('_lang') == 'ja'
+        head = (f'{{\\{REF_COMMAND}{{{card_label(c)}}}の証明}}' if opt.get('_lang') == 'ja' and REF_COMMAND != 'ref'
+                else f'{{{ja.get(c.kind, "")}\\ref{{{card_label(c)}}}の証明}}' if opt.get('_lang') == 'ja'
                 else f'{{Proof of {c.kind.capitalize()}~\\ref{{{card_label(c)}}}}}')
         return '\n'.join([f'% proof of {cid}', f'\\begin{{proof}}[{head}]', body, '\\end{proof}']) + '\n'
     if c.kind in PROP_KINDS:
@@ -452,6 +456,8 @@ def render_card(cards, cid, opt, author_proofs):
 
 
 def cmd_render(h, a):
+    global REF_COMMAND
+    REF_COMMAND = h.cfg.get('ref_command', 'ref')
     cards, _ = load_cards(h)
     st = load_structure(h)
     if not st:
