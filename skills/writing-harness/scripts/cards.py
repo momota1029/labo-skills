@@ -185,8 +185,14 @@ def check(h, cards, errors):
             if status == 'lean' and not lean:
                 errors.append(f'{c.id}: status lean but no lean declarations')
             for r in c.requires:
-                if r not in cards:
+                if r in cards:
+                    continue
+                ns, _, rid = r.partition(':')
+                ext = (h.cfg.get('external_harnesses') or {}).get(ns) if rid else None
+                if ext is None:
                     errors.append(f'{c.id}: requires unknown card {r}')
+                elif not any((h.root / ext / 'cards').glob(f'*/{rid}.md')):
+                    errors.append(f'{c.id}: requires {r}, but {ext}/cards has no card {rid}')
         else:
             errors.append(f'{c.id}: unknown kind {k}')
     # hard cycles among fact cards

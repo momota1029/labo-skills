@@ -74,6 +74,20 @@ omits:  {thm-grading: [3]}         # steps deliberately skipped
 
 `role: proof` with `explains: [X]` makes the card the paper's proof of `X`.
 
+## Facts from another harness
+
+A paper that builds on a companion paper's cards names them as `ns:id` in
+`requires`, with the namespace declared in `harness.toml`:
+
+```
+[external_harnesses]
+ctg = "../../compact-target-gds/harness"   # relative to this harness
+```
+
+`check` accepts `ns:id` when that harness has `cards/*/id.md`, and reports it
+otherwise. Such cards are cited, never rendered here; list them under
+`external:` in `structure.yaml` once the structure exists.
+
 ## Status ladder
 
 `stated` -> `drafted` (a proof exists) -> `gap-free` (every step justified) ->
