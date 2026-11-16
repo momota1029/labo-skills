@@ -1,6 +1,6 @@
 ---
 name: writing-harness
-description: Run an author-led paper harness in which the author writes the prose and the agent keeps the facts — definition and theorem cards with gap-free reference proofs, a status ladder, staleness of prose after a fact changes, reading-order checks, a story ledger with an undefined-term check, a style ledger applied paper-wide, rendering to TeX and a card viewer, and review rounds on frozen parts. Use when the user writes a paper themselves and wants an editor and consistency keeper beside them; for drafting a manuscript from research evidence use paper-writing.
+description: Run an author-led paper harness in which the author writes the prose and the agent keeps the facts — definition and theorem cards with gap-free reference proofs, a status ladder, staleness of prose after a fact changes, reading-order checks, a story ledger with an undefined-term check, a style ledger applied paper-wide, one build that keeps TeX, PDF, card viewer and reading page in step with the cards (with an editing hook, a watcher and OUTDATED warnings), a local page where the author edits cards with live preview, card templates, and review rounds on frozen parts. Use when the user writes a paper themselves and wants an editor and consistency keeper beside them; for drafting a manuscript from research evidence use paper-writing.
 ---
 
 # Writing harness
@@ -20,8 +20,9 @@ research evidence; this skill owns the harness in which the author writes.
    `python3 scripts/cards.py init writing/<paper>/harness` and set `language`
    to the author's language. Existing drafts are imported into cards with the
    author's agreement; never overwrite an existing card.
-2. Run `check` and `status`. Report errors, `STALE` prose, forward references
-   and open questions before new work.
+2. Run `check` and `status`. Report errors, `STALE` prose, `OUTDATED`
+   outputs, forward references and open questions before new work, and any
+   new file in `reviews/comments/`.
 3. Read `story.md`, `vocab.toml` and `style.toml`, and the workspace's
    `writing/.rules/`. Apply recorded rules without asking again.
 
@@ -39,9 +40,18 @@ research evidence; this skill owns the harness in which the author writes.
   approval and recorded at its owner (field, author or this paper).
 - Lean: link declarations in `lean:`; raise a card to `lean` only when its own
   objects and statement are formalized.
-- Render with `render` and build through [labo-build](../labo-build/SKILL.md);
-  `html` gives the card viewer; `read` gives the reading page, where the author
-  marks passages and copies the comments back to the agent.
+- Keep every output current: after any change to cards or structure run
+  `cards.py build` (check, TeX, PDF, card viewer, reading page in one go), or
+  rely on the editing hook, `watch` or the editor, and treat `OUTDATED` from
+  `check` like `STALE`. Never tell the author a change is visible before the
+  build that contains it has succeeded. See
+  [outputs and the editor](references/outputs-and-editor.md).
+- The author can edit cards directly in `cards.py serve` (reading page with
+  edit links, live reload, comments saved to `reviews/comments/`). Read new
+  comment files at the start of each turn; reread fact cards the author changed
+  and apply the status ladder.
+- New cards come from templates: `cards.py new KIND ID` (harness `templates/`
+  override the skill's `assets/card-templates/`).
 - Before handing a part to the author as a paper, run a
   [review round](references/review-loop.md) on a frozen copy.
 

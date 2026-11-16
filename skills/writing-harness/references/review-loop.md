@@ -32,7 +32,7 @@ Neither edits the source.
 
 ## 3. Triage
 
-Write `reviews/<date>-<part>/README.md`:
+Write `reviews/<date>-<part>/README.md` (template: `assets/review-README.md`):
 
 ```
 # Review of <part> (frozen <date>, <file> sha256 prefix <16 hex>)

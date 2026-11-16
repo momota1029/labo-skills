@@ -159,7 +159,15 @@ python3 <skill>/scripts/cards.py read           # reading page: paper order, lar
 python3 <skill>/scripts/cards.py impact ID...
 python3 <skill>/scripts/cards.py anchor ID
 python3 <skill>/scripts/cards.py terms [FILE] [--assumed profile.json] [--json]
+python3 <skill>/scripts/cards.py build [--no-pdf]   # check + render + PDF + html + read
+python3 <skill>/scripts/cards.py watch [--no-pdf]   # background build on every source change
+python3 <skill>/scripts/cards.py hook               # Claude Code PostToolUse hook
+python3 <skill>/scripts/cards.py new KIND ID [--title T] [--requires A,B] [--explains X,Y]
+python3 <skill>/scripts/cards.py serve [--port P]   # reading page + card editor
 ```
+
+`build`, `watch`, `hook`, `serve`, `new` and the `OUTDATED` warning are
+described in [outputs and the editor](outputs-and-editor.md).
 
 `graph` writes `dependencies.yaml` with workspace-relative source paths (the
 enclosing Git root, or `workspace` in `harness.toml`), so

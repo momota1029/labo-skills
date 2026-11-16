@@ -191,7 +191,7 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
             proof = (author_proofs[cid].body if mode == 'author' and cid in author_proofs
                      else proof_display(cid, c.sec('Proof'), stepped))
             if mode in ('fact', 'author') and proof.strip():
-                parts.append(f'<details class="proof"><summary>{{proof}}</summary>{conv(proof)}</details>')
+                parts.append(f'<details class="proof"><summary>{{{{proof}}}}</summary>{conv(proof)}</details>')
         out.append(f'<article id="{cid}" class="card k-{c.kind}" data-card="{cid}">'
                    f'<header>{head}<span class="cid">{cid}</span></header>{"".join(parts)}</article>')
     nav = ''.join(f'<a href="#{a}">{t}</a>' for a, t in toc)
