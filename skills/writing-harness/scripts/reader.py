@@ -53,8 +53,10 @@ def tex_to_html(text, cards, num, label_to_id, card_label):
     for env, tag in (('enumerate', 'ol'), ('itemize', 'ul')):
         t = re.sub(r'\\begin\{' + env + r'\}(\[[^\]]*\])?', f'<{tag}>', t)
         t = t.replace(r'\end{' + env + '}', f'</li></{tag}>')
-    t = re.sub(r'<(ol|ul)>\s*\\item(\[[^\]]*\])?', lambda m: f'<{m.group(1)}><li>' + (f'<b>{m.group(2)[1:-1]}</b> ' if m.group(2) else ''), t)
-    t = re.sub(r'\\item(\[[^\]]*\])?', lambda m: '</li><li>' + (f'<b>{m.group(1)[1:-1]}</b> ' if m.group(1) else ''), t)
+    # An item with its own label, \item[(a)], replaces the list number, as in LaTeX.
+    li = lambda lab: '<li class="lab"><b>' + lab[1:-1] + '</b> ' if lab else '<li>'
+    t = re.sub(r'<(ol|ul)>\s*\\item(\[[^\]]*\])?', lambda m: f'<{m.group(1)}>' + li(m.group(2)), t)
+    t = re.sub(r'\\item(\[[^\]]*\])?', lambda m: '</li>' + li(m.group(1)), t)
     t = t.replace('~', ' ')
     for cid in sorted(num, key=len, reverse=True):
         t = re.sub(r'(?<![A-Za-z0-9_#/-])' + re.escape(cid) + r'(?![A-Za-z0-9_-])',
@@ -244,6 +246,7 @@ a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
 .cite{color:var(--muted);font-size:.9em}
 ol,ul{padding-left:1.4em}
 mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden}
+li.lab{list-style:none}
 #bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;gap:.4em;align-items:center;padding:.4em .8em;background:var(--bg);border-bottom:1px solid var(--rule);font:14px system-ui,sans-serif}
 #bar button{font:13px system-ui,sans-serif;padding:.2em .6em;border:1px solid var(--rule);background:var(--box);color:var(--fg);border-radius:4px;cursor:pointer}
 #bar .sp{flex:1}
