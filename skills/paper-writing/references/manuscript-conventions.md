@@ -69,6 +69,11 @@ paper's notation decisions belong with that paper.
 
 ## Proof economy
 
+- Do not use Landau notation ($O$, $o$, $\Theta$, $\Omega$, or $\lesssim$
+  hiding constants) unless the author asks for it. State explicit bounds with
+  named constants and what they depend on, or write the limit.
+
+
 - Expand a lemma used only once into the proof that uses it, even at some cost
   in length; keep a separate lemma when it is reused or isolates a genuinely
   separate idea. A short fact listed as a corollary item but used in one place
