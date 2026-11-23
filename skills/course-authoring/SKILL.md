@@ -22,6 +22,9 @@ skill does not take over another producer, migrate a live course or start review
 Use [storage and build](references/storage.md) for new placement, privacy and tools;
 use [layout](references/layout.md) and [role folders](references/role-folders.md) when creating or resuming a handoff.
 Keep one canonical text, not a second reviewed edition that must be edited in parallel.
+For a card-based book, [book-harness](../book-harness/SKILL.md) owns the common loop for an assigned source,
+a topic, or both. Cards are the canonical text; `book render` generates TeX. Edit the cards and check the assembled
+route against the agreed scope.
 
 For new work, establish the reader, adopted scope, allowed starting facts and the
 next meaningful section. Use `local/books/<slug>/` for book-led courses and
@@ -66,7 +69,11 @@ draft. Long courses use section-scoped shared theorem numbering `1.18.5` and
 separate equation numbering `(1.18.7)`. Preserve semantic labels. Keep definition,
 notation and formula indexes connected to the actual introductions.
 
-## Normal production and optional hard review
+## Production, review and repair
+
+Use this skill for the full production cycle. The production owner writes and self-checks the unit, arranges
+needed review, integrates findings and rechecks affected work. One coordinator can manage the cycle. Independent
+reviewers receive fixed inputs in a fresh context and return findings to the owner.
 
 Normal production includes full author self-check and selective, bounded independent
 math/output checks, prioritizing important dependencies, source repairs and generalizations.

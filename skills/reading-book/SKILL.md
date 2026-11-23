@@ -35,6 +35,14 @@ OCRの式・量化子・添字が疑わしければ原画像で確認する。�
 ローカル専用Gitを含む**すべてのGitからignoreし、登録しない**。
 新規原著は `local/original/`、既存inbox等はそのまま参照できる。移動・複製を自動で行わない。
 
+## カードで作る場合
+
+カードのプールと route があるとき、または新規教材をカードで作るときは、指定原著からの作業も主題からの作業も
+[book-harness](../book-harness/SKILL.md) の[共通手順](../book-harness/references/reading-loop.md)と
+[確認手順](../book-harness/references/intake-review.md)に従う。本スキルは原著の版・採否・証明義務・全訳指定を保持する。
+資料台帳は C1、採用した原著との対応は C2、数学台帳の ID・依存はカードの `id`・`requires` を使う。
+正本はカードで、TeX は `book render` で生成する。章・巻は、原著との対応と合意済みのルート範囲を照合して閉じる。
+
 ## 配置・出力・受渡し
 
 - [保存境界](references/storage.md)と[配置](references/layout.md)は共通規則への互換入口。
