@@ -148,13 +148,13 @@ def read_repair(case: pathlib.Path) -> dict | None:
 
 def load_groups(root: pathlib.Path, path: pathlib.Path | None, files: list[pathlib.Path]) -> list[dict]:
     if path is None:
-        return [{"name": str(f.relative_to(root)), "spans": [{"file": str(f.relative_to(root)), "start": 1,
+        return [{"name": f.relative_to(root).as_posix(), "spans": [{"file": f.relative_to(root).as_posix(), "start": 1,
                  "end": 10 ** 9, "priority": False}], "stable_with": []} for f in files]
     return json.loads(path.read_text(encoding="utf-8"))["groups"]
 
 
 def same_file(a: str, b: str) -> bool:
-    a, b = a.lstrip("./"), b.lstrip("./")
+    a, b = a.replace("\\", "/").lstrip("./"), b.replace("\\", "/").lstrip("./")
     return a == b or a.endswith("/" + b) or b.endswith("/" + a)
 
 

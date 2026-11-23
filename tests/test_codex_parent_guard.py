@@ -1,4 +1,5 @@
 import json
+from contextlib import closing
 import os
 from pathlib import Path
 import sqlite3
@@ -34,15 +35,15 @@ class CodexParentGuardTest(unittest.TestCase):
         self.rollout = sessions / "rollout.jsonl"
         self.marker = self.home / "claimed"
         # The picker is Luna in every case. Authorization comes from the open turn.
-        with sqlite3.connect(self.home / "state_5.sqlite") as conn:
+        with closing(sqlite3.connect(self.home / "state_5.sqlite")) as conn, conn:
             conn.execute("CREATE TABLE threads (id, rollout_path, model)")
             conn.execute("INSERT INTO threads VALUES (?, ?, ?)", ("parent", str(self.rollout), LUNA))
-        with sqlite3.connect(self.home / "goals_1.sqlite") as conn:
+        with closing(sqlite3.connect(self.home / "goals_1.sqlite")) as conn, conn:
             conn.execute("CREATE TABLE thread_goals (thread_id, status)")
             conn.execute("INSERT INTO thread_goals VALUES (?, ?)", ("parent", "active"))
 
     def run_guard(self, records, *, goal="active", thread="parent"):
-        with sqlite3.connect(self.home / "goals_1.sqlite") as conn:
+        with closing(sqlite3.connect(self.home / "goals_1.sqlite")) as conn, conn:
             conn.execute("UPDATE thread_goals SET status = ?", (goal,))
         self.rollout.write_text("".join(f"{json.dumps(record)}\n" for record in records))
         self.marker.unlink(missing_ok=True)
