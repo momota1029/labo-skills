@@ -12,7 +12,6 @@ Called by `cards.py build | watch | hook | stamp` and by the editor server.
   and builds again if the cards changed meanwhile. Edits made in quick succession
   therefore cost one build.
 """
-import fcntl
 import hashlib
 import json
 import os
@@ -24,6 +23,9 @@ from datetime import datetime
 from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS.parents[2] / 'src'))
+from labo_tools.locking import exclusive_lock, try_exclusive_lock
+
 CARDS_PY = SCRIPTS / 'cards.py'
 LABO_PY = SCRIPTS.parents[2] / 'scripts' / 'labo.py'   # present when the skill sits in a labo-skills checkout
 SOURCE_SUFFIXES = {'.md', '.yaml', '.yml', '.toml', '.tex', '.bib'}
@@ -94,8 +96,7 @@ def read_stamps(h):
 def write_stamp(h, output, src=None, **extra):
     p = stamp_path(h)
     p.parent.mkdir(parents=True, exist_ok=True)
-    with open(p.with_suffix('.lock'), 'w') as lk:
-        fcntl.flock(lk, fcntl.LOCK_EX)
+    with open(p.with_suffix('.lock'), 'a+b') as lk, exclusive_lock(lk):
         data = read_stamps(h)
         data.setdefault('outputs', {})[output] = {'source': src or source_hash(h),
                                                   'time': datetime.now().isoformat(timespec='seconds'), **extra}
@@ -215,22 +216,19 @@ def request_build(h, pdf=True):
 def builder_running(h):
     lock = paper_dir(h) / '.builder.lock'
     lock.parent.mkdir(parents=True, exist_ok=True)
-    with open(lock, 'a') as f:
-        try:
-            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return True
-        fcntl.flock(f, fcntl.LOCK_UN)
-    return False
+    with open(lock, 'a+b') as f, try_exclusive_lock(f) as acquired:
+        return not acquired
 
 
 def background(h, pdf=True):
     """Loop of the detached builder: wait for quiet, build, repeat while dirty."""
-    lock = open(paper_dir(h) / '.builder.lock', 'a')
-    try:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        return 0   # another builder owns this harness and will see the marker
+    with open(paper_dir(h) / '.builder.lock', 'a+b') as lock, try_exclusive_lock(lock) as acquired:
+        if not acquired:
+            return 0   # another builder owns this harness and will see the marker
+        return _background_locked(h, pdf)
+
+
+def _background_locked(h, pdf):
     quiet = float((h.cfg.get('build') or {}).get('quiet', 3))
     d = dirty_path(h)
     status = 0
