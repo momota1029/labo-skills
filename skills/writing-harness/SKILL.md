@@ -32,7 +32,8 @@ research evidence; this skill owns the harness in which the author writes.
   editing loop in [the harnesses](references/harnesses.md). Author-facing text
   uses the language in `harness.toml`.
 - Keep the card formats, status ladder, fingerprints and structure rules in
-  [cards](references/cards.md). The author's prose lives in explanation cards;
+  [cards](references/cards.md). Check [borrowed results](references/cards.md#facts-from-another-harness),
+  including those located through a book or lecture. The author's prose lives in explanation cards;
   edit its body only when the author asks.
 - Run `check` after every change to cards or structure; run `impact` before
   changing a statement and tell the author which prose to reread.
@@ -52,8 +53,9 @@ research evidence; this skill owns the harness in which the author writes.
   and apply the status ladder.
 - New cards come from templates: `cards.py new KIND ID` (harness `templates/`
   override the skill's `assets/card-templates/`).
-- Before handing a part to the author as a paper, run a
-  [review round](references/review-loop.md) on a frozen copy.
+- Carry the same writing workflow through self-check, review, triage and recheck. Before handing a part to the
+  author as a paper, run a [review round](references/review-loop.md) on a frozen copy. Independent reviewers give
+  findings in fresh contexts. Integrate accepted repairs within the author's existing editing permissions.
 
 Commit each accepted change in the workspace. Mathematics, prose and review
 records of a real paper stay in the workspace, never in this skill.
