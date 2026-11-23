@@ -33,6 +33,9 @@ import sys
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 WINDOW = dt.timedelta(hours=5)
 # Relative weights: input-token equivalents per token type, times a model factor.
 TOKEN_W = {"input_tokens": 1.0, "cache_creation_input_tokens": 1.25,
@@ -146,7 +149,7 @@ def windows(events, limits, now):
 def load_calib(path):
     if path and path.exists():
         try:
-            return json.loads(path.read_text())
+            return json.loads(path.read_text(encoding="utf-8"))
         except ValueError:
             pass
     return {"observed": []}
@@ -192,7 +195,7 @@ def main(argv=None):
         calib = learn(calib, root, now, a.learn_days)
         if calib_path:
             calib_path.parent.mkdir(parents=True, exist_ok=True)
-            calib_path.write_text(json.dumps(calib, ensure_ascii=False, indent=1) + "\n")
+            calib_path.write_text(json.dumps(calib, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
     events, limits = scan(root, now - dt.timedelta(hours=24))
     blocks, cur = windows(events, limits, now)

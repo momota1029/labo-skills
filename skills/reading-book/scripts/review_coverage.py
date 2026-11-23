@@ -47,6 +47,9 @@ import pathlib
 import sys
 import time
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import tex_blocks  # noqa: E402
 

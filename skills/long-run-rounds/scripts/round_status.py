@@ -157,14 +157,14 @@ def wait_hours(log: pathlib.Path, now: dt.datetime) -> int:
 
 def capacity(cfg: Config) -> dict:
     """Stage of the 5-hour window (reading-book usage_window.py); never stops the display."""
-    cmd = [sys.executable, str(USAGE_WINDOW), "--learn", "--json"]
+    cmd = [sys.executable, "-X", "utf8", str(USAGE_WINDOW), "--learn", "--json"]
     calib = cfg.opt("capacity_calib")
     if calib:
         cmd += ["--calib", str(calib)]
     if cfg.get("capacity_projects_dir"):
         cmd += ["--projects-dir", str(cfg.opt("capacity_projects_dir"))]
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=120)
         return json.loads(r.stdout)
     except Exception as e:
         return {"stage": "未較正", "error": str(e)}
