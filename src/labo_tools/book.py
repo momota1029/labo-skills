@@ -1449,7 +1449,8 @@ def _tex_card(book: Book, c: Card, language: str = "ja", macros: dict | None = N
     if c.kind == "A6":
         env = card_environment(c)
         if env:
-            return f"\\begin{{{env}}}{title or (f'[{tex_title(m['title'])}]' if m.get('title') else '')}\n{label}{index}{s.get('convention', '')}\n\\end{{{env}}}\n"
+            convention_title = title or ("[" + tex_title(m["title"]) + "]" if m.get("title") else "")
+            return f"\\begin{{{env}}}{convention_title}\n{label}{index}{s.get('convention', '')}\n\\end{{{env}}}\n"
         return (f"\\paragraph{{{'規約' if language == 'ja' else 'Convention'}}}\n"
                 f"\\phantomsection\n{label}{index}{s.get('convention', '')}\n")
     if c.kind == "B5":
