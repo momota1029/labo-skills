@@ -88,6 +88,32 @@ date and whether it was asked or inferred, at its owner:
 A rule moved to another owner leaves a one-line pointer in `style.toml` so the
 record of when it was asked survives.
 
+## Following an exemplar
+
+When the author asks that the paper follow a named exemplar as closely as possible
+(often their own or a coauthor's paper in the same theory), match its wording role by
+role. This request overrides the reading of a corpus as weak style cues.
+
+1. Set `exemplar = ["path/to/source.tex"]` in `harness.toml`. The path is relative to
+   the harness and the file stays in the private workspace.
+2. Before rewriting a card, open the exemplar passage with the same role, such as the
+   definition of an operator, a lemma statement, a proof step, a section opening or the
+   closing of a proof. Take its sentence forms and notation, for example "The ... operator
+   ... is defined by", "Then it holds that ... for a.e. t", "it follows from ... that",
+   "This completes the proof", and the exemplar's symbols. Keep the mathematics of the
+   card.
+3. Record the recurring choices in `style.toml` as a phrase table. Each `[[phrase]]`
+   entry has `avoid` (a regular expression for prose outside math), `use` (what the
+   exemplar writes in that role) and `basis` (where it was seen). `check` reports every
+   match as `PHRASE`.
+4. Run `cards.py exemplar` before reporting. It gives the rate per thousand words of each
+   phrase in the table and of common connectives, in the exemplar and in the cards, and it
+   lists word n-grams that the cards repeat but the exemplar never uses. Report the
+   remaining differences that you keep and the reason for each.
+
+A count of sentence openers alone cannot show that the prose follows the exemplar, and
+neither can a rewrite done from memory of its style.
+
 ## Tooling principle
 
 Everything mechanical is a program (`scripts/cards.py`). The agent's judgment

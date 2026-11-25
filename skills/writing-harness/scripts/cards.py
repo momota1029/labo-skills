@@ -269,6 +269,7 @@ def check(h, cards, errors):
             warn.append(f'UNUSED fact cards ({len(unused)}): ' + ', '.join(unused))
     known = {card_label(c) for c in cards.values() if c.is_fact} | set(cards)
     warn += _xref().warnings(cards, st, known)
+    warn += _exemplar().warnings(h, cards)
     return errors, warn
 
 
@@ -495,6 +496,21 @@ def _xref():
     sys.path.insert(0, str(SKILL / 'scripts'))
     import xref
     return xref
+
+
+def _exemplar():
+    sys.path.insert(0, str(SKILL / 'scripts'))
+    import exemplar
+    return exemplar
+
+
+def cmd_exemplar(h, a):
+    paths = a.paths or [str((h.root / p).resolve()) for p in h.cfg.get('exemplar') or []]
+    if not paths:
+        print('no exemplar: name files on the command line or set exemplar = [...] in harness.toml')
+        return 1
+    print(_exemplar().compare(h, load_cards(h)[0], paths, n=a.n, min_count=a.min))
+    return 0
 
 
 def cross_refs(cards, st, author_proofs):
@@ -905,6 +921,10 @@ def main(argv=None):
     p.add_argument('--background', action='store_true', help=argparse.SUPPRESS)
     sp.add_parser('watch').add_argument('--no-pdf', action='store_true')
     sp.add_parser('hook')
+    p = sp.add_parser('exemplar', help='compare the prose with the exemplar the author asked to follow')
+    p.add_argument('paths', nargs='*')
+    p.add_argument('-n', type=int, default=3)
+    p.add_argument('--min', type=int, default=3)
     p = sp.add_parser('new')
     p.add_argument('kind', choices=sorted(KIND_DIRS))
     p.add_argument('id')

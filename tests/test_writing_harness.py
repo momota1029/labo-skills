@@ -200,6 +200,26 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertFalse(any("Theorem 2.1" in w for w in hand))  # a citation locator
         self.assertTrue(any(w.startswith("UNRESOLVED x-why-settled") and "sec:none" in w for w in warns), warns)
 
+    def test_phrase_table_and_exemplar_comparison(self):
+        self.edit("cards/expl/x-why-settled.md", "form a vector space.",
+                  "form a vector space. The bound gives the claim, and one has $x=y$.")
+        with open(self.h / "style.toml", "a") as f:
+            f.write("\n[[phrase]]\navoid = '\\bgives?\\b'\nuse = 'it follows from ... that'\n"
+                    "basis = 'fictional exemplar'\n")
+        code, out = self.check_json()
+        self.assertEqual(code, 0)
+        phrase = [w for w in out["warnings"] if w.startswith("PHRASE")]
+        self.assertEqual(len(phrase), 1, phrase)
+        self.assertIn("x-why-settled", phrase[0])
+        self.assertIn("it follows from ... that", phrase[0])
+        ex = self.ws / "exemplar.tex"
+        ex.write_text("Let $x$ be given. Then it holds that $x=y$. It follows from (1) that $y=x$.\n" * 5)
+        r = self.run_cards("exemplar", ex, "--min", "1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertRegex(r.stdout, r"\\bgives\?\\b +0\.0 / +[1-9]")
+        self.assertIn("never in the exemplar", r.stdout)
+        self.assertIn("one has M", r.stdout)
+
     @unittest.skipUnless(shutil.which("pdflatex"), "pdflatex not installed")
     def test_rendered_tex_compiles(self):
         self.run_cards("render")

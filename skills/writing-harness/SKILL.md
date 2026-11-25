@@ -35,6 +35,9 @@ research evidence; this skill owns the harness in which the author writes.
   [cards](references/cards.md). Check [borrowed results](references/cards.md#facts-from-another-harness),
   including those located through a book or lecture. The author's prose lives in explanation cards;
   edit its body only when the author asks.
+- When the author names an exemplar paper and asks the prose to follow it, its wording is
+  the target, not a soft cue: follow [an exemplar](references/harnesses.md#following-an-exemplar)
+  passage by passage, with its phrase table in `style.toml` and `cards.py exemplar` before reporting.
 - Run `check` after every change to cards or structure; run `impact` before
   changing a statement and tell the author which prose to reread.
 - Every rule learned from an edit is stated, applied paper-wide as a diff after
