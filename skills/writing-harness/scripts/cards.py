@@ -267,6 +267,8 @@ def check(h, cards, errors):
         unused = sorted(c for c in cards if cards[c].is_fact and c not in pos)
         if unused:
             warn.append(f'UNUSED fact cards ({len(unused)}): ' + ', '.join(unused))
+    known = {card_label(c) for c in cards.values() if c.is_fact} | set(cards)
+    warn += _xref().warnings(cards, st, known)
     return errors, warn
 
 
@@ -476,10 +478,35 @@ def render_card(cards, cid, opt, author_proofs):
     return '\n'.join(out) + '\n'
 
 
-def section_head(st, si, stitle):
+def heading_tex(title, plain):
+    """A heading that may contain \\Cref{..}: the PDF bookmark gets the resolved number."""
+    if not _xref().REF_RE.search(title):
+        return title
+    return f'\\texorpdfstring{{{title}}}{{{_xref().plain_refs(title, plain)}}}'
+
+
+def section_head(st, si, stitle, plain=None):
     """\\section with the optional `label:` of that section in structure.yaml."""
     label = (st.get('sections') or [])[si].get('label')
-    return f'\\section{{{stitle}}}' + (f'\\label{{{label}}}' if label else '') + '\n'
+    return f'\\section{{{heading_tex(stitle, plain or {})}}}' + (f'\\label{{{label}}}' if label else '') + '\n'
+
+
+def _xref():
+    sys.path.insert(0, str(SKILL / 'scripts'))
+    import xref
+    return xref
+
+
+def cross_refs(cards, st, author_proofs):
+    """Equation numbers and the plain-text targets used for headings (see xref.py)."""
+    xref, items = _xref(), list(structure_items(st))
+    eqnums, _ = xref.equation_numbers(xref.printed_texts(cards, items, PROP_KINDS, author_proofs))
+    plain = {lab: ('Section', n) for lab, n in xref.section_numbers(st).items()}
+    plain.update({lab: ('Equation', n) for lab, n in eqnums.items()})
+    names = _reader().KIND_NAMES
+    plain.update({card_label(cards[c]): (names[cards[c].kind], n)
+                  for c, n in _reader().numbering(cards, items, FACT_KINDS).items()})
+    return eqnums, plain
 
 
 def cmd_render(h, a):
@@ -495,14 +522,15 @@ def cmd_render(h, a):
                      for x in c.meta.get('explains') or []}
     title = st.get('title') or h.cfg.get('title') or 'Draft'
     stepped = _reader().stepped_ids(cards, _reader().step_references(cards))
+    eqnums, plain = cross_refs(cards, st, author_proofs)
     body, cur, appendix = [], object(), False
     for si, stitle, cid, opt in structure_items(st):
         if opt.get('_subsection') and (a.sections is None or (si is not None and si < a.sections)):
             if si != cur:
-                body.append(section_head(st, si, stitle))
+                body.append(section_head(st, si, stitle, plain))
                 cur = si
             sub_label = f'\\label{{{opt["_label"]}}}' if opt.get('_label') else ''
-            body.append(f'\\subsection{{{opt["_subsection"]}}}{sub_label}\n')
+            body.append(f'\\subsection{{{heading_tex(opt["_subsection"], plain)}}}{sub_label}\n')
             continue
         if cid not in cards or (a.sections is not None and (si is None or si >= a.sections)):
             continue
@@ -510,7 +538,7 @@ def cmd_render(h, a):
             body.append(f'\\appendix\n\\section{{{h.cfg.get("appendix_title", "Deferred proofs")}}}\n')
             appendix = True
         elif si is not None and si != cur:
-            body.append(section_head(st, si, stitle))
+            body.append(section_head(st, si, stitle, plain))
             cur = si
         body.append(render_card(cards, cid, {**opt, '_stepped': stepped, '_lang': h.language}, author_proofs))
     bib = ''
@@ -519,7 +547,7 @@ def cmd_render(h, a):
         bib = f'\n\\bibliographystyle{{amsplain}}\n\\bibliography{{{bibfile.with_suffix("").as_posix()}}}\n'
     out = h.path('paper_dir', 'paper') / (a.out or 'cards.tex')
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(preamble(h, title) + '\\begin{document}\n\\maketitle\n\n' + '\n'.join(body) + bib + '\\end{document}\n',
+    out.write_text(preamble(h, title) + '\\begin{document}\n\\maketitle\n\n' + _xref().tag_displays('\n'.join(body), eqnums) + bib + '\\end{document}\n',
                    encoding='utf-8')
     pipeline.write_stamp(h, f'tex:{out.name}')
     print(f'-> {h.rel(out)}')

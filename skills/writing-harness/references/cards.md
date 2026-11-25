@@ -141,6 +141,18 @@ Section and subsection labels let explanation cards refer to sections with
 `\ref` or, with `ref_command = "Cref"` in `harness.toml` and cleveref in the
 preamble, with `\Cref`; the same setting renders bare card ids as `\Cref`.
 
+Never type an internal number. Refer to cards, sections and equations by label,
+also inside section titles (`title: Proof of \Cref{thm:main}`); the PDF bookmark
+receives the resolved number. Label a display inside it, `\[ ... \label{eq:energy} \]`,
+and cite it with `\eqref{eq:energy}`. The harness numbers labelled displays per
+section in printing order and writes `\tag{N}\label{eq:energy}`, so the PDF and the
+reading page agree; a display with its own name, `\tag{P}`, keeps that name.
+Unlabelled `\[ ... \]` stays unnumbered; put one label in one display. `check`
+reports `HANDNUM` for numbers typed by hand (`Section 3`, `Theorem 2.2`, `(5.1)`,
+numeric `\tag`) outside math and outside citation locators such as `[3, Theorem 2.1]`,
+and `UNRESOLVED` for a reference whose label exists nowhere. Numbers in cited
+sources stay as written.
+
 Without an option a proposition shows the author's proof when one exists,
 otherwise the reference proof (marked by a TeX comment). `check` reports
 unknown or duplicated ids, prerequisites shown later (`FORWARD`, or appendix),

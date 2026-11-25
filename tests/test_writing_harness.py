@@ -144,6 +144,62 @@ class WritingHarnessTests(unittest.TestCase):
         self.run_cards("render")
         self.assertIn(r"By \Cref{def:settled}", (self.h / "paper/cards.tex").read_text())
 
+    def add_notes_section(self, title):
+        (self.h / "cards/expl/x-notes.md").write_text(
+            "---\nid: x-notes\nkind: explanation\nrole: remark\nexplains: []\n---\n"
+            "By \\eqref{eq:bound} and \\Cref{sec:defs}, the index is controlled.\n"
+            "\\[\nN(a+b)\\le\\max\\{N(a),N(b)\\}\\label{eq:bound}\n\\]\n"
+            "Compare the named display \\eqref{eq:named}.\n"
+            "\\[\na_n=a_M\\tag{S}\\label{eq:named}\n\\]\n")
+        self.edit("structure.yaml", "  - title: Definitions\n", "  - title: Definitions\n    label: sec:defs\n")
+        with open(self.h / "structure.yaml", "a") as f:
+            f.write(f"  - title: '{title}'\n    items:\n      - x-notes\n")
+
+    def test_labelled_displays_and_references_in_headings(self):
+        self.add_notes_section(r"Notes on \Cref{thm:sum}")
+        with open(self.h / "harness.toml", "a") as f:
+            f.write('ref_command = "Cref"\n')
+        (self.h / "macros.tex").write_text("\\usepackage[capitalize,noabbrev]{cleveref}\n")
+        code, out = self.check_json()
+        self.assertEqual((code, out["warnings"]), (0, []))
+        self.assertEqual(self.run_cards("render").returncode, 0)
+        tex = (self.h / "paper/cards.tex").read_text()
+        self.assertIn(r"\section{\texorpdfstring{Notes on \Cref{thm:sum}}{Notes on Theorem 2.2}}", tex)
+        self.assertIn("\\tag{3.1}\\label{eq:bound}", tex)
+        self.assertIn(r"a_n=a_M\tag{S}\label{eq:named}", tex)  # a named display keeps its name
+        self.assertEqual(self.run_cards("read").returncode, 0)
+        page = (self.h / "html/read.html").read_text()
+        self.assertIn("3　Notes on Theorem 2.2</h2>", page)
+        self.assertIn('<a class="ref" href="#x-notes">(3.1)</a>', page)
+        self.assertIn('<a class="ref" href="#x-notes">(S)</a>', page)
+        self.assertIn('<a class="ref" href="#sec-1">Section 1</a>', page)
+        self.assertIn("\\tag{3.1}", page)
+        self.assertNotIn("label{eq:bound}", page)
+        if shutil.which("pdflatex"):
+            for _ in range(2):
+                r = subprocess.run(["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "cards.tex"],
+                                   cwd=self.h / "paper", capture_output=True, text=True)
+                self.assertEqual(r.returncode, 0, r.stdout[-2000:])
+            self.assertNotRegex(r.stdout, r"Reference `[^']*' .*undefined")
+            aux = (self.h / "paper/cards.aux").read_text()
+            self.assertRegex(aux, r"\\newlabel\{eq:bound\}\{\{\{3\.1\}\}")
+            self.assertIn("[equation]", aux)  # cleveref sees an equation
+
+    def test_check_warns_about_hand_typed_numbers_and_unknown_labels(self):
+        self.add_notes_section("Proof of Theorem 2.2")
+        self.edit("cards/expl/x-why-settled.md", "form a vector space.",
+                  "form a vector space (Section 2 and (2.1); compare [3, Theorem 2.1] and \\Cref{sec:none}).\n"
+                  "\\[\nx=y\\tag{2.1}\n\\]")
+        code, out = self.check_json()
+        self.assertEqual(code, 0)
+        warns = out["warnings"]
+        hand = sorted(w for w in warns if w.startswith("HANDNUM"))
+        self.assertEqual(len(hand), 4, hand)
+        for n in ('"Section 2"', '"(2.1)"', '"\\tag{2.1}"', 'structure: "Theorem 2.2"'):
+            self.assertTrue(any(n in w for w in hand), (n, hand))
+        self.assertFalse(any("Theorem 2.1" in w for w in hand))  # a citation locator
+        self.assertTrue(any(w.startswith("UNRESOLVED x-why-settled") and "sec:none" in w for w in warns), warns)
+
     @unittest.skipUnless(shutil.which("pdflatex"), "pdflatex not installed")
     def test_rendered_tex_compiles(self):
         self.run_cards("render")
