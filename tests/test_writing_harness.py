@@ -200,6 +200,17 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertFalse(any("Theorem 2.1" in w for w in hand))  # a citation locator
         self.assertTrue(any(w.startswith("UNRESOLVED x-why-settled") and "sec:none" in w for w in warns), warns)
 
+    def test_reference_with_several_labels(self):
+        self.edit("cards/expl/x-why-settled.md", "form a vector space.",
+                  "form a vector space (see \\Cref{lem:tail,lem:none}).")
+        code, out = self.check_json()
+        unresolved = [w for w in out["warnings"] if w.startswith("UNRESOLVED")]
+        self.assertEqual(len(unresolved), 1, unresolved)
+        self.assertIn("lem:none", unresolved[0])
+        self.assertEqual(self.run_cards("read").returncode, 0)
+        page = (self.h / "html/read.html").read_text()
+        self.assertNotIn("lem:tail,", page)
+
     def test_phrase_table_and_exemplar_comparison(self):
         self.edit("cards/expl/x-why-settled.md", "form a vector space.",
                   "form a vector space. The bound gives the claim, and one has $x=y$.")

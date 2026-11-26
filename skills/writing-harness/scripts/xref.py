@@ -99,12 +99,21 @@ def ref_text(cmd, kind, n):
     return {'ref': n, 'eqref': f'({n})', 'Cref': f'{kind} {n}', 'cref': f'{kind.lower()} {n}'}[cmd]
 
 
+def split_multi(text):
+    """\\Cref{a,b} (several labels in one reference) as \\Cref{a} and \\Cref{b}, for the reading page."""
+    def one(m):
+        labs = [x.strip() for x in m.group(2).split(',') if x.strip()]
+        refs = [f'\\{m.group(1)}{{{x}}}' for x in labs]
+        return refs[0] if len(refs) == 1 else ', '.join(refs[:-1]) + ' and ' + refs[-1]
+    return REF_RE.sub(one, text)
+
+
 def plain_refs(text, targets):
     """Resolve references to plain text (headings, PDF bookmarks); targets: label -> (kind, number)."""
     def one(m):
         t = targets.get(m.group(2))
         return ref_text(m.group(1), *t) if t else m.group(0)
-    return REF_RE.sub(one, text)
+    return REF_RE.sub(one, split_multi(text))
 
 
 def hand_numbers(text):
@@ -134,6 +143,7 @@ def warnings(cards, st, known_labels):
         for n in hand_numbers(text):
             out.append(f'HANDNUM {where}: "{n}" is typed by hand; refer by label (\\Cref, \\eqref)')
         for m in REF_RE.finditer(text):
-            if m.group(2) not in known:
-                out.append(f'UNRESOLVED {where}: \\{m.group(1)}{{{m.group(2)}}} matches no label')
+            for lab in m.group(2).split(','):
+                if lab.strip() not in known:
+                    out.append(f'UNRESOLVED {where}: \\{m.group(1)}{{{lab.strip()}}} matches no label')
     return out

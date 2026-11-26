@@ -51,7 +51,7 @@ def tex_to_html(text, cards, num, label_to_id, card_label, targets=None):
             return f'<a class="ref" href="#{href}">{xref.ref_text(cmd, kind, n)}</a>'
         return m.group(0)
 
-    t = xref.REF_RE.sub(ref, t)
+    t = xref.REF_RE.sub(ref, xref.split_multi(t))
     t = re.sub(r'\\cite\[([^\]]*)\]\{([^}]*)\}', r'<span class="cite">[\2, \1]</span>', t)
     t = re.sub(r'\\cite\{([^}]*)\}', r'<span class="cite">[\1]</span>', t)
     for env, tag in (('enumerate', 'ol'), ('itemize', 'ul')):
