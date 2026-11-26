@@ -163,8 +163,12 @@ unknown or duplicated ids, prerequisites shown later (`FORWARD`, or appendix),
 prerequisites not shown at all (`MISSING`), fact cards no section uses
 (`UNUSED`), and lemmas whose first use is in another section (`PLACEMENT`; a
 lemma should stand just before its first use). `PLACEMENT` allows a result used
-in several sections and the last result of a section that a theorem uses;
-citations in remarks do not count as uses.
+in several sections, a result used by two or more results of the section that
+proves a theorem (a tool of the main proof), and the last result of a section
+that a theorem uses; citations in remarks do not count as uses. It also reports a display line whose
+`\text{}` parts hold more than four words (`DISPLAYTEXT`): a display keeps
+formulas and a short qualifier such as "for a.e. $t\in(0,T)$", and a condition
+in words goes into the sentence.
 
 `proof: later` prints only the statement; the proof appears at the
 `{proof_of: ID}` item, headed with a reference back to the statement. Use it to

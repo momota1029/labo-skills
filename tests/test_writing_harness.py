@@ -261,6 +261,34 @@ class WritingHarnessTests(unittest.TestCase):
         code, out = self.check_json()
         self.assertEqual([w for w in out["warnings"] if w.startswith("PLACEMENT")], [], out["warnings"])
 
+    def test_placement_allows_tools_of_the_main_proof(self):
+        (self.h / "cards/prop/lem-head.md").write_text(
+            "---\nid: lem-head\nkind: lemma\nlabel: lem:head\nstatus: stated\nrequires: []\n---\n"
+            "## Statement\nEvery settled sequence has a first term.\n")
+        self.edit("cards/prop/lem-tail.md", "requires: [def-settled]", "requires: [def-settled, lem-head]")
+        self.edit("structure.yaml", "      - def-settled\n",
+                  "      - def-settled\n  - title: Devices\n    items:\n      - lem-head\n      - x-head-note\n")
+        (self.h / "cards/expl/x-head-note.md").write_text(
+            "---\nid: x-head-note\nkind: explanation\nrole: transition\nexplains: []\n---\nWe now turn to the results.\n")
+        code, out = self.check_json()
+        self.assertEqual([w for w in out["warnings"] if w.startswith("PLACEMENT")],
+                         ["PLACEMENT lem-head is first used by lem-tail in another section; "
+                          "place it just before that use"])
+        # Used by two results of the section that proves the theorem: a tool of the main proof.
+        self.edit("cards/prop/thm-sum-settled.md", "requires: [def-settled, lem-tail]",
+                  "requires: [def-settled, lem-tail, lem-head]")
+        code, out = self.check_json()
+        self.assertEqual([w for w in out["warnings"] if w.startswith("PLACEMENT")], [], out["warnings"])
+
+    def test_prose_in_displays_is_reported(self):
+        self.edit("cards/prop/lem-tail.md", "## Statement\n",
+                  "## Statement\n\\[\na_n\\to a\\quad\\text{at each point }n\\text{ of the tail set}\n\\]\n"
+                  "\\[\na_n=a\\quad\\text{for all }n\\geq N\n\\]\n")
+        code, out = self.check_json()
+        shown = [w for w in out["warnings"] if w.startswith("DISPLAYTEXT")]
+        self.assertEqual(len(shown), 1, out["warnings"])
+        self.assertIn("lem-tail", shown[0])
+
     def test_remark_card_is_numbered_without_proof(self):
         (self.h / "cards/prop/rem-tail.md").write_text(
             "---\nid: rem-tail\nkind: remark\nlabel: rem:tail\nstatus: drafted\nrequires: [lem-tail]\n---\n"

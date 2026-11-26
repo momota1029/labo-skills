@@ -170,10 +170,13 @@ def placement_warnings(cards, pos, proof_pos):
     """A lemma stands just before its first use: warn when that use is in another section.
 
     Allowed: a result used in several sections (a shared tool stays before the first),
-    and the last result of a section when a theorem uses it (the closing result of a
-    section of devices for the main proof). Remarks citing a result are not uses."""
+    a result used by two or more results of the section holding the proof of a theorem
+    (a tool of the main proof, kept in the devices section), and the last result of a
+    section when a theorem uses it (the closing result of a section of devices for the
+    main proof). Remarks citing a result are not uses."""
     def at(u):
         return proof_pos.get(u, pos[u])
+    proof_secs = {at(u)[1] for u in pos if cards[u].kind == 'theorem'}
     out = []
     for cid, (n, si) in pos.items():
         c = cards[cid]
@@ -191,11 +194,33 @@ def placement_warnings(cards, pos, proof_pos):
             continue
         if len({at(u)[1] for u in users}) > 1:
             continue
+        if len(users) > 1 and {at(u)[1] for u in users} <= proof_secs:
+            continue
         last = max((m for m, (k, s2) in pos.items() if s2 == si and cards[m].kind in PROP_KINDS),
                    key=lambda m: pos[m][0])
         if last == cid and any(cards[u].kind == 'theorem' for u in users):
             continue
         out.append(f'PLACEMENT {cid} is first used by {first} in another section; place it just before that use')
+    return out
+
+
+DISPLAY_RE = re.compile(r'\\\[(.*?)\\\]|\\begin\{(equation|align|gather|multline)\*?\}(.*?)\\end\{\2\*?\}', re.S)
+DISPLAY_TEXT_RE = re.compile(r'\\text(?:up|rm)?\{([^{}]*)\}')
+DISPLAY_WORDS = 4
+
+
+def display_text_warnings(cards):
+    """Prose stays out of displays: a display line keeps at most a short qualifier."""
+    out = []
+    for c in cards.values():
+        for m in DISPLAY_RE.finditer(c.body):
+            for line in (m.group(1) or m.group(3) or '').split('\\\\'):
+                texts = DISPLAY_TEXT_RE.findall(line)
+                n = sum(len(re.findall(r'[A-Za-z]+(?:\.[A-Za-z]+)*', x)) for x in texts)
+                if n > DISPLAY_WORDS:
+                    words = ' '.join(x.strip() for x in texts)
+                    out.append(f'DISPLAYTEXT {c.id}: "{words}" puts {n} words of prose in a display; '
+                               'move the condition into the sentence')
     return out
 
 
@@ -304,6 +329,7 @@ def check(h, cards, errors):
     known = {card_label(c) for c in cards.values() if c.is_fact} | set(cards)
     warn += _xref().warnings(cards, st, known)
     warn += _exemplar().warnings(h, cards)
+    warn += display_text_warnings(cards)
     return errors, warn
 
 

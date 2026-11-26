@@ -65,7 +65,19 @@ preliminaries section or an appendix. A tool used in several sections stands
 before its first use, and a short argument used once is better kept inside the
 proof that needs it. The exception is a section of devices for the main proof:
 the result the main proof applies closes that section, and the lemmas before it
-are again ordered by first use.
+are again ordered by first use. A tool that several steps of the main proof
+apply may also stand in that section, before the results that serve it.
+
+Keep a reduction next to the result it serves. A normalization or "without loss
+of generality" step on which a main result relies goes in a remark right after
+that result, with the hypotheses stated in the reduced form; later uses cite
+the remark. Do not leave such a reduction in a preliminaries section far from
+the statement.
+
+A preliminaries section holds definitions, notation and recalled standard
+facts with references, in the manner of the target corpus; it does not hold
+substantive new proofs. An argument the main proof relies on belongs in the
+section of devices, as a lemma with its proof.
 
 Choose section boundaries by a change in mathematical job: setting up an
 interface, exposing an obstruction, proving the decisive estimate, deriving
