@@ -158,6 +158,7 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
     conv = lambda s: tex_to_html(xref.tag_displays(external_steps_display(s, stepped), eqnums, tex=False),  # noqa: E731
                                  cards, num, label_to_id, card_label, targets)
     out, toc, cur, appendix = [], [], object(), False
+    unnumbered = xref.unnumbered_sections(st)
     sub = 0
     for si, stitle, cid, opt in items:
         if opt.get('_subsection'):
@@ -180,8 +181,9 @@ def build(h, cards, st, items, card_label, prop_kinds, fact_kinds):
         elif si is not None and si != cur:
             cur = si
             sub = 0
-            out.append(f'<h2 id="sec-{si + 1}">{si + 1}　{heading(stitle)}</h2>')
-            toc.append((f'sec-{si + 1}', f'{si + 1}　{heading(stitle)}'))
+            no = '' if si in unnumbered else f'{si + 1}　'
+            out.append(f'<h2 id="sec-{si + 1}">{no}{heading(stitle)}</h2>')
+            toc.append((f'sec-{si + 1}', f'{no}{heading(stitle)}'))
         if opt.get('_proof_only'):
             proof = (author_proofs[cid].body if cid in author_proofs
                      else proof_display(cid, c.sec('Proof'), stepped))

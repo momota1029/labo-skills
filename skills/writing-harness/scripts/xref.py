@@ -64,10 +64,18 @@ def equation_numbers(texts):
     return nums, anchors
 
 
+def unnumbered_sections(st):
+    """Indices of sections marked `numbered: false` (e.g. References); keep them after the numbered ones."""
+    return {si for si, sec in enumerate(st.get('sections') or []) if sec.get('numbered') is False}
+
+
 def section_numbers(st):
     """Label -> number for sections and subsections that carry `label:` in structure.yaml."""
     nums = {}
+    unnumbered = unnumbered_sections(st)
     for si, sec in enumerate(st.get('sections') or []):
+        if si in unnumbered:
+            continue
         if sec.get('label'):
             nums[sec['label']] = str(si + 1)
         sub = 0

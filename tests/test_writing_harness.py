@@ -231,6 +231,19 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn("never in the exemplar", r.stdout)
         self.assertIn("one has M", r.stdout)
 
+    def test_unnumbered_trailing_section(self):
+        with open(self.h / "structure.yaml", "a") as f:
+            f.write("  - title: References\n    numbered: false\n    label: sec:refs\n    items:\n      - x-why-settled\n")
+        self.edit("structure.yaml", "      - x-why-settled\n      - lem-tail\n", "      - lem-tail\n")
+        self.assertEqual(self.run_cards("render").returncode, 0)
+        tex = (self.h / "paper/cards.tex").read_text()
+        self.assertIn("\\section*{References}", tex)
+        self.assertNotIn("\\label{sec:refs}", tex)
+        self.assertEqual(self.run_cards("read").returncode, 0)
+        page = (self.h / "html/read.html").read_text()
+        self.assertIn(">References</h2>", page)
+        self.assertIn(">2　Results</h2>", page)
+
     @unittest.skipUnless(shutil.which("pdflatex"), "pdflatex not installed")
     def test_rendered_tex_compiles(self):
         self.run_cards("render")

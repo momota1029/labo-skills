@@ -488,8 +488,10 @@ def heading_tex(title, plain):
 
 def section_head(st, si, stitle, plain=None):
     """\\section with the optional `label:` of that section in structure.yaml."""
-    label = (st.get('sections') or [])[si].get('label')
-    return f'\\section{{{heading_tex(stitle, plain or {})}}}' + (f'\\label{{{label}}}' if label else '') + '\n'
+    sec = (st.get('sections') or [])[si]
+    star = '*' if sec.get('numbered') is False else ''
+    label = None if star else sec.get('label')
+    return f'\\section{star}{{{heading_tex(stitle, plain or {})}}}' + (f'\\label{{{label}}}' if label else '') + '\n'
 
 
 def _xref():

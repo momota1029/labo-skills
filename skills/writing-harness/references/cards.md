@@ -133,6 +133,10 @@ sections:
       - lem-step
       - {proof_of: thm-main}                 # ... its proof after the lemmas it uses
       - {subsection: Proofs, label: sec:proofs}  # a numbered subsection heading (label optional)
+  - title: References
+    numbered: false                          # \section*, no number; only after the numbered sections
+    items:
+      - x-references
 appendix:
   - lem-technical
 ```
