@@ -244,6 +244,25 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn(">References</h2>", page)
         self.assertIn(">2　Results</h2>", page)
 
+    def test_remark_card_is_numbered_without_proof(self):
+        (self.h / "cards/prop/rem-tail.md").write_text(
+            "---\nid: rem-tail\nkind: remark\nlabel: rem:tail\nstatus: drafted\nrequires: [lem-tail]\n---\n"
+            "## Statement\nBy \\Cref{lem:tail}, the tail is constant. In particular, it is bounded.\n")
+        self.edit("structure.yaml", "      - lem-tail\n", "      - lem-tail\n      - rem-tail\n")
+        with open(self.h / "style.toml", "a") as f:
+            f.write("\n[[phrase]]\navoid = '\\bIn particular\\b'\nsection = 'Statement'\n"
+                    "use = 'a separate assertion'\nbasis = 'fictional rule'\n")
+        code, out = self.check_json()
+        self.assertEqual(code, 0, out)
+        phrase = [w for w in out["warnings"] if w.startswith("PHRASE")]
+        self.assertEqual(len(phrase), 1, phrase)
+        self.assertIn("rem-tail", phrase[0])
+        self.assertEqual(self.run_cards("render").returncode, 0)
+        tex = (self.h / "paper/cards.tex").read_text()
+        self.assertIn("\\begin{remark}\\label{rem:tail}", tex)
+        self.assertEqual(self.run_cards("read").returncode, 0)
+        self.assertIn("Remark 2.2", (self.h / "html/read.html").read_text())
+
     @unittest.skipUnless(shutil.which("pdflatex"), "pdflatex not installed")
     def test_rendered_tex_compiles(self):
         self.run_cards("render")

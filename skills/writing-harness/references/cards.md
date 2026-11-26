@@ -34,7 +34,7 @@ the paper.
 ```
 ---
 id: def-graded-set           # stable kebab-case id; never reused for another fact
-kind: definition             # definition | theorem | proposition | lemma | corollary
+kind: definition             # definition | theorem | proposition | lemma | corollary | remark (no Proof; numbered with the theorems)
 label: def:graded-set        # TeX label (default card:<id>)
 title: Graded set
 symbols: ['G']               # notation introduced here (vocab.toml keys)

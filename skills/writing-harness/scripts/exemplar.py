@@ -7,7 +7,8 @@
     use = 'it holds that'             # what the exemplar writes in that role
     basis = 'exemplar, statements of lemmas'
 
-`check` reports every `avoid` match as a PHRASE warning. `cards.py exemplar`
+`check` reports every `avoid` match as a PHRASE warning; a rule with
+`section = "Statement"` is matched only in that section of the cards. `cards.py exemplar`
 compares the cards with the exemplar files named in `harness.toml`
 (`exemplar = ["..."]`, relative to the harness) or on the command line: the rate
 per thousand words of each phrase of the table and of a few common markers, and the
@@ -51,8 +52,10 @@ def warnings(h, cards):
     out = []
     for rule in phrase_rules(h):
         rx = re.compile(rule['avoid'])
+        section = rule.get('section')
         for c in cards.values():
-            for m in rx.finditer(card_prose(c)):
+            text = prose(c.sec(section)) if section else card_prose(c)
+            for m in rx.finditer(text):
                 out.append(f'PHRASE {c.id}: "{m.group(0)}"; the exemplar writes: {rule.get("use", "?")}')
     return out
 

@@ -104,8 +104,9 @@ role. This request overrides the reading of a corpus as weak style cues.
    card.
 3. Record the recurring choices in `style.toml` as a phrase table. Each `[[phrase]]`
    entry has `avoid` (a regular expression for prose outside math), `use` (what the
-   exemplar writes in that role) and `basis` (where it was seen). `check` reports every
-   match as `PHRASE`.
+   exemplar writes in that role) and `basis` (where it was seen); an optional
+   `section`, such as `"Statement"`, limits the rule to that card section. `check` reports
+   every match as `PHRASE`.
 4. Run `cards.py exemplar` before reporting. It gives the rate per thousand words of each
    phrase in the table and of common connectives, in the exemplar and in the cards, and it
    lists word n-grams that the cards repeat but the exemplar never uses. Report the

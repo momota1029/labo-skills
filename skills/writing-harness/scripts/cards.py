@@ -38,8 +38,8 @@ import pipeline  # noqa: E402
 
 SKILL = Path(__file__).resolve().parents[1]
 TEMPLATE = SKILL / 'assets' / 'template'
-FACT_KINDS = {'definition', 'theorem', 'proposition', 'lemma', 'corollary'}
-PROP_KINDS = FACT_KINDS - {'definition'}
+FACT_KINDS = {'definition', 'theorem', 'proposition', 'lemma', 'corollary', 'remark'}
+PROP_KINDS = FACT_KINDS - {'definition', 'remark'}
 STATUS = ['stated', 'drafted', 'gap-free', 'verified', 'lean']
 ROLES = {'motivation', 'proof', 'remark', 'transition', 'intro'}
 PROOF_MODES = {'fact', 'author', 'omit', 'appendix', 'later'}
@@ -552,6 +552,8 @@ def cmd_render(h, a):
             continue
         if cid not in cards or (a.sections is not None and (si is None or si >= a.sections)):
             continue
+        if cid == h.cfg.get('abstract_card'):
+            continue
         if si is None and not appendix:
             body.append(f'\\appendix\n\\section{{{h.cfg.get("appendix_title", "Deferred proofs")}}}\n')
             appendix = True
@@ -565,7 +567,9 @@ def cmd_render(h, a):
         bib = f'\n\\bibliographystyle{{amsplain}}\n\\bibliography{{{bibfile.with_suffix("").as_posix()}}}\n'
     out = h.path('paper_dir', 'paper') / (a.out or 'cards.tex')
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(preamble(h, title) + '\\begin{document}\n\\maketitle\n\n' + _xref().tag_displays('\n'.join(body), eqnums) + bib + '\\end{document}\n',
+    ab = cards.get(h.cfg.get('abstract_card') or '')
+    abstract = f'\\begin{{abstract}}\n{link_refs(ab.body.strip(), cards)}\n\\end{{abstract}}\n' if ab else ''
+    out.write_text(preamble(h, title) + '\\begin{document}\n' + abstract + '\\maketitle\n\n' + _xref().tag_displays('\n'.join(body), eqnums) + bib + '\\end{document}\n',
                    encoding='utf-8')
     pipeline.write_stamp(h, f'tex:{out.name}')
     print(f'-> {h.rel(out)}')
@@ -844,7 +848,7 @@ def cmd_watch(h, a):
     return pipeline.watch(h, pdf=not a.no_pdf)
 
 
-KIND_DIRS = {'definition': 'def', 'explanation': 'expl', **{k: 'prop' for k in PROP_KINDS}}
+KIND_DIRS = {'definition': 'def', 'remark': 'prop', 'explanation': 'expl', **{k: 'prop' for k in PROP_KINDS}}
 
 
 def card_template(h, kind):

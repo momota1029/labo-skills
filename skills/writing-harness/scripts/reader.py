@@ -15,7 +15,7 @@ LABELS = {'ja': {'toc': '目次', 'smaller': '文字を小さく', 'larger': '�
           'en': {'toc': 'Contents', 'smaller': 'Smaller text', 'larger': 'Larger text', 'narrower': 'Shorter lines', 'wider': 'Longer lines', 'theme': 'Light/dark', 'comments': 'Comments', 'copy': 'Copy to clipboard', 'copied': 'Copied', 'add': 'Comment', 'placeholder': 'Comment', 'save': 'Add', 'cancel': 'Cancel', 'none': 'No comments yet. Select text to add one.', 'delete': 'Delete', 'clear': 'Clear all', 'close': 'Close', 'confirm': 'Delete all comments?', 'nocomment': '(no comment)', 'proof': 'Proof', 'appendix': 'Appendix'}}
 
 KIND_NAMES = {'definition': 'Definition', 'theorem': 'Theorem', 'proposition': 'Proposition',
-              'lemma': 'Lemma', 'corollary': 'Corollary'}
+              'lemma': 'Lemma', 'corollary': 'Corollary', 'remark': 'Remark'}
 
 
 def numbering(cards, items, fact_kinds):
