@@ -166,6 +166,39 @@ def structure_items(st):
 
 # ---------------------------------------------------------------- checks
 
+def placement_warnings(cards, pos, proof_pos):
+    """A lemma stands just before its first use: warn when that use is in another section.
+
+    Allowed: a result used in several sections (a shared tool stays before the first),
+    and the last result of a section when a theorem uses it (the closing result of a
+    section of devices for the main proof). Remarks citing a result are not uses."""
+    def at(u):
+        return proof_pos.get(u, pos[u])
+    out = []
+    for cid, (n, si) in pos.items():
+        c = cards[cid]
+        if c.kind not in PROP_KINDS - {'theorem'}:
+            continue
+        label = card_label(c)
+        users = [u for u in pos if u != cid and (si is None or at(u)[0] > n)
+                 and cards[u].kind != 'remark' and cards[u].meta.get('role') != 'remark'
+                 and (cid in cards[u].requires or
+                 re.search(r'\\[cC]?ref\{[^}]*\b' + re.escape(label) + r'\b', cards[u].body))]
+        if not users:
+            continue
+        first = min(users, key=lambda u: at(u)[0])
+        if at(first)[1] == si and si is not None:
+            continue
+        if len({at(u)[1] for u in users}) > 1:
+            continue
+        last = max((m for m, (k, s2) in pos.items() if s2 == si and cards[m].kind in PROP_KINDS),
+                   key=lambda m: pos[m][0])
+        if last == cid and any(cards[u].kind == 'theorem' for u in users):
+            continue
+        out.append(f'PLACEMENT {cid} is first used by {first} in another section; place it just before that use')
+    return out
+
+
 def check(h, cards, errors):
     errors, warn = list(errors), []
     for c in cards.values():
@@ -264,6 +297,7 @@ def check(h, cards, errors):
                     warn.append(f'MISSING {cid} needs {r}, which is not in the structure')
                 elif pos[r][0] > n:
                     warn.append(f'FORWARD {cid} uses {r} ({"appendix" if pos[r][1] is None else "later"})')
+        warn += placement_warnings(cards, pos, proof_pos)
         unused = sorted(c for c in cards if cards[c].is_fact and c not in pos)
         if unused:
             warn.append(f'UNUSED fact cards ({len(unused)}): ' + ', '.join(unused))

@@ -160,8 +160,11 @@ sources stay as written.
 Without an option a proposition shows the author's proof when one exists,
 otherwise the reference proof (marked by a TeX comment). `check` reports
 unknown or duplicated ids, prerequisites shown later (`FORWARD`, or appendix),
-prerequisites not shown at all (`MISSING`) and fact cards no section uses
-(`UNUSED`).
+prerequisites not shown at all (`MISSING`), fact cards no section uses
+(`UNUSED`), and lemmas whose first use is in another section (`PLACEMENT`; a
+lemma should stand just before its first use). `PLACEMENT` allows a result used
+in several sections and the last result of a section that a theorem uses;
+citations in remarks do not count as uses.
 
 `proof: later` prints only the statement; the proof appears at the
 `{proof_of: ID}` item, headed with a reference back to the statement. Use it to

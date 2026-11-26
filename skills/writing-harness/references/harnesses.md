@@ -43,8 +43,8 @@ make them stop. It reports; the story stays the author's
 The skeleton: definitions and statements in reading order, without proofs
 (`structure.yaml`). The agent may fill a first order from the story; the
 author rearranges. After every move, `check` reports statements that use a
-notion defined later (`FORWARD`), prerequisites never shown (`MISSING`) and
-unused facts. Report the breakage of a requested move rather than silently
+notion defined later (`FORWARD`), prerequisites never shown (`MISSING`),
+unused facts, and lemmas placed far from their first use (`PLACEMENT`). Report the breakage of a requested move rather than silently
 undoing it. For the reasoning behind section roles use
 [paper-structure](../../paper-structure/SKILL.md).
 

@@ -59,6 +59,14 @@ when the user asks for a managed dependency graph. Adopt a graph only for the
 requested scope. Its topological order constrains proof exposition and setup;
 it does not prescribe the paper's narrative or certify complete extraction.
 
+Place each lemma immediately before its first use, so that the reader sees it
+applied right after reading it; do not stock single-use lemmas in a
+preliminaries section or an appendix. A tool used in several sections stands
+before its first use, and a short argument used once is better kept inside the
+proof that needs it. The exception is a section of devices for the main proof:
+the result the main proof applies closes that section, and the lemmas before it
+are again ordered by first use.
+
 Choose section boundaries by a change in mathematical job: setting up an
 interface, exposing an obstruction, proving the decisive estimate, deriving
 the main theorem, or testing its scope. Keep a short argument with its use

@@ -244,6 +244,23 @@ class WritingHarnessTests(unittest.TestCase):
         self.assertIn(">References</h2>", page)
         self.assertIn(">2　Results</h2>", page)
 
+    def test_placement_of_lemmas_by_first_use(self):
+        (self.h / "cards/prop/lem-head.md").write_text(
+            "---\nid: lem-head\nkind: lemma\nlabel: lem:head\nstatus: stated\nrequires: []\n---\n"
+            "## Statement\nEvery settled sequence has a first term.\n")
+        self.edit("cards/prop/lem-tail.md", "requires: [def-settled]", "requires: [def-settled, lem-head]")
+        self.edit("structure.yaml", "      - def-settled\n", "      - def-settled\n      - lem-head\n")
+        code, out = self.check_json()
+        placement = [w for w in out["warnings"] if w.startswith("PLACEMENT")]
+        self.assertEqual(placement, ["PLACEMENT lem-head is first used by lem-tail in another section; "
+                                     "place it just before that use"])
+        # The closing lemma of a section of devices may serve the theorem of a later section.
+        self.edit("structure.yaml", "      - def-settled\n      - lem-head\n",
+                  "      - def-settled\n  - title: Devices\n    items:\n      - lem-head\n      - lem-tail\n")
+        self.edit("structure.yaml", "      - x-why-settled\n      - lem-tail\n", "      - x-why-settled\n")
+        code, out = self.check_json()
+        self.assertEqual([w for w in out["warnings"] if w.startswith("PLACEMENT")], [], out["warnings"])
+
     def test_remark_card_is_numbered_without_proof(self):
         (self.h / "cards/prop/rem-tail.md").write_text(
             "---\nid: rem-tail\nkind: remark\nlabel: rem:tail\nstatus: drafted\nrequires: [lem-tail]\n---\n"
