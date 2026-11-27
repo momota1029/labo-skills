@@ -284,7 +284,7 @@ class WritingHarnessTests(unittest.TestCase):
         (self.h / "cards/prop/lem-load.md").write_text(
             "---\nid: lem-load\nkind: lemma\nlabel: lem:load\nstatus: drafted\nrequires: []\n---\n"
             "## Statement\nThe sum is finite.\n\n## Proof\n"
-            "We set $\\nu\\coloneqq a+b$. Then $\\nu$ is finite, and $\\nu+\\nu$ is finite. "
+            "We set $\\nu\\coloneqq a+b$. The sum is a number. It is real. Then $\\nu$ is finite, and $\\nu+\\nu$ is finite. "
             "Let $c\\coloneqq 2$. By Fatou's lemma, the sum is finite. This completes the proof.\n")
         self.edit("structure.yaml", "      - def-settled\n", "      - def-settled\n      - lem-load\n")
         code, out = self.check_json()
@@ -297,6 +297,7 @@ class WritingHarnessTests(unittest.TestCase):
         rows = {x["id"]: x for x in json.loads(r.stdout)}
         self.assertEqual(rows["lem-load"]["symbols"], [["\\nu", 3], ["c", 0]])
         self.assertEqual(rows["lem-load"]["tools"], ["Fatou's lemma"])
+        self.assertEqual(rows["lem-load"]["named_ahead"], ["\\nu"])
 
     def test_prose_in_displays_is_reported(self):
         self.edit("cards/prop/lem-tail.md", "## Statement\n",

@@ -173,7 +173,9 @@ proof: `NAMEFIRST` when its first sentence names an object with `\coloneqq`
 (derive the object first, then name it), and `ONCESYMBOL` when a symbol named
 in a proof is used at most once afterwards (write the expression instead).
 `cards.py load` lists, for every proof, its length, displays, named symbols with
-their later uses and the theorems it invokes, heaviest first; read it with the
+their later uses and the theorems it invokes, heaviest first, and marks
+`NAMEAHEAD` a symbol whose expression has not appeared before and whose first
+use comes two or more sentences after it is named; read it with the
 [cognitive-load points](../../paper-writing/references/manuscript-conventions.md#cognitive-load-of-proofs),
 which are structural and need a reading, not only these counts.
 

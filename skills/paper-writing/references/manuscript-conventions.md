@@ -30,6 +30,11 @@ paper's notation decisions belong with that paper.
 
 ## Definitions and statements
 
+- Introduce the data of a statement with "Let" and keep "for every" for the
+  objects the conclusion ranges over, so that the proof does not begin by fixing
+  them again. Do not fix a parameter with "Let" and then let it vary in the
+  conclusion ("let $\lambda>0$ ... as $\lambda\to0$"); introduce the family
+  instead ("for $\lambda>0$, let $r_\lambda$ be ...").
 - A definition names objects and fixes notation; it does not assert facts.
   State a needed fact separately ("the metric $d$ is symmetric and ...").
 - Keep each definition to the objects it introduces. Introduce an auxiliary
@@ -91,11 +96,18 @@ A proof can be correct and still costly to read. Review every proof, and the
 statement it serves, for the following points; a statement may be reshaped when
 that lowers the load.
 
+- Announce each step by what it literally establishes ("we approximate",
+  "we construct", "we estimate", "we identify"). A paraphrase that is false as
+  written, such as "we solve the equation in discrete time" for a step that
+  solves a discretized problem approximating it, misleads even when the intent
+  is clear.
 - Derive before naming. An auxiliary object (a measure, a function, an
   operator) appears first as the result of a step the reader has just seen, and
   only then, if it is used repeatedly, gets a symbol. A proof that opens with
   "We set $\nu\coloneqq\ldots$" without saying where $\nu$ comes from makes the
-  reader carry an unexplained object.
+  reader carry an unexplained object. The same holds for a device such as a
+  weighted norm: show first the estimate that needs it, then use it, and give
+  it a symbol only if it is used repeatedly.
 - One mechanism per proof. The reader should be able to state the mechanism in
   one sentence ("the inverse of a nonincreasing coefficient sequence satisfies a
   recursion with nonnegative coefficients"). When the limit passage, error

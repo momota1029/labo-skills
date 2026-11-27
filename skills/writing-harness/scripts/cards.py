@@ -233,13 +233,22 @@ SENT_RE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\\$])')
 
 
 def proof_symbols(proof):
-    """Symbols a proof names with \\coloneqq: (symbol, position, uses other than the definition)."""
+    """Symbols a proof names with \\coloneqq: (symbol, position, uses other than the definition, named ahead).
+
+    A symbol is named ahead when its defining expression has not appeared earlier in the proof and
+    its first use comes two or more sentences later: the reader carries a name whose purpose is not
+    yet visible (a candidate for reading, not a verdict)."""
     out = []
     for m in SYMDEF_RE.finditer(proof):
         sym = m.group(1)
         pat = re.escape(sym) + (r'(?![A-Za-z])' if sym[-1].isalpha() else '')
         uses = len(re.findall(pat, proof)) - 1  # a 'where' clause may name an expression after its use
-        out.append((sym, m.start(), uses))
+        rhs = re.sub(r'\s+', '', re.split(r'\$|\\\]|\\quad|,\s|\.\s', proof[m.end():], maxsplit=1)[0])[:12]
+        before = re.sub(r'\s+', '', proof[:m.start()])
+        later = [u.start() for u in re.finditer(pat, proof) if u.start() > m.end()]
+        gap = len(SENT_RE.findall(proof[m.end():later[0]])) if later else 0
+        ahead = bool(rhs) and rhs not in before and gap >= 2
+        out.append((sym, m.start(), uses, ahead))
     return out
 
 
@@ -254,7 +263,8 @@ def proof_load(c):
         'id': c.id,
         'words': len(re.findall(r'[A-Za-z]+', re.sub(r'\$[^$]*\$|\\\[.*?\\\]', ' ', proof, flags=re.S))),
         'displays': len(DISPLAY_RE.findall(proof)),
-        'symbols': [(s, u) for s, _, u in syms],
+        'symbols': [(s, u) for s, _, u, _ in syms],
+        'named_ahead': [s for s, _, _, ah in syms if ah],
         'tools': sorted(set(TOOL_RE.findall(proof))),
         'opens_by_naming': '\\coloneqq' in first,
     }
@@ -287,6 +297,7 @@ def cmd_load(h, a):
         syms = ', '.join(f'{s}×{u}' for s, u in r['symbols']) or '-'
         print(f"{r['id']}: {r['words']} words, {r['displays']} displays, "
               f"{len(r['symbols'])} named [{syms}], {len(r['tools'])} tools [{'; '.join(r['tools']) or '-'}]"
+              + (f" NAMEAHEAD [{', '.join(r['named_ahead'])}]" if r['named_ahead'] else '')
               + (' NAMEFIRST' if r['opens_by_naming'] else ''))
     return 0
 
