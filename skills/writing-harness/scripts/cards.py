@@ -224,6 +224,73 @@ def display_text_warnings(cards):
     return out
 
 
+SYMDEF_RE = re.compile(r'((?:\\[A-Za-z]+|[A-Za-z])(?:_\{[^{}]*\}|_\\[A-Za-z]+|_[A-Za-z0-9])?)'
+                       r'\s*(?:\([^()]*\))?\s*\\coloneqq')
+TOOL_RE = re.compile(r"\b(?:[A-Z][a-z]+(?:--[A-Z][a-z]+)?(?:'s)? (?:theorem|lemma|inequality|formula|principle)"
+                     r"|the [a-z-]+ (?:convergence|selection|fixed-point|closed graph) theorem"
+                     r"|(?:Fubini|Tonelli|Fatou)'s (?:theorem|lemma))")
+SENT_RE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\\$])')
+
+
+def proof_symbols(proof):
+    """Symbols a proof names with \\coloneqq: (symbol, position, uses after the definition)."""
+    out = []
+    for m in SYMDEF_RE.finditer(proof):
+        sym = m.group(1)
+        pat = re.escape(sym) + (r'(?![A-Za-z])' if sym[-1].isalpha() else '')
+        uses = len(re.findall(pat, proof[m.end():]))
+        out.append((sym, m.start(), uses))
+    return out
+
+
+def proof_load(c):
+    """Indicators of the cognitive load of a proof (rules on deriving before naming, live symbols, tools)."""
+    proof = c.sec('Proof') or ''
+    if not proof.strip():
+        return None
+    syms = proof_symbols(proof)
+    first = SENT_RE.split(proof.strip(), 1)[0]
+    return {
+        'id': c.id,
+        'words': len(re.findall(r'[A-Za-z]+', re.sub(r'\$[^$]*\$|\\\[.*?\\\]', ' ', proof, flags=re.S))),
+        'displays': len(DISPLAY_RE.findall(proof)),
+        'symbols': [(s, u) for s, _, u in syms],
+        'tools': sorted(set(TOOL_RE.findall(proof))),
+        'opens_by_naming': '\\coloneqq' in first,
+    }
+
+
+def proof_load_warnings(cards):
+    out = []
+    for c in cards.values():
+        if c.kind not in PROP_KINDS:
+            continue
+        ld = proof_load(c)
+        if not ld:
+            continue
+        if ld['opens_by_naming']:
+            out.append(f'NAMEFIRST {c.id}: the proof opens by naming an object; derive it first, then name it')
+        for s, u in ld['symbols']:
+            if u <= 1:
+                out.append(f'ONCESYMBOL {c.id}: {s} is named but used {u} time(s) afterwards; write the expression instead')
+    return out
+
+
+def cmd_load(h, a):
+    cards, _ = load_cards(h)
+    rows = [ld for c in cards.values() if c.kind in PROP_KINDS for ld in [proof_load(c)] if ld]
+    rows.sort(key=lambda r: (len(r['symbols']) + len(r['tools']), r['words']), reverse=True)
+    if a.json:
+        print(json.dumps(rows, ensure_ascii=False, indent=1))
+        return 0
+    for r in rows:
+        syms = ', '.join(f'{s}×{u}' for s, u in r['symbols']) or '-'
+        print(f"{r['id']}: {r['words']} words, {r['displays']} displays, "
+              f"{len(r['symbols'])} named [{syms}], {len(r['tools'])} tools [{'; '.join(r['tools']) or '-'}]"
+              + (' NAMEFIRST' if r['opens_by_naming'] else ''))
+    return 0
+
+
 def check(h, cards, errors):
     errors, warn = list(errors), []
     for c in cards.values():
@@ -330,6 +397,7 @@ def check(h, cards, errors):
     warn += _xref().warnings(cards, st, known)
     warn += _exemplar().warnings(h, cards)
     warn += display_text_warnings(cards)
+    warn += proof_load_warnings(cards)
     return errors, warn
 
 
@@ -987,6 +1055,8 @@ def main(argv=None):
     p.add_argument('--background', action='store_true', help=argparse.SUPPRESS)
     sp.add_parser('watch').add_argument('--no-pdf', action='store_true')
     sp.add_parser('hook')
+    p = sp.add_parser('load', help='cognitive-load indicators of each proof')
+    p.add_argument('--json', action='store_true')
     p = sp.add_parser('exemplar', help='compare the prose with the exemplar the author asked to follow')
     p.add_argument('paths', nargs='*')
     p.add_argument('-n', type=int, default=3)

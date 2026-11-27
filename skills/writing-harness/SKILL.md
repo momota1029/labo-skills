@@ -46,6 +46,11 @@ research evidence; this skill owns the harness in which the author writes.
   `PHRASE` check only catches typical wording. Reread each fixed passage against the rule's
   intent before reporting it fixed, and never count a rewording that silences the check as
   a fix.
+- Review every proof for its cognitive load, not only its correctness:
+  [the points in paper-writing](../paper-writing/references/manuscript-conventions.md#cognitive-load-of-proofs)
+  (derive before naming, one mechanism, one change of framework, exact identities
+  in limits, few live symbols, hypotheses by the property used). `cards.py load`
+  ranks the proofs to read first; reshape a statement when that lowers the load.
 - Lean: link declarations in `lean:`; raise a card to `lean` only when its own
   objects and statement are formalized.
 - Keep every output current: after any change to cards or structure run

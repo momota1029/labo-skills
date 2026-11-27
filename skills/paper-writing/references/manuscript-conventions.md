@@ -84,3 +84,41 @@ paper's notation decisions belong with that paper.
 - When a quantity is an infimum, prefer "take $a$ larger than the value,
   choose a near-optimal witness, then let $a$ decrease" over first proving
   that the infimum is attained, unless attainment is needed later.
+
+## Cognitive load of proofs
+
+A proof can be correct and still costly to read. Review every proof, and the
+statement it serves, for the following points; a statement may be reshaped when
+that lowers the load.
+
+- Derive before naming. An auxiliary object (a measure, a function, an
+  operator) appears first as the result of a step the reader has just seen, and
+  only then, if it is used repeatedly, gets a symbol. A proof that opens with
+  "We set $\nu\coloneqq\ldots$" without saying where $\nu$ comes from makes the
+  reader carry an unexplained object.
+- One mechanism per proof. The reader should be able to state the mechanism in
+  one sentence ("the inverse of a nonincreasing coefficient sequence satisfies a
+  recursion with nonnegative coefficients"). When the limit passage, error
+  bookkeeping or regularity checks outweigh the mechanism, restructure the proof
+  or the statement.
+- Change frameworks at most once (discrete and continuous time, strong and
+  weak formulations, functions and measures), and make the transfer one step,
+  such as "monotonicity is preserved under pointwise limits".
+- In a limit passage prefer exact identities, monotonicity, compactness and
+  uniqueness to error terms and stability constants introduced only for
+  bookkeeping.
+- Keep few symbols alive: introduce each right before its first use, retire it
+  after its last, and write a short expression used once instead of naming it.
+- State hypotheses through the property the proof uses, not through one
+  representation of the object; derive the representation of interest as a
+  corollary.
+- Record each step's outcome as a labelled display that the next step cites, so
+  the chain of conclusions can be followed by equation numbers.
+- Build the proof forward; a backward reduction ("it remains to show", or a
+  closing contradiction that returns to a leftover part of the claim) usually
+  means the statement asks for more than is used.
+- Weigh a self-contained proof against citing a standard theorem. If the proof
+  is heavier than the role of the result, state the standard theorem in the
+  preliminaries and cite it.
+
+These are structural properties; a wording check can only point at candidates.

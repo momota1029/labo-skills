@@ -280,6 +280,24 @@ class WritingHarnessTests(unittest.TestCase):
         code, out = self.check_json()
         self.assertEqual([w for w in out["warnings"] if w.startswith("PLACEMENT")], [], out["warnings"])
 
+    def test_proof_load_names_and_symbols(self):
+        (self.h / "cards/prop/lem-load.md").write_text(
+            "---\nid: lem-load\nkind: lemma\nlabel: lem:load\nstatus: drafted\nrequires: []\n---\n"
+            "## Statement\nThe sum is finite.\n\n## Proof\n"
+            "We set $\\nu\\coloneqq a+b$. Then $\\nu$ is finite, and $\\nu+\\nu$ is finite. "
+            "Let $c\\coloneqq 2$. By Fatou's lemma, the sum is finite. This completes the proof.\n")
+        self.edit("structure.yaml", "      - def-settled\n", "      - def-settled\n      - lem-load\n")
+        code, out = self.check_json()
+        load = sorted(w for w in out["warnings"] if w.split()[0] in ("NAMEFIRST", "ONCESYMBOL"))
+        self.assertEqual(load, [
+            "NAMEFIRST lem-load: the proof opens by naming an object; derive it first, then name it",
+            "ONCESYMBOL lem-load: c is named but used 0 time(s) afterwards; write the expression instead"])
+        r = subprocess.run([sys.executable, str(CARDS), "--root", str(self.h), "load", "--json"],
+                           capture_output=True, text=True)
+        rows = {x["id"]: x for x in json.loads(r.stdout)}
+        self.assertEqual(rows["lem-load"]["symbols"], [["\\nu", 3], ["c", 0]])
+        self.assertEqual(rows["lem-load"]["tools"], ["Fatou's lemma"])
+
     def test_prose_in_displays_is_reported(self):
         self.edit("cards/prop/lem-tail.md", "## Statement\n",
                   "## Statement\n\\[\na_n\\to a\\quad\\text{at each point }n\\text{ of the tail set}\n\\]\n"

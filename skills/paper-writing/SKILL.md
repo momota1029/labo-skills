@@ -145,7 +145,8 @@ emphasis, or tone for the author to decide.
 
 Within an authorized writing or revision task, carry the affected scope through drafting, self-check, any needed
 review, repair and recheck. The producer owns integration. Check statements, proof steps, citations and the
-reader's route as you write. Follow the [shared review timing](../book-harness/references/intake-review.md#when-to-call-an-independent-reviewer)
+reader's route as you write, and the [cognitive load](references/manuscript-conventions.md#cognitive-load-of-proofs)
+of each proof, reshaping statements when that lowers it. Follow the [shared review timing](../book-harness/references/intake-review.md#when-to-call-an-independent-reviewer)
 for independent checks. Group ordinary reviews at stable section boundaries. Before relying on a decisive new
 proof, give its fixed statement, proof and permitted sources to [math-verifier](../math-verifier/SKILL.md) in a
 fresh context. Continue unrelated writing while it is pending. After repairs, recheck affected mathematics and
