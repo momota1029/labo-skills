@@ -115,6 +115,15 @@ role. This request overrides the reading of a corpus as weak style cues.
 A count of sentence openers alone cannot show that the prose follows the exemplar, and
 neither can a rewrite done from memory of its style.
 
+A phrase table is a net for typical wording, not the rule itself. When a phrase entry
+stands for a structural rule, such as "build a proof forward" behind `avoid = "It remains
+to show"`, a match is a pointer to a structure to change. Replacing "It remains to show
+that k is positive" by "We show by contradiction that k is positive" silences the check and
+leaves the backward step. Fix the structure, often in the statement: in that example the
+statement asked for a positive k where the equivalent condition gives only a nonnegative
+one and no later argument used positivity, so the statement was weakened and the step
+disappeared. Reread every passage you changed for such a rule, not only the matches.
+
 ## Tooling principle
 
 Everything mechanical is a program (`scripts/cards.py`). The agent's judgment

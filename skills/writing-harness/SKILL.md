@@ -41,7 +41,11 @@ research evidence; this skill owns the harness in which the author writes.
 - Run `check` after every change to cards or structure; run `impact` before
   changing a statement and tell the author which prose to reread.
 - Every rule learned from an edit is stated, applied paper-wide as a diff after
-  approval and recorded at its owner (field, author or this paper).
+  approval and recorded at its owner (field, author or this paper). A rule constrains
+  structure, such as the order of a proof, the quantifiers or the placement of a lemma; a
+  `PHRASE` check only catches typical wording. Reread each fixed passage against the rule's
+  intent before reporting it fixed, and never count a rewording that silences the check as
+  a fix.
 - Lean: link declarations in `lean:`; raise a card to `lean` only when its own
   objects and statement are formalized.
 - Keep every output current: after any change to cards or structure run
