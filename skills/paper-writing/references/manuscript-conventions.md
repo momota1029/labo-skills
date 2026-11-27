@@ -25,16 +25,45 @@ paper's notation decisions belong with that paper.
 - Avoid parenthetical asides in statements and proofs. A convention a formula
   needs follows as its own sentence ("where ...", 「ただし…とする」); other
   remarks become a clause or are dropped.
+- Refer to results, sections and equations by label, never by typed numbers.
 - Proof paragraphs may carry working labels (1), (2), ... in drafts. Drop them
   in the output; if a step is cited, show "Step $k$" and cite it as such.
 
+## Notation and quantifiers
+
+- Introduce notation at the scope where it is used. Fix a symbol for the whole
+  paper only when the argument has that scope, and when a result lets a
+  parameter vary, state its range there and say which estimates are uniform in
+  it (a group $G$ fixed throughout, a prime $p$ fixed only within one section).
+- State a definition for the object that plays the role in the problem; use a
+  generic symbol only when the definition will be applied to several objects
+  (the Hodge star of the given metric $g$, not of "a metric", when only $g$
+  occurs).
+- State a standing convention (an identification, a choice of representatives,
+  a sign or orientation convention) before the first object that needs it,
+  not afterwards with "here we take ...".
+- Keep few symbols alive: introduce a symbol right before its first use and do
+  not carry it beyond its last use.
+- Do not fix with "Let" a letter that is already bound by a quantifier or by a
+  definition in the same argument; use another letter.
+- Present members of an indexed family in increasing index order, in formulas
+  and in prose, unless the mathematics requires another order
+  ($H^0\to H^1\to H^2$).
+- Do not refer to a mathematical object by a pronoun or a demonstrative phrase
+  ("the usual one", "the former") when a standard symbol exists.
+
 ## Definitions and statements
+
+- At a definition, state only the domain and hypotheses that make the
+  expression meaningful; put stronger assumptions with the result that uses
+  them (define the Euler characteristic for finite CW complexes and assume
+  orientability in the theorem).
 
 - Introduce the data of a statement with "Let" and keep "for every" for the
   objects the conclusion ranges over, so that the proof does not begin by fixing
   them again. Do not fix a parameter with "Let" and then let it vary in the
-  conclusion ("let $\lambda>0$ ... as $\lambda\to0$"); introduce the family
-  instead ("for $\lambda>0$, let $r_\lambda$ be ...").
+  conclusion ("let $\varepsilon>0$ ... as $\varepsilon\to0$"); introduce the
+  family instead ("for $\varepsilon>0$, let $u_\varepsilon$ be ...").
 - A definition names objects and fixes notation; it does not assert facts.
   State a needed fact separately ("the metric $d$ is symmetric and ...").
 - Keep each definition to the objects it introduces. Introduce an auxiliary
@@ -79,6 +108,9 @@ paper's notation decisions belong with that paper.
   named constants and what they depend on, or write the limit.
 
 
+- If a proof announces its steps by order ("we next prove the second
+  assertion"), number all of them in order from the first, matching the items
+  (i), (ii), ... of the statement; otherwise use no ordinal words.
 - Expand a lemma used only once into the proof that uses it, even at some cost
   in length; keep a separate lemma when it is reused or isolates a genuinely
   separate idea. A short fact listed as a corollary item but used in one place
@@ -89,48 +121,3 @@ paper's notation decisions belong with that paper.
 - When a quantity is an infimum, prefer "take $a$ larger than the value,
   choose a near-optimal witness, then let $a$ decrease" over first proving
   that the infimum is attained, unless attainment is needed later.
-
-## Cognitive load of proofs
-
-A proof can be correct and still costly to read. Review every proof, and the
-statement it serves, for the following points; a statement may be reshaped when
-that lowers the load.
-
-- Announce each step by what it literally establishes ("we approximate",
-  "we construct", "we estimate", "we identify"). A paraphrase that is false as
-  written, such as "we solve the equation in discrete time" for a step that
-  solves a discretized problem approximating it, misleads even when the intent
-  is clear.
-- Derive before naming. An auxiliary object (a measure, a function, an
-  operator) appears first as the result of a step the reader has just seen, and
-  only then, if it is used repeatedly, gets a symbol. A proof that opens with
-  "We set $\nu\coloneqq\ldots$" without saying where $\nu$ comes from makes the
-  reader carry an unexplained object. The same holds for a device such as a
-  weighted norm: show first the estimate that needs it, then use it, and give
-  it a symbol only if it is used repeatedly.
-- One mechanism per proof. The reader should be able to state the mechanism in
-  one sentence ("the inverse of a nonincreasing coefficient sequence satisfies a
-  recursion with nonnegative coefficients"). When the limit passage, error
-  bookkeeping or regularity checks outweigh the mechanism, restructure the proof
-  or the statement.
-- Change frameworks at most once (discrete and continuous time, strong and
-  weak formulations, functions and measures), and make the transfer one step,
-  such as "monotonicity is preserved under pointwise limits".
-- In a limit passage prefer exact identities, monotonicity, compactness and
-  uniqueness to error terms and stability constants introduced only for
-  bookkeeping.
-- Keep few symbols alive: introduce each right before its first use, retire it
-  after its last, and write a short expression used once instead of naming it.
-- State hypotheses through the property the proof uses, not through one
-  representation of the object; derive the representation of interest as a
-  corollary.
-- Record each step's outcome as a labelled display that the next step cites, so
-  the chain of conclusions can be followed by equation numbers.
-- Build the proof forward; a backward reduction ("it remains to show", or a
-  closing contradiction that returns to a leftover part of the claim) usually
-  means the statement asks for more than is used.
-- Weigh a self-contained proof against citing a standard theorem. If the proof
-  is heavier than the role of the result, state the standard theorem in the
-  preliminaries and cite it.
-
-These are structural properties; a wording check can only point at candidates.

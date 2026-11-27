@@ -288,10 +288,11 @@ class WritingHarnessTests(unittest.TestCase):
             "Let $c\\coloneqq 2$. By Fatou's lemma, the sum is finite. This completes the proof.\n")
         self.edit("structure.yaml", "      - def-settled\n", "      - def-settled\n      - lem-load\n")
         code, out = self.check_json()
-        load = sorted(w for w in out["warnings"] if w.split()[0] in ("NAMEFIRST", "ONCESYMBOL"))
-        self.assertEqual(load, [
-            "NAMEFIRST lem-load: the proof opens by naming an object; derive it first, then name it",
-            "ONCESYMBOL lem-load: c is named but used 0 time(s) besides its definition; write the expression instead"])
+        self.assertEqual([w for w in out["warnings"] if w.split()[0] in ("NAMEFIRST", "ONCESYMBOL")], [])
+        text = subprocess.run([sys.executable, str(CARDS), "--root", str(self.h), "load"],
+                              capture_output=True, text=True).stdout
+        self.assertIn("NAMEFIRST", text)
+        self.assertIn("ONCESYMBOL [c]", text)
         r = subprocess.run([sys.executable, str(CARDS), "--root", str(self.h), "load", "--json"],
                            capture_output=True, text=True)
         rows = {x["id"]: x for x in json.loads(r.stdout)}

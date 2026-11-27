@@ -168,16 +168,11 @@ proves a theorem (a tool of the main proof), and the last result of a section
 that a theorem uses; citations in remarks do not count as uses. It also reports a display line whose
 `\text{}` parts hold more than four words (`DISPLAYTEXT`): a display keeps
 formulas and a short qualifier such as "for a.e. $t\in(0,T)$", and a condition
-in words goes into the sentence. Two warnings concern the cognitive load of a
-proof: `NAMEFIRST` when its first sentence names an object with `\coloneqq`
-(derive the object first, then name it), and `ONCESYMBOL` when a symbol named
-in a proof is used at most once afterwards (write the expression instead).
-`cards.py load` lists, for every proof, its length, displays, named symbols with
-their later uses and the theorems it invokes, heaviest first, and marks
-`NAMEAHEAD` a symbol whose expression has not appeared before and whose first
-use comes two or more sentences after it is named; read it with the
-[cognitive-load points](../../paper-writing/references/manuscript-conventions.md#cognitive-load-of-proofs),
-which are structural and need a reading, not only these counts.
+in words goes into the sentence. `cards.py load` lists, for every proof, its length, displays, named symbols
+with their uses, the theorems it invokes, whether it opens by naming an object
+(`NAMEFIRST`), symbols used at most once besides their definition (`ONCESYMBOL`)
+and symbols named two or more sentences before they are needed (`NAMEAHEAD`),
+heaviest first. These are reading aids, not checks.
 
 `proof: later` prints only the statement; the proof appears at the
 `{proof_of: ID}` item, headed with a reference back to the statement. Use it to

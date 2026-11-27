@@ -294,11 +294,13 @@ def cmd_load(h, a):
     if a.json:
         print(json.dumps(rows, ensure_ascii=False, indent=1))
         return 0
+    once = {r['id']: [s for s, u in r['symbols'] if u <= 1] for r in rows}
     for r in rows:
         syms = ', '.join(f'{s}×{u}' for s, u in r['symbols']) or '-'
         print(f"{r['id']}: {r['words']} words, {r['displays']} displays, "
               f"{len(r['symbols'])} named [{syms}], {len(r['tools'])} tools [{'; '.join(r['tools']) or '-'}]"
               + (f" NAMEAHEAD [{', '.join(r['named_ahead'])}]" if r['named_ahead'] else '')
+              + (f" ONCESYMBOL [{', '.join(once[r['id']])}]" if once[r['id']] else '')
               + (' NAMEFIRST' if r['opens_by_naming'] else ''))
     return 0
 
@@ -409,7 +411,6 @@ def check(h, cards, errors):
     warn += _xref().warnings(cards, st, known)
     warn += _exemplar().warnings(h, cards)
     warn += display_text_warnings(cards)
-    warn += proof_load_warnings(cards)
     return errors, warn
 
 
