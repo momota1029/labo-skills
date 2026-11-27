@@ -247,7 +247,8 @@ def proof_symbols(proof):
         before = re.sub(r'\s+', '', proof[:m.start()])
         later = [u.start() for u in re.finditer(pat, proof) if u.start() > m.end()]
         gap = len(SENT_RE.findall(proof[m.end():later[0]])) if later else 0
-        ahead = bool(rhs) and rhs not in before and gap >= 2
+        used_before = re.search(pat, proof[:m.start()]) is not None  # a 'where' clause names after use
+        ahead = bool(rhs) and rhs not in before and gap >= 2 and not used_before
         out.append((sym, m.start(), uses, ahead))
     return out
 
