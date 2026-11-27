@@ -233,12 +233,12 @@ SENT_RE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\\$])')
 
 
 def proof_symbols(proof):
-    """Symbols a proof names with \\coloneqq: (symbol, position, uses after the definition)."""
+    """Symbols a proof names with \\coloneqq: (symbol, position, uses other than the definition)."""
     out = []
     for m in SYMDEF_RE.finditer(proof):
         sym = m.group(1)
         pat = re.escape(sym) + (r'(?![A-Za-z])' if sym[-1].isalpha() else '')
-        uses = len(re.findall(pat, proof[m.end():]))
+        uses = len(re.findall(pat, proof)) - 1  # a 'where' clause may name an expression after its use
         out.append((sym, m.start(), uses))
     return out
 
@@ -272,7 +272,7 @@ def proof_load_warnings(cards):
             out.append(f'NAMEFIRST {c.id}: the proof opens by naming an object; derive it first, then name it')
         for s, u in ld['symbols']:
             if u <= 1:
-                out.append(f'ONCESYMBOL {c.id}: {s} is named but used {u} time(s) afterwards; write the expression instead')
+                out.append(f'ONCESYMBOL {c.id}: {s} is named but used {u} time(s) besides its definition; write the expression instead')
     return out
 
 

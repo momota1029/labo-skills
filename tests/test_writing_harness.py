@@ -291,7 +291,7 @@ class WritingHarnessTests(unittest.TestCase):
         load = sorted(w for w in out["warnings"] if w.split()[0] in ("NAMEFIRST", "ONCESYMBOL"))
         self.assertEqual(load, [
             "NAMEFIRST lem-load: the proof opens by naming an object; derive it first, then name it",
-            "ONCESYMBOL lem-load: c is named but used 0 time(s) afterwards; write the expression instead"])
+            "ONCESYMBOL lem-load: c is named but used 0 time(s) besides its definition; write the expression instead"])
         r = subprocess.run([sys.executable, str(CARDS), "--root", str(self.h), "load", "--json"],
                            capture_output=True, text=True)
         rows = {x["id"]: x for x in json.loads(r.stdout)}
