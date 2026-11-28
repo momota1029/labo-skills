@@ -6,7 +6,6 @@ from pathlib import Path
 import re
 from shutil import copy2
 from textwrap import dedent
-from PIL import Image
 
 import method
 from book_links import BookReferences, book_card_html
@@ -246,6 +245,7 @@ class PassageViews:
             target = self.web / asset
             target.parent.mkdir(parents=True, exist_ok=True)
             copy2(source, target)
+            from PIL import Image  # only figure cards need Pillow
             with Image.open(source) as image:
                 self.figure_assets[identifier] = asset, *image.size
         href = f'figures.html#c-{identifier}'
