@@ -20,7 +20,9 @@ research evidence; this skill owns the harness in which the author writes.
    `python3 scripts/cards.py init writing/<paper>/harness` and set `language`
    to the author's language. Existing drafts are imported into cards with the
    author's agreement; never overwrite an existing card.
-2. Run `check` and `status`. Report errors, `STALE` prose, `OUTDATED`
+2. Run `check` and `status`. Report errors, `STALE` prose (including text
+   whose cited code, run or figure changed; see `evidence` in
+   [cards](references/cards.md#evidence-from-code-runs-and-figures-reverse-staleness)), `OUTDATED`
    outputs, forward references and open questions before new work, and any
    new file in `reviews/comments/`.
 3. Read `story.md`, `vocab.toml` and `style.toml`, and the workspace's

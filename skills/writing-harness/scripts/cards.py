@@ -305,8 +305,51 @@ def cmd_load(h, a):
     return 0
 
 
+def evidence_fingerprints(h, ns, cache):
+    """Fingerprints published by another harness (code, runs, figures) under [evidence.<ns>] in harness.toml.
+
+    The command prints a JSON object {card id: fingerprint}; {python} is this interpreter. It runs once per check."""
+    if ns not in cache:
+        conf = (h.cfg.get('evidence') or {}).get(ns)
+        if not isinstance(conf, dict) or not isinstance(conf.get('command'), list):
+            cache[ns] = (None, f'no [evidence.{ns}] command in harness.toml')
+        else:
+            import subprocess
+            cmd = [str(x).replace('{python}', sys.executable) for x in conf['command']]
+            try:
+                out = subprocess.run(cmd, cwd=h.root, capture_output=True, text=True, timeout=300)
+                cache[ns] = ((json.loads(out.stdout), None) if out.returncode == 0 else
+                             (None, f'evidence source {ns} failed: {out.stderr.strip()[-200:]}'))
+            except (OSError, ValueError, subprocess.TimeoutExpired) as e:
+                cache[ns] = (None, f'evidence source {ns} failed: {e}')
+    return cache[ns]
+
+
+def check_evidence(h, cards, errors, warn):
+    """Reverse staleness: prose or facts that cite code, runs or figures kept by another harness."""
+    cache = {}
+    for c in cards.values():
+        refs = c.meta.get('evidence') or []
+        if not isinstance(refs, list):
+            errors.append(f'{c.id}: evidence must be a list of ns:id')
+            continue
+        anchors = c.meta.get('evidence_anchors') or {}
+        for ref in refs:
+            ns, _, rid = str(ref).partition(':')
+            fps, err = evidence_fingerprints(h, ns, cache) if rid else (None, f'evidence {ref} must be ns:id')
+            if err:
+                errors.append(f'{c.id}: {err}')
+            elif rid not in fps:
+                errors.append(f'{c.id}: evidence {ref} not found')
+            elif ref not in anchors:
+                warn.append(f'{c.id}: no anchor for evidence {ref} (run anchor)')
+            elif anchors[ref] != fps[rid]:
+                warn.append(f'STALE {c.id}: evidence {ref} changed since this text was written')
+
+
 def check(h, cards, errors):
     errors, warn = list(errors), []
+    check_evidence(h, cards, errors, warn)
     for c in cards.values():
         k = c.kind
         if k == 'explanation':
@@ -518,15 +561,27 @@ def cmd_impact(h, a):
 def cmd_anchor(h, a):
     cards, _ = load_cards(h)
     c = cards.get(a.id)
-    if not c or c.kind != 'explanation':
-        sys.exit(f'{a.id} is not an explanation card')
+    if not c or (c.kind != 'explanation' and not c.meta.get('evidence')):
+        sys.exit(f'{a.id} is not an explanation card and cites no evidence')
     text = c.path.read_text(encoding='utf-8')
     m = re.match(r'^---\n(.*?)\n---\n?', text, re.S)
     meta = yaml.safe_load(m.group(1))
-    meta['anchors'] = {x: cards[x].fingerprint() for x in meta.get('explains') or [] if x in cards}
+    if c.kind == 'explanation':
+        meta['anchors'] = {x: cards[x].fingerprint() for x in meta.get('explains') or [] if x in cards}
+    if meta.get('evidence'):
+        cache, found = {}, {}
+        for ref in meta['evidence']:
+            ns, _, rid = str(ref).partition(':')
+            fps, err = evidence_fingerprints(h, ns, cache)
+            if err or rid not in (fps or {}):
+                sys.exit(f'{a.id}: cannot anchor evidence {ref}: {err or "not found"}')
+            found[ref] = fps[rid]
+        meta['evidence_anchors'] = found
+        print(f'{a.id}: evidence_anchors', found)
     c.path.write_text('---\n' + yaml.safe_dump(meta, allow_unicode=True, sort_keys=False) + '---\n' + text[m.end():],
                       encoding='utf-8')
-    print(f'{a.id}: anchors', meta['anchors'])
+    if c.kind == 'explanation':
+        print(f'{a.id}: anchors', meta['anchors'])
     return 0
 
 

@@ -117,6 +117,30 @@ after the prose was written. `check` lists stale cards; after the author has
 reread the text, `anchor ID` records the current fingerprints. `impact ID`
 lists every fact depending on `ID` and every prose card to reread.
 
+### Evidence from code, runs and figures (reverse staleness)
+
+Prose and facts that describe code, a run's numbers or a figure kept by another
+harness (for example a method harness) list it under `evidence` as `ns:id`.
+The namespace is declared in `harness.toml`; its command prints a JSON object
+`{card id: fingerprint}` and runs from the harness root once per `check`
+(`{python}` is the current interpreter):
+
+```toml
+[evidence.method]
+command = ["{python}", "path/to/method.py", "--root", "..", "fingerprints"]
+```
+
+```yaml
+evidence: [method:step-solve, method:run-main]
+evidence_anchors: {method:step-solve: 88293f6f, method:run-main: 1c2d3e4f}
+```
+
+`anchor ID` records `evidence_anchors` (for any card kind that cites evidence).
+When the code, the run's result or the figure changes, `check` reports
+`STALE ID: evidence ns:id changed since this text was written`; an unknown id
+or a failing command is an error. Reread the sentence, the algorithm line or
+the reported number, then anchor again.
+
 ## Structure
 
 ```

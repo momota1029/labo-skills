@@ -62,6 +62,27 @@ class WritingHarnessTests(unittest.TestCase):
             self.assertEqual(self.run_cards("anchor", x).returncode, 0)
         self.assertEqual(self.check_json()[1]["warnings"], [])
 
+    def test_evidence_from_another_harness_makes_text_stale(self):
+        fps = self.h / "fps.json"
+        fps.write_text(json.dumps({"code-a": "11111111"}))
+        (self.h / "producer.py").write_text("import pathlib\nprint(pathlib.Path('fps.json').read_text())\n")
+        with (self.h / "harness.toml").open("a") as f:
+            f.write('\n[evidence.lab]\ncommand = ["{python}", "producer.py"]\n')
+        self.edit("cards/expl/x-why-settled.md", "anchors:", "evidence:\n- lab:code-a\nanchors:")
+        code, out = self.check_json()
+        self.assertIn("x-why-settled: no anchor for evidence lab:code-a (run anchor)", out["warnings"])
+        r = self.run_cards("anchor", "x-why-settled")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        code, out = self.check_json()
+        self.assertEqual((out["errors"], out["warnings"]), ([], []))
+        fps.write_text(json.dumps({"code-a": "22222222"}))
+        code, out = self.check_json()
+        self.assertEqual(out["warnings"],
+                         ["STALE x-why-settled: evidence lab:code-a changed since this text was written"])
+        self.edit("cards/expl/x-why-settled.md", "- lab:code-a", "- lab:code-b")
+        code, out = self.check_json()
+        self.assertIn("x-why-settled: evidence lab:code-b not found", out["errors"])
+
     def test_structure_order_and_unused_facts(self):
         self.edit("structure.yaml", "      - lem-tail\n      - thm-sum-settled\n",
                   "      - thm-sum-settled\n      - lem-tail\n")
