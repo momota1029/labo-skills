@@ -264,4 +264,3 @@ def check_origin(origin):
     if origin.get("relation") not in ("agrees", "unchecked", None) and not origin.get("note"):
         errors.append("原典と一致しない場合は origin.note に違いを書く")
     return errors
-
