@@ -790,7 +790,8 @@ def blocks(text, link):
     for para in re.split(r"\n\s*\n", text.strip()):
         lines = para.split("\n")
         if all(re.match(r"^\s*[-*] ", ln) for ln in lines):
-            res.append("<ul>" + "".join(f"<li>{inline(re.sub(r'^\s*[-*] ', '', ln), link)}</li>" for ln in lines) + "</ul>")
+            items = (re.sub(r'^\s*[-*] ', '', ln) for ln in lines)
+            res.append("<ul>" + "".join(f"<li>{inline(item, link)}</li>" for item in items) + "</ul>")
         else:
             res.append(f"<p>{inline(' '.join(lines), link)}</p>")
     return "".join(res)

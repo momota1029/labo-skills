@@ -83,7 +83,7 @@ def book_markdown_html(content: str) -> str:
     rendered = subprocess.run(
         ["pandoc", "--from=markdown+tex_math_single_backslash-raw_html-raw_tex-auto_identifiers",
          "--to=html", "--mathml", "--wrap=none"],
-        input=content, text=True, capture_output=True, check=True,
+        input=content, text=True, encoding="utf-8", capture_output=True, check=True,
     ).stdout
     return re.sub(r"(?:</?a|<img)\b[^>]*>", "", rendered)
 

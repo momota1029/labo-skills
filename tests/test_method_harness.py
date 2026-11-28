@@ -584,7 +584,7 @@ kind: A2
 title: A toy result
 ---
 ## Hypotheses
-Let x be real.
+Let x be real. 日本語の仮定。
 ## Conclusion
 x = x.
 ## Quantifiers
@@ -608,6 +608,7 @@ By reflexivity. $x=x$.
             selection = BookReferences(self.r).resolve("notes:prop-toy")
             self.assertEqual(selection.proof.id, "proof-toy")
             self.assertIn("Let x be real.", book_card_html(selection, selection.card))
+            self.assertIn("日本語の仮定。", book_card_html(selection, selection.card))
             proof_html = book_card_html(selection, selection.proof)
             self.assertIn("By reflexivity.", proof_html)
             self.assertIn("<math", proof_html)

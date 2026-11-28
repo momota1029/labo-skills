@@ -32,7 +32,8 @@ Ledgers: `source` (`src/`; `code_root`, `sha256`), `map`, `finding`. Common fron
 `origin = original | ai-written | ai-standin | reader`.
 
 A figure card may carry `image` (a PNG under the project) and `alt`; the PNG is embedded in the
-generated HTML (rendering figure cards needs Pillow; nothing else in the reader does). When a source card's `file` is a local PDF and a card's `sources` entry has
+generated HTML (rendering figure cards needs Pillow). Rendering linked book cards needs Pandoc on
+`PATH` to convert their Markdown and mathematics to HTML and MathML. When a source card's `file` is a local PDF and a card's `sources` entry has
 `pdf_page` (counted in the file), the page is linked; `loc` holds the reader-facing locator.
 
 ## Status ladder and staleness
